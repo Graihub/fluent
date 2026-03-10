@@ -6826,7 +6826,7 @@ end)
 -- BOTÃO MANUAL DE APAGAR LAVA
 --------------------------------------------------------------------
 
-Event:AddButton({
+Tabs.Event:AddButton({
     Name = "Remove Lava",
     Description = "",
     Callback = function()
@@ -6846,8 +6846,8 @@ Event:AddButton({
     end
 })
 -- 1. TOGGLE: Dino Bones
-Event:AddToggle({
-    Name = "Auto Collect Dino Bones",
+Tabs.Event:AddToggle(Auto Collect Dino Bones,{
+    Title = "Auto Collect Dino Bones",
     Description = "",
     Default = GetSetting("DinoBones_Save", false),
     Callback = function(I)
@@ -6858,8 +6858,8 @@ Event:AddToggle({
 })
 
 -- 2. TOGGLE: Dragon Eggs
-Event:AddToggle({
-    Name = "Auto Collect Dragon Eggs",
+Tabs.Event:AddToggle(Auto Collect Dragon Eggs,{
+    Title = "Auto Collect Dragon Eggs",
     Description = "",
     Default = GetSetting("DragonEggs_Save", false),
     Callback = function(I)
@@ -6870,8 +6870,8 @@ Event:AddToggle({
 })
 
 -- 3. TOGGLE: Auto Reset
-Event:AddToggle({
-    Name = "Auto Reset When Complete Volcano",
+Tabs.Event:AddToggle(Auto Reset When Complete Volcano,{
+    Title = "Auto Reset When Complete Volcano",
     Description = "",
     Default = GetSetting("ResetVolcano_Save", false),
     Callback = function(I)
@@ -6969,8 +6969,8 @@ end
 if World2 or World3 then
 Event:AddSection({"configures skills for maritime events (Melee)"})
 -- [[ TOGGLES MELEE ]]
-Event:AddToggle({
-    Name = "Skill Z",
+Tabs.Event:AddToggle(Skill Z,{
+    Title = "Skill Z",
     Default = GetSetting("Skill_Melee_Z", true), 
     Callback = function(I)
         _G.SelectedSkills["Melee"]["Z"] = I
@@ -6979,8 +6979,8 @@ Event:AddToggle({
     end
 })
 
-Event:AddToggle({
-    Name = "Skill X",
+Tabs.Event:AddToggle({Skill X,
+    Title = "Skill X",
     Default = GetSetting("Skill_Melee_X", true), 
     Callback = function(I)
         _G.SelectedSkills["Melee"]["X"] = I
@@ -6989,8 +6989,8 @@ Event:AddToggle({
     end
 })
 
-Event:AddToggle({
-    Name = "Skill C",
+Tabs.DojoEvent:AddToggle(Skill C,{
+    Title = "Skill C",
     Default = GetSetting("Skill_Melee_C", true), 
     Callback = function(I)
         _G.SelectedSkills["Melee"]["C"] = I
@@ -6999,11 +6999,11 @@ Event:AddToggle({
     end
 })
 
-Event:AddSection({"Sword"})
+Tabs.Event:AddSection({"Sword"})
 
 -- [[ TOGGLES SWORD ]]
-Event:AddToggle({
-    Name = "Skill Z",
+Tabs.Event:AddToggle(Skill Z,{
+    Title = "Skill Z",
     Default = GetSetting("Skill_Sword_Z", true), 
     Callback = function(I)
         _G.SelectedSkills["Sword"]["Z"] = I
@@ -7012,8 +7012,8 @@ Event:AddToggle({
     end
 })
 
-Event:AddToggle({
-    Name = "Skill X",
+Tabs.Event:AddToggle({
+    Title = "Skill X",
     Default = GetSetting("Skill_Sword_X", true), 
     Callback = function(I)
         _G.SelectedSkills["Sword"]["X"] = I
@@ -7022,11 +7022,11 @@ Event:AddToggle({
     end
 })
 
-Event:AddSection({"Gun"})
+Tabs.Event:AddSection({"Gun"})
 
 -- [[ TOGGLES GUN ]]
-Event:AddToggle({
-    Name = "Skill Z",
+Tabs.Event:AddToggle(Skill Z,{
+    Title = "Skill Z",
     Default = GetSetting("Skill_Gun_Z", true), 
     Callback = function(I)
         _G.SelectedSkills["Gun"]["Z"] = I
@@ -7035,8 +7035,8 @@ Event:AddToggle({
     end
 })
 
-Event:AddToggle({
-    Name = "Skill X",
+Tabs.Event:AddToggle(Skill X,{
+    Title = "Skill X",
     Default = GetSetting("Skill_Gun_X", true), 
     Callback = function(I)
         _G.SelectedSkills["Gun"]["X"] = I
@@ -7045,11 +7045,11 @@ Event:AddToggle({
     end
 })
 
-Event:AddSection({"Blox Fruit"})
+Tabs.Event:AddSection({"Blox Fruit"})
 
 -- [[ TOGGLES BLOX FRUIT ]]
-Event:AddToggle({
-    Name = "Skill Z",
+Tabs.Event:AddToggle(Skill Z,{
+    Title = "Skill Z",
     Default = GetSetting("Skill_Fruit_Z", true), 
     Callback = function(I)
         _G.SelectedSkills["Blox Fruit"]["Z"] = I
@@ -7058,8 +7058,8 @@ Event:AddToggle({
     end
 })
 
-Event:AddToggle({
-    Name = "Skill X",
+Tabs.Event:AddToggle(Skill X,{
+    Title = "Skill X",
     Default = GetSetting("Skill_Fruit_X", true), 
     Callback = function(I)
         _G.SelectedSkills["Blox Fruit"]["X"] = I
@@ -7068,8 +7068,8 @@ Event:AddToggle({
     end
 })
 
-Event:AddToggle({
-    Name = "Skill C",
+Tabs.Event:AddToggle(Skill C{
+    Title = "Skill C",
     Default = GetSetting("Skill_Fruit_C", true), 
     Callback = function(I)
         _G.SelectedSkills["Blox Fruit"]["C"] = I
@@ -7078,8 +7078,8 @@ Event:AddToggle({
     end
 })
 
-Event:AddToggle({
-    Name = "Skill V",
+Tabs.Event:AddToggle(Skill V,{
+    Title = "Skill V",
     Default = GetSetting("Skill_Fruit_V", true), 
     Callback = function(I)
         _G.SelectedSkills["Blox Fruit"]["V"] = I
@@ -7088,8 +7088,8 @@ Event:AddToggle({
     end
 })
 
-Event:AddToggle({
-    Name = "Skill F",
+Tabs.Event:AddToggle(Skill F,{
+    Title = "Skill F",
     Default = GetSetting("Skill_Fruit_F", true), 
     Callback = function(I)
         _G.SelectedSkills["Blox Fruit"]["F"] = I
@@ -7098,10 +7098,10 @@ Event:AddToggle({
     end
 })
 end
-Maestry:AddSection({"Mastery"})
+Tabs.Mastery:AddSection({"Mastery,"})
 
 local islands = { "Cake", "Bone" }
-Maestry:AddDropdown({
+Tabs.Mastery:AddDropdown(Select Method,{
     Title = "Select Method",
     Description = "",
     Options= islands,
@@ -7148,7 +7148,7 @@ end
 
 
 -- CÓDIGO MODIFICADO COM SAVE
-Maestry:AddToggle({
+Tabs.Mastery:AddToggle(Auto Farm Mastery Fruit,{
     Name = "Auto Farm Mastery Fruit",
     Description = "",
     -- 1. Usa GetSetting para pegar o valor salvo (ou false se não tiver salvo)
@@ -7220,8 +7220,8 @@ end)
 
 
 -- AUTO FARM MASTERY GUN
-Maestry:AddToggle({
-    Name = "Auto Farm Mastery Gun",
+Tabs.Mastery:AddToggle(Aut Farm Mastery Gun,{
+    Title = "Auto Farm Mastery Gun",
     Description = "",
     Default = false,
     Callback = function(I)
@@ -7286,24 +7286,24 @@ spawn(function()
     end
 end)
 
-Maestry:AddToggle({
-    Name = "Fruit Skill Z",
+Tabs.Mastery:AddToggle(Fruit Skill Z,{
+    Title = "Fruit Skill Z",
     Default = false,
     Callback = function(v)
         _G.FruitSkills.Z = v
     end,
 })
 
-Maestry:AddToggle({
-    Name = "Fruit Skill X",
+Tabs.Mastery:AddToggle(Fruit SKill X,{
+    Title = "Fruit Skill X",
     Default = false,
     Callback = function(v)
         _G.FruitSkills.X = v
     end,
 })
 
-Maestry:AddToggle({
-    Name = "Fruit Skill C",
+Tabs.Mastery:AddToggle(Fruit Skill C,{
+    Title = "Fruit Skill C",
     Default = false,
     Callback = function(v)
         _G.FruitSkills.C = v
