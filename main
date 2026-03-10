@@ -2311,38 +2311,30 @@ QuestNeta = function()
 		};
 	end;
 	local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/main/source.lua"))()
-local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/main/Addons/SaveManager.lua"))()
-local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/main/Addons/InterfaceManager.lua"))()
-
-local Window = Fluent:CreateWindow({
+    local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/main/Addons/SaveManager.lua"))()
+    local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/main/Addons/InterfaceManager.lua"))():MakeWindow({
+    
+    local Window = Fluent:CreateWindow({
     Title = "BaMia Hub",
-    SubTitle = "Blox Fruits",
+    SubTitle = "By BelBel",
     TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
+    Size = UDim2.fromOffset(580,460),
     Acrylic = true,
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 -- Criar ScreenGui
-local screenGui = Instance.new("ScreenGui")  
+local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "ControlGUI"
 screenGui.Parent = game.CoreGui
 
 -- Criar ImageButton
-local ScreenGui = Instance.new("ScreenGui")
-local Button = Instance.new("ImageButton")
-
-ScreenGui.Parent = game.CoreGui
-
-Button.Parent = ScreenGui
-Button.Size = UDim2.new(0,50,0,50)
-Button.Position = UDim2.new(0,20,0.5,0)
-Button.Image = "rbxassetid://7733960981" -- icon
-Button.BackgroundTransparency = 1
-
-Button.MouseButton1Click:Connect(function()
-    Window:Minimize()
-end)
+local imageButton = Instance.new("ImageButton")
+imageButton.Size = UDim2.new(0, 35, 0, 35)
+imageButton.Position = UDim2.new(0.15, 0, 0.15, 0)
+imageButton.Image = "rbxassetid://85288799798332"
+imageButton.BackgroundTransparency = 1
+imageButton.Parent = screenGui
 
 -- Adicionar cantos arredondados
 local uiCorner = Instance.new("UICorner")
@@ -2402,23 +2394,31 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
 end)
 
 -- Abrir/Fechar GUI (Minimize)
+local isOpen = true
+imageButton.MouseButton1Click:Connect(function()
+    isOpen = not isOpen
+    if isOpen then
+        Library:Minimize(false)
+    else
+        Library:Minimize(true)
+    end
+end)
+
 local Tabs = {
-    Info = Window:AddTab({ Title = "Info & Server", Icon = "info" }),
-    Farming = Window:AddTab({ Title = "Tab Farming", Icon = "swords" }),
-    Stack = Window:AddTab({ Title = "Stack Farm", Icon = "layers" }),
-    Mastery = Window:AddTab({ Title = "Farm Mastery", Icon = "zap" }),
-    Event = Window:AddTab({ Title = "Event", Icon = "star" }),
-    Teleport = Window:AddTab({ Title = "Teleport", Icon = "map" }),
-    Shop = Window:AddTab({ Title = "Shop", Icon = "shopping-cart" }),
-    Misc = Window:AddTab({ Title = "Misc", Icon = "settings" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings-2" })
+    Status = Window:AddTab({Title="Info & Server", Icon="info"}),
+    Farm = Window:AddTab({Title="Tab Farming", Icon="swords"}),
+    Others = Window:AddTab({Title="Stack Farm", Icon="layers"}),
+    Maestry = Window:AddTab({Title="Farm Mastery", Icon="zap"}),
+    Event = Window:AddTab({Title="Event", Icon="star"}),
+    Race = Window:AddTab({Title="Race", Icon="user"}),
+    Dojo = Window:AddTab({Title="Dojo", Icon="shield"}),
+    Esp = Window:AddTab({Title="Esp", Icon="eye"}),
+    Player = Window:AddTab({Title="Player", Icon="users"}),
+    Teleport = Window:AddTab({Title="Teleport", Icon="map"}),
+    Fruit = Window:AddTab({Title="Fruit", Icon="apple"}),
+    Shop = Window:AddTab({Title="Shop", Icon="shopping-cart"}),
+    Setting = Window:AddTab({Title="Setting", Icon="settings"})
 }
-Status:AddDiscordInvite({
-    Name = "Server Discord Bamia Hub",
-    Description = "join for Update <3",
-    Logo = "rbxassetid://85288799798332",
-    Invite = "https://discord.gg/qVa6jedW9p"
-})
 
 Shop:AddSection("Fighting Shop")
 Shop:AddButton({
@@ -3104,7 +3104,7 @@ Farm:AddToggle({
 	end,
 })
 
-Farm:AddButton({ Name = "Fps Fix Lag", Description = "giảm lag", Callback = function()
+Tabs.Farm:AddButton({ Name = "Fps Fix Lag", Description = "giảm lag", Callback = function()
 		LowCpu();
 	end });
 local V5 = game.Players.LocalPlayer;
@@ -3116,7 +3116,7 @@ local function y5(I)
 	return e and e.Health > 0;
 end
 
-Farm:AddSection({"Auto Farm"})
+Tabs.Farm:AddSection({"Auto Farm"})
 Farm:AddDropdown({
     Name = "Select Farm Mode",
     Description = "chọn chế độ farm",
@@ -3129,10 +3129,10 @@ Farm:AddDropdown({
     end
 })
 
-Farm:AddToggle({
-    Name = "Start Farm",
+Tabs.Farm:AddToggle("AutoFarm",{
+    Title = "Start Farm",
     Description = "bắt đầu farm",
-    Default = GetSetting("StartFarm_Save", false),
+    Default = false
     Callback = function(v)
         _G.StartFarm = v
 
@@ -3159,10 +3159,10 @@ Farm:AddToggle({
     end
 })
 
-Farm:AddToggle({
+Tabs.Farm:AddToggle(AcceptQuest,{
     Title = "Accept Quests",
     Description = "farm nhận nhiệm vụ",
-    Default = GetSetting("AcceptQuest_Save", false),
+    Default = false
     Callback = function(v)
         _G.AcceptQuest = v
         _G.SaveData["AcceptQuest_Save"] = v
@@ -7310,25 +7310,25 @@ Maestry:AddToggle({
     end,
 })
 
-Maestry:AddToggle({
-    Name = "Fruit Skill V",
+Tabs.Mastery:AddToggle(Fruit Skill V,{
+    Title = "Fruit Skill V",
     Default = false,
     Callback = function(v)
         _G.FruitSkills.V = v
     end,
 })
 
-Maestry:AddToggle({
-    Name = "Fruit Skill F",
+Tabs.Mastery:AddToggle(Fruit Skill F,{
+    Title = "Fruit Skill F",
     Default = false,
     Callback = function(v)
         _G.FruitSkills.F = v
     end,
 })
 if World2 then
-Race:AddSection({"Upgrade Races"});
-Race:AddToggle({
-    Name = "Auto Mink V2/V3",
+Tabs.Race:AddSection({"Upgrade Races"});
+Tabs.Race:AddToggle(Auto Mink V2/V3,{
+    Title = "Auto Mink V2/V3",
     Description = "",
     Default = false,
     Callback = function(I)
@@ -7371,8 +7371,8 @@ spawn(function()
         end);
     end;
 end);
-Race:AddToggle({
-    Name = "Auto Human V2/V3",
+Tabs.Race:AddToggle(Auto Human V2/V3,{
+    Title = "Auto Human V2/V3",
     Description = "",
     Default = false,
     Callback = function(I)
@@ -7439,8 +7439,8 @@ spawn(function()
     end;
 end);
 
-Race:AddToggle({
-    Name = "Auto Angel V2/V3",
+Tabs.Race:AddToggle(Auto Angel V2/V3,{
+    Title = "Auto Angel V2/V3",
     Description = "",
     Default = false,
     Callback = function(I)
@@ -7530,13 +7530,13 @@ spawn(function()
         end);
     end;
 end)
-Race:AddSection({"Race upgrade v4 only in Sea 3"});
+Tabs.Race:AddSection({"Race upgrade v4 only in Sea 3"});
 end
 if World1 then
-Race:AddSection({"only in Sea 2 or 3 to upgrade to Race"});
+Tabs.Race:AddSection({"only in Sea 2 or 3 to upgrade to Race"});
 end
 if World3 then
-Race:AddSection({"Trials Quests / Misc V4"});
+Tabs.Race:AddSection({"Trials Quests / Misc V4"});
 local K5 = Race:AddParagraph({ Title = " Tiers V4 Status ", Content = "" });
 spawn(function()
 	pcall(function()
@@ -7545,7 +7545,7 @@ spawn(function()
 		end;
 	end);
 end);
-Race:AddToggle({
+Tabs.Race:AddToggle({
 	Name = "Auto Look At Moon",
 	Description = "",
 	Default = false,
@@ -7567,7 +7567,7 @@ task.spawn(function()
 		end;
 	end;
 end);
-Race:AddToggle({
+Tabs.Race:AddToggle({
 	Name = "Auto Pull Lever",
 	Description = "",
 	Default = false,
@@ -7588,7 +7588,7 @@ spawn(function()
 		end;
 	end;
 end);
-Race:AddToggle({
+Tabs.Race:AddToggle(Auto Train V4,{
 	Name = "Auto Train V4",
 	Description = "turn on for farm tier + auto upgrade your tier level",
 	Default = false,
@@ -7627,17 +7627,17 @@ spawn(function()
 		end);
 	end;
 end);
-Race:AddButton({ Name = "Teleport to Temple of Time", Description = "", Callback = function()
+Tabs.Race:AddButton({ Name = "Teleport to Temple of Time", Description = "", Callback = function()
 		replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(28286.35546875, 14895.301757812, 102.62469482422));
 	end });
-Race:AddButton({ Name = "Teleport to Ancient One", Description = "", Callback = function()
+Tabs.Race:AddButton({ Name = "Teleport to Ancient One", Description = "", Callback = function()
 		notween(CFrame.new(28981.552734375, 14888.426757812, -120.24584960938));
 	end });
-Race:AddButton({ Name = "Teleport to Ancient Clock", Description = "", Callback = function()
+Tabs.Race:AddButton({ Name = "Teleport to Ancient Clock", Description = "", Callback = function()
 		notween(CFrame.new(29549, 15069, -88));
 	end });
-Race:AddToggle({
-	Name = "Auto Teleport to Race Doors",
+Tabs.Race:AddToggle({
+	Title = "Auto Teleport to Race Doors",
 	Description = "",
 	Default = false,
 	Callback = function(I)
@@ -7665,8 +7665,8 @@ spawn(function()
 		end);
 	end;
 end);
-Race:AddToggle({
-	Name = "Auto Complete Trial Race",
+Tabs.Race:AddToggle(Auto COmpleter Trial Race,{
+	Title = "Auto Complete Trial Race",
 	Description = "",
 	Default = false,
 	Callback = function(I)
@@ -7773,8 +7773,8 @@ spawn(function()
 		end);
 	end;
 end);
-Race:AddToggle({
-	Name = "Auto Kill Player After Trial",
+Tabs.Race:AddToggle(Auto Kill Player After Trial,{
+	Title = "Auto Kill Player After Trial",
 	Description = "turn on for kill player after the race trials",
 	Default = false,
 	Callback = function(I)
@@ -7803,9 +7803,9 @@ spawn(function()
 end);
 end
 if World3 then
-Dojo:AddSection({"Dojo Quest & Drago Race"});
-Dojo:AddToggle({
-	Name = "Auto Dojo Trainer",
+Tabs.Dojo:AddSection({"Dojo Quest & Drago Race"});
+Tabs.Dojo:AddToggle(Auto Dojo Trainer,{
+	Title = "Auto Dojo Trainer",
 	Description = "turn on for do dojo belt quest white to black",
 	Default = false,
 	Callback = function(I)
@@ -7908,7 +7908,7 @@ spawn(function()
 		end;
 	end;
 end);
-Dojo:AddToggle({
+Tabs.Dojo:AddToggle({
 	Name = "Auto Dragon Hunter",
 	Description = "turn on for farm blaze ember + auto collect blaze ember",
 	Default = false,
@@ -8035,13 +8035,13 @@ spawn(function()
 		end;
 	end;
 end);
-Dojo:AddSection({"Draco Trial"});
+Tabs.Dojo:AddSection({"Draco Trial"});
 GetQuestDracoLevel = function()
 		local I = { [1] = { NPC = "Dragon Wizard", Command = "Upgrade" } };
 		return (replicated.Modules.Net:FindFirstChild("RF/InteractDragonQuest")):InvokeServer(unpack(I));
 	end;
-Dojo:AddToggle({
-	Name = "Tween To Upgrade Draco Trial",
+Tabs.Dojo:AddToggle(Tween To Upgrade Draco Trial,{
+	Title = "Tween To Upgrade Draco Trial",
 	Description = "",
 	Default = false,
 	Callback = function(I)
@@ -8067,8 +8067,8 @@ spawn(function()
 		end);
 	end;
 end);
-Dojo:AddToggle({
-	Name = "Auto race draco (V1)",
+Tabs.Dojo:AddToggle({
+	Title = "Auto race draco (V1)",
 	Description = "turn on for auto quest1 auto prehistoric event + collect dragon eggs",
 	Default = false,
 	Callback = function(I)
@@ -8094,8 +8094,8 @@ spawn(function()
 		end);
 	end;
 end);
-Dojo:AddToggle({
-	Name = "Auto race draco (V2)",
+Tabs.Dojo:AddToggle(Auto race draco (V2),{
+	Title = "Auto race draco (V2)",
 	Description = "turn on for auto kill Forest Pirate & Collect fireflower",
 	Default = false,
 	Callback = function(I)
@@ -8134,8 +8134,8 @@ spawn(function()
 		end;
 	end;
 end);
-Dojo:AddToggle({
-	Name = "Auto race draco (V3)",
+Tabs.Dojo:AddToggle(Auto race draco (V3),{
+	Title = "Auto race draco (V3)",
 	Description = "turn on for sea event kill terror shark",
 	Default = false,
 	Callback = function(I)
@@ -8159,8 +8159,8 @@ spawn(function()
 		end);
 	end;
 end);
-Dojo:AddToggle({
-	Name = "Auto Relic Draco Trial [Beta]",
+Tabs.Dojo:AddToggle(AUto Relic Dragon Trial [Beta],{
+	Title = "Auto Relic Draco Trial [Beta]",
 	Description = "turn on for auto trial v4 you have to COLLECT RELIC by your self",
 	Default = false,
 	Callback = function(I)
@@ -8210,8 +8210,8 @@ spawn(function()
 		end;
 	end;
 end);
-Dojo:AddToggle({
-	Name = "Auto to train race draco",
+Tabs.Dojo:AddToggle(Auto to train race draco,{
+	Title = "Auto to train race draco",
 	Description = "turn on for training Drago race v4 + auto upgrade tier",
 	Default = false,
 	Callback = function(I)
@@ -8247,8 +8247,8 @@ end);
 --================================================--
 -- FLY TOGGLE
 --================================================--
-Dojo:AddToggle({
-	Name = "Fly",
+Tabs.Dojo:AddToggle(Fly,{
+	Title = "Fly",
 	Description = "Fly controlado pelo analógico ( Subida Automática )",
 	Default = false,
 	Callback = function(v)
@@ -8348,8 +8348,8 @@ task.spawn(function()
 		end
 	end
 end)
-Dojo:AddToggle({
-	Name = "Tween to Draco Trials",
+Tabs.EspDojo:AddToggle({
+	Title = "Tween to Draco Trials",
 	Description = "",
 	Default = false,
 	Callback = function(I)
@@ -8366,8 +8366,8 @@ spawn(function()
 		end;
 	end;
 end);
-Dojo:AddToggle({
-	Name = "Swap Draco Race",
+Tabs.Dojo:AddToggle(Swap Draco Race,{
+	Title = "Swap Draco Race",
 	Description = "",
 	Default = false,
 	Callback = function(I)
