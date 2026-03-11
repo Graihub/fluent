@@ -1,6 +1,6 @@
 --[[
     Turbo Lite Hub - Fluent UI Edition
-    Optimized & Beautiful Interface
+    Full Functionality - All Features
 ]]
 
 --====================
@@ -94,27 +94,421 @@ else
 end
 
 --====================
--- CREATE MAIN WINDOW
+-- AUTO KEN
+--====================
+_G.AutoKen = true
+
+local function HasKen()
+    local char = player.Character
+    return char and CollectionService:HasTag(char, "Ken")
+end
+
+task.spawn(function()
+    while _G.AutoKen do
+        task.wait(0.2)
+        if not HasKen() then
+            pcall(function()
+                commE:FireServer("Ken", true)
+            end)
+        end
+    end
+end)
+
+--====================
+-- AUTO TEAM
+--====================
+local desiredTeam = "Marines"
+
+if not player.Team or player.Team.Name ~= desiredTeam then
+    pcall(function()
+        commF:InvokeServer("SetTeam", desiredTeam)
+    end)
+end
+
+--====================
+-- GLOBAL VARIABLES
+--====================
+do
+    ply = Players
+    plr = player
+    Root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
+    replicated = ReplicatedStorage
+    Lv = plr.Data and plr.Data.Level and plr.Data.Level.Value
+    TW = TweenService
+    Enemies = workspace.Enemies
+    vim1 = VirtualInputManager
+    vim2 = VirtualUser
+    TeamSelf = plr.Team
+    RunSer = RunService
+    Energy = plr.Character and plr.Character:FindFirstChild("Energy") and plr.Character.Energy.Value
+    
+    -- Tables
+    Boss = {}
+    BringConnections = {}
+    MaterialList = {}
+    NPCList = {}
+    
+    -- Flags
+    shouldTween = false
+    SoulGuitar = false
+    KenTest = true
+    debug = false
+    Brazier1 = false
+    Brazier2 = false
+    Brazier3 = false
+    Sec = 0.1
+    ClickState = 0
+    Num_self = 25
+end
+
+--====================
+-- BOSS LISTS
+--====================
+if World1 then
+    Boss = {
+        "The Gorilla King", "Bobby", "The Saw", "Yeti", "Mob Leader",
+        "Vice Admiral", "Saber Expert", "Warden", "Chief Warden", "Swan",
+        "Magma Admiral", "Fishman Lord", "Wysper", "Thunder God", "Cyborg",
+        "Ice Admiral", "Greybeard"
+    }
+elseif World2 then
+    Boss = {
+        "Diamond", "Jeremy", "Fajita", "Don Swan", "Smoke Admiral",
+        "Awakened Ice Admiral", "Tide Keeper", "Darkbeard", "Cursed Captain", "Order"
+    }
+elseif World3 then
+    Boss = {
+        "Stone", "Hydra Leader", "Kilo Admiral", "Captain Elephant",
+        "Beautiful Pirate", "Cake Queen", "Longma", "Soul Reaper"
+    }
+end
+
+--====================
+-- MATERIAL LISTS
+--====================
+if World1 then
+    MaterialList = {
+        "Leather + Scrap Metal", "Angel Wings", "Magma Ore", "Fish Tail"
+    }
+elseif World2 then
+    MaterialList = {
+        "Leather + Scrap Metal", "Radioactive Material", "Ectoplasm",
+        "Mystic Droplet", "Magma Ore", "Vampire Fang"
+    }
+elseif World3 then
+    MaterialList = {
+        "Scrap Metal", "Demonic Wisp", "Conjured Cocoa", "Dragon Scale",
+        "Gunpowder", "Fish Tail", "Mini Tusk"
+    }
+end
+
+--====================
+-- UTILITY FUNCTIONS
+--====================
+local function EquipWeapon(weaponName)
+    if not weaponName then return end
+    if plr.Backpack:FindFirstChild(weaponName) then
+        plr.Character.Humanoid:EquipTool(plr.Backpack:FindFirstChild(weaponName))
+    end
+end
+
+local function weaponSc(toolTip)
+    for _, item in pairs(plr.Backpack:GetChildren()) do
+        if item:IsA("Tool") then
+            if item.ToolTip == toolTip then
+                EquipWeapon(item.Name)
+            end
+        end
+    end
+end
+
+-- Hook functions
+hookfunction(require(ReplicatedStorage.Effect.Container.Death), function() end)
+hookfunction(require(ReplicatedStorage:WaitForChild("GuideModule")).ChangeDisplayedNPC, function() end)
+hookfunction(error, function() end)
+hookfunction(warn, function() end)
+
+-- Remove Rocks & Foam
+local Rocks = workspace:FindFirstChild("Rocks")
+if Rocks then Rocks:Destroy() end
+local Foam = workspace._WorldOrigin and workspace._WorldOrigin["Foam;"]
+if Foam then Foam:Destroy() end
+
+--====================
+-- G KILL MODULE
+--====================
+local G = {}
+G.__index = G
+
+G.Alive = function(entity)
+    if not entity then return end
+    local humanoid = entity:FindFirstChild("Humanoid")
+    return humanoid and humanoid.Health > 0
+end
+
+_G.MobHeight = _G.MobHeight or 30
+
+G.Kill = function(entity, isActive)
+    if not (entity and isActive) then return end
+    local hrp = entity:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    if not entity:GetAttribute("Locked") then
+        entity:SetAttribute("Locked", hrp.CFrame)
+    end
+    PosMon = (entity:GetAttribute("Locked")).Position
+    _B = true
+    BringEnemy()
+    EquipWeapon(_G.SelectWeapon)
+    _tp(hrp.CFrame * CFrame.new(0, _G.MobHeight, 0))
+end
+
+G.Kill2 = function(entity, isActive)
+    if entity and isActive then
+        if not entity:GetAttribute("Locked") then
+            entity:SetAttribute("Locked", entity.HumanoidRootPart.CFrame)
+        end
+        PosMon = (entity:GetAttribute("Locked")).Position
+        BringEnemy()
+        EquipWeapon(_G.SelectWeapon)
+        local tool = plr.Character:FindFirstChildOfClass("Tool")
+        if tool and tool.ToolTip == "Blox Fruit" then
+            _tp((entity.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)) * CFrame.Angles(0, math.rad(90), 0))
+        else
+            _tp((entity.HumanoidRootPart.CFrame * CFrame.new(0, 20, 8)) * CFrame.Angles(0, math.rad(180), 0))
+        end
+    end
+end
+
+G.Sword = function(entity, isActive)
+    if entity and isActive then
+        if not entity:GetAttribute("Locked") then
+            entity:SetAttribute("Locked", entity.HumanoidRootPart.CFrame)
+        end
+        PosMon = (entity:GetAttribute("Locked")).Position
+        BringEnemy()
+        weaponSc("Sword")
+        _tp(entity.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+    end
+end
+
+G.Mas = function(entity, isActive)
+    if entity and isActive then
+        if not entity:GetAttribute("Locked") then
+            entity:SetAttribute("Locked", entity.HumanoidRootPart.CFrame)
+        end
+        PosMon = (entity:GetAttribute("Locked")).Position
+        BringEnemy()
+        if entity.Humanoid.Health <= HealthM then
+            _tp(entity.HumanoidRootPart.CFrame * CFrame.new(0, 20, 0))
+            UseFruitSkills()
+        else
+            weaponSc("Melee")
+            _tp(entity.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+        end
+    end
+end
+
+-- Fruit skills
+_G.FruitSkills = { Z = false, X = false, C = false, V = false, F = false }
+
+UseFruitSkills = function()
+    weaponSc("Blox Fruit")
+    if _G.FruitSkills.Z then Useskills("Blox Fruit", "Z") end
+    if _G.FruitSkills.X then Useskills("Blox Fruit", "X") end
+    if _G.FruitSkills.C then Useskills("Blox Fruit", "C") end
+    if _G.FruitSkills.V then Useskills("Blox Fruit", "V") end
+    if _G.FruitSkills.F then 
+        VirtualInputManager:SendKeyEvent(true, "F", false, game)
+        VirtualInputManager:SendKeyEvent(false, "F", false, game)
+    end
+end
+
+Useskills = function(weaponType, skillKey)
+    if weaponType == "Melee" then
+        weaponSc("Melee")
+        VirtualInputManager:SendKeyEvent(true, skillKey, false, game)
+        VirtualInputManager:SendKeyEvent(false, skillKey, false, game)
+    elseif weaponType == "Sword" then
+        weaponSc("Sword")
+        VirtualInputManager:SendKeyEvent(true, skillKey, false, game)
+        VirtualInputManager:SendKeyEvent(false, skillKey, false, game)
+    elseif weaponType == "Blox Fruit" then
+        weaponSc("Blox Fruit")
+        VirtualInputManager:SendKeyEvent(true, skillKey, false, game)
+        VirtualInputManager:SendKeyEvent(false, skillKey, false, game)
+    elseif weaponType == "Gun" then
+        weaponSc("Gun")
+        VirtualInputManager:SendKeyEvent(true, skillKey, false, game)
+        VirtualInputManager:SendKeyEvent(false, skillKey, false, game)
+    elseif weaponType == "nil" and skillKey == "Y" then
+        VirtualInputManager:SendKeyEvent(true, "Y", false, game)
+        VirtualInputManager:SendKeyEvent(false, "Y", false, game)
+    end
+end
+
+--====================
+-- BRING SYSTEM
+--====================
+_B = false
+PosMon = nil
+_G.BringRange = _G.BringRange or 250
+_G.MaxBringMobs = _G.MaxBringMobs or 15
+
+local TweenInfoBring = TweenInfo.new(0.50, Enum.EasingStyle.Linear)
+
+local function IsRaidMob(mob)
+    local name = mob.Name:lower()
+    if name:find("raid") or name:find("microchip") or name:find("island") then return true end
+    if mob:GetAttribute("IsRaid") or mob:GetAttribute("RaidMob") or mob:GetAttribute("IsBoss") then return true end
+    local hum = mob:FindFirstChild("Humanoid")
+    if hum and hum.WalkSpeed == 0 then return true end
+    return false
+end
+
+BringEnemy = function()
+    if not _G.StartFarm or not _B then return end
+    local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+    pcall(function() sethiddenproperty(plr, "SimulationRadius", math.huge) end)
+    local targetPos = PosMon or hrp.Position
+    local count = 0
+    for _, mob in ipairs(workspace.Enemies:GetChildren()) do
+        if count >= _G.MaxBringMobs then break end
+        local hum = mob:FindFirstChild("Humanoid")
+        local root = mob:FindFirstChild("HumanoidRootPart")
+        if hum and root and hum.Health > 0 and not IsRaidMob(mob) then
+            local dist = (root.Position - targetPos).Magnitude
+            if dist <= _G.BringRange and not root:GetAttribute("Tweening") then
+                count += 2
+                root:SetAttribute("Tweening", true)
+                local tween = TweenService:Create(root, TweenInfoBring, { CFrame = CFrame.new(targetPos) })
+                tween:Play()
+                tween.Completed:Once(function()
+                    if root then root:SetAttribute("Tweening", false) end
+                end)
+            end
+        end
+    end
+end
+
+task.spawn(function()
+    while task.wait(1) do
+        if _G.StartFarm then
+            _B = true
+            BringEnemy()
+            task.wait(1)
+            _B = false
+            task.wait(1)
+        else
+            _B = false
+            task.wait(1)
+        end
+    end
+end)
+
+--====================
+-- TWEEN SYSTEM
+--====================
+getgenv().TweenSpeedFar = 370
+getgenv().TweenSpeedNear = 370
+
+local C = Instance.new("Part", workspace)
+C.Size = Vector3.new(1, 1, 1)
+C.Name = "Rip_Indra"
+C.Anchored = true
+C.CanCollide = false
+C.CanTouch = false
+C.Transparency = 1
+
+task.spawn(function()
+    while task.wait() do
+        if C and C.Parent == workspace then
+            getgenv().OnFarm = shouldTween
+        else
+            getgenv().OnFarm = false
+        end
+    end
+end)
+
+task.spawn(function()
+    repeat task.wait() until plr.Character and plr.Character.PrimaryPart
+    C.CFrame = plr.Character.PrimaryPart.CFrame
+    while task.wait() do
+        pcall(function()
+            if getgenv().OnFarm then
+                if C and C.Parent == workspace then
+                    local hrp = plr.Character and plr.Character.PrimaryPart
+                    if hrp and (hrp.Position - C.Position).Magnitude <= 200 then
+                        hrp.CFrame = C.CFrame
+                    else
+                        C.CFrame = hrp.CFrame
+                    end
+                end
+                if plr.Character then
+                    for _, v in pairs(plr.Character:GetChildren()) do
+                        if v:IsA("BasePart") then v.CanCollide = false end
+                    end
+                end
+            else
+                if plr.Character then
+                    for _, v in pairs(plr.Character:GetChildren()) do
+                        if v:IsA("BasePart") then v.CanCollide = true end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+_tp = function(targetCFrame)
+    local char = plr.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local HRP = char.HumanoidRootPart
+    shouldTween = true
+    getgenv().OnFarm = false
+    if HRP.Anchored then HRP.Anchored = false task.wait() end
+    local dist = (targetCFrame.Position - HRP.Position).Magnitude
+    local speed = dist <= 15 and getgenv().TweenSpeedNear or getgenv().TweenSpeedFar
+    local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)
+    local tween = TweenService:Create(C, info, { CFrame = targetCFrame })
+    if char.Humanoid.Sit then C.CFrame = CFrame.new(C.Position.X, targetCFrame.Y, C.Position.Z) end
+    tween:Play()
+    task.spawn(function()
+        while tween.PlaybackState == Enum.PlaybackState.Playing do
+            if not shouldTween then tween:Cancel() break end
+            task.wait(.1)
+        end
+        getgenv().OnFarm = true
+    end)
+end
+
+notween = function(targetCFrame)
+    plr.Character.HumanoidRootPart.CFrame = targetCFrame
+end
+
+--====================
+-- CREATE FLUENT WINDOW
 --====================
 local Window = Fluent:CreateWindow({
     Title = "✨ Turbo Lite Hub",
-    SubTitle = "by BelBel | Fluent Edition",
+    SubTitle = "Full Version | All Features",
     TabWidth = 160,
-    Size = UDim2.fromOffset(620, 520),
+    Size = UDim2.fromOffset(650, 550),
     Acrylic = true,
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
--- Create Tabs with beautiful icons
+-- Create all tabs
 local Tabs = {
     Status = Window:AddTab({ Title = "📊 Status", Icon = "activity" }),
     Farm = Window:AddTab({ Title = "⚔️ Farming", Icon = "swords" }),
+    Stack = Window:AddTab({ Title = "📦 Stack Farm", Icon = "layers" }),
     Mastery = Window:AddTab({ Title = "📈 Mastery", Icon = "trending-up" }),
     Event = Window:AddTab({ Title = "🌊 Sea Event", Icon = "anchor" }),
     Race = Window:AddTab({ Title = "🧬 Race V4", Icon = "zap" }),
     Dojo = Window:AddTab({ Title = "🥋 Dojo", Icon = "award" }),
-    Items = Window:AddTab({ Title = "🎁 Items", Icon = "gift" }),
+    Get = Window:AddTab({ Title = "🎁 Get Items", Icon = "gift" }),
     Fruit = Window:AddTab({ Title = "🍎 Fruit/Raid", Icon = "cloud" }),
     Player = Window:AddTab({ Title = "👤 Player", Icon = "user" }),
     Shop = Window:AddTab({ Title = "🛒 Shop", Icon = "shopping-cart" }),
@@ -123,50 +517,31 @@ local Tabs = {
     Settings = Window:AddTab({ Title = "⚙️ Settings", Icon = "settings" })
 }
 
--- Welcome notification
-Fluent:Notify({
-    Title = "Turbo Lite Hub",
-    Content = "Loaded successfully!",
-    Duration = 5
-})
+Fluent:Notify({ Title = "Turbo Lite Hub", Content = "Full version loaded!", Duration = 5 })
 
 --====================
 -- STATUS TAB
 --====================
 local StatusSection = Tabs.Status:AddSection("Server Information")
 
--- Discord Invite
 Tabs.Status:AddParagraph({
     Title = "Discord Server",
-    Content = "Join for updates and support\nhttps://discord.gg/qVa6jedW9p"
+    Content = "Join for updates: discord.gg/qVa6jedW9p"
 })
 
--- Time display
-local TimeLabel = Tabs.Status:AddParagraph({
-    Title = "🕐 Local Time",
-    Content = "Loading..."
-})
+-- Time displays
+local TimeLabel = Tabs.Status:AddParagraph({ Title = "🕐 Local Time", Content = "Loading..." })
+local GameTimeLabel = Tabs.Status:AddParagraph({ Title = "⏰ Game Time", Content = "Loading..." })
 
-local GameTimeLabel = Tabs.Status:AddParagraph({
-    Title = "⏰ Game Time",
-    Content = "Loading..."
-})
-
--- Update time
 spawn(function()
     while task.wait(1) do
         pcall(function()
             local date = os.date("*t")
             local hour = (date.hour) % 24
             local ampm = hour < 12 and "AM" or "PM"
-            local timeStr = string.format("%02d:%02d:%02d %s", 
-                ((hour - 1) % 12) + 1, date.min, date.sec, ampm)
+            local timeStr = string.format("%02d:%02d:%02d %s", ((hour - 1) % 12) + 1, date.min, date.sec, ampm)
             local dateStr = string.format("%02d/%02d/%04d", date.day, date.month, date.year)
-            
-            local _, code = pcall(function()
-                return Services.LocalizationService:GetCountryRegionForPlayerAsync(player)
-            end)
-            
+            local _, code = pcall(function() return Services.LocalizationService:GetCountryRegionForPlayerAsync(player) end)
             TimeLabel:SetContent(dateStr .. " - " .. timeStr .. " [" .. (code or "Unknown") .. "]")
             
             local gameTime = math.floor(workspace.DistributedGameTime + 0.5)
@@ -178,41 +553,45 @@ spawn(function()
     end
 end)
 
--- Island status
-local function CreateIslandStatus(name, checkFunc)
-    local label = Tabs.Status:AddParagraph({
-        Title = name,
-        Content = "❌ Not Found"
-    })
-    
+-- Island checks
+local function CreateIslandCheck(name, checkFunc)
+    local label = Tabs.Status:AddParagraph({ Title = name, Content = "❌ Not Found" })
     spawn(function()
         while task.wait(2) do
             pcall(function()
-                local found = checkFunc()
-                label:SetContent(found and "✅ Found" or "❌ Not Found")
+                label:SetContent(checkFunc() and "✅ Found" or "❌ Not Found")
             end)
         end
     end)
 end
 
-CreateIslandStatus("Mirage Island", function()
-    return workspace._WorldOrigin.Locations:FindFirstChild("Mirage Island") ~= nil
-end)
+CreateIslandCheck("Mirage Island", function() return workspace._WorldOrigin.Locations:FindFirstChild("Mirage Island") ~= nil end)
+CreateIslandCheck("Kitsune Island", function() return workspace.Map:FindFirstChild("KitsuneIsland") ~= nil end)
+CreateIslandCheck("Prehistoric Island", function() return workspace._WorldOrigin.Locations:FindFirstChild("Prehistoric Island") ~= nil end)
+CreateIslandCheck("Frozen Dimension", function() return workspace._WorldOrigin.Locations:FindFirstChild("Frozen Dimension") ~= nil end)
 
-CreateIslandStatus("Kitsune Island", function()
-    return workspace.Map:FindFirstChild("KitsuneIsland") ~= nil
-end)
+-- Boss checks
+local RipIndraLabel = Tabs.Status:AddParagraph({ Title = "👾 Rip Indra", Content = "❌" })
+local DoughKingLabel = Tabs.Status:AddParagraph({ Title = "🍩 Dough King", Content = "❌" })
+local EliteHunterLabel = Tabs.Status:AddParagraph({ Title = "🎯 Elite Hunter", Content = "Progress: 0" })
 
-CreateIslandStatus("Prehistoric Island", function()
-    return workspace._WorldOrigin.Locations:FindFirstChild("Prehistoric Island") ~= nil
+spawn(function()
+    while task.wait(2) do
+        pcall(function()
+            local rip = ReplicatedStorage:FindFirstChild("rip_indra True Form") or workspace.Enemies:FindFirstChild("rip_indra")
+            RipIndraLabel:SetContent(rip and "✅" or "❌")
+            
+            local dough = ReplicatedStorage:FindFirstChild("Dough King") or workspace.Enemies:FindFirstChild("Dough King")
+            DoughKingLabel:SetContent(dough and "✅" or "❌")
+            
+            local progress = commF:InvokeServer("EliteHunter", "Progress") or 0
+            EliteHunterLabel:SetContent("Progress: " .. tostring(progress))
+        end)
+    end
 end)
 
 -- Moon phase
-local MoonLabel = Tabs.Status:AddParagraph({
-    Title = "🌕 Full Moon",
-    Content = "Loading..."
-})
-
+local MoonLabel = Tabs.Status:AddParagraph({ Title = "🌕 Full Moon", Content = "Loading..." })
 spawn(function()
     while task.wait(2) do
         pcall(function()
@@ -229,59 +608,64 @@ spawn(function()
     end
 end)
 
+-- Bone count
+local BoneLabel = Tabs.Status:AddParagraph({ Title = "🦴 Bones", Content = "0" })
+spawn(function()
+    while task.wait(2) do
+        pcall(function()
+            local bones = commF:InvokeServer("Bones", "Check") or 0
+            BoneLabel:SetContent(tostring(bones))
+        end)
+    end
+end)
+
 -- Server controls
 Tabs.Status:AddSection("Server Controls")
 
-Tabs.Status:AddButton({
-    Title = "📋 Copy Job ID",
-    Callback = function()
-        if setclipboard then
-            setclipboard(tostring(game.JobId))
-            Fluent:Notify({ Title = "Success", Content = "Job ID copied!", Duration = 2 })
+Tabs.Status:AddTextBox({
+    Title = "Job ID",
+    Description = "Enter Job ID to join",
+    Placeholder = "Job ID",
+    Callback = function(value) getgenv().Job = value end
+})
+
+Tabs.Status:AddToggle({
+    Title = "🔄 Spam Join",
+    Default = false,
+    Callback = function(value) getgenv().Join = value end
+})
+
+spawn(function()
+    while wait() do
+        if getgenv().Join and getgenv().Job then
+            TeleportService:TeleportToPlaceInstance(game.PlaceId, getgenv().Job, player)
         end
     end
-})
+end)
 
-Tabs.Status:AddButton({
-    Title = "🔄 Rejoin Server",
-    Callback = function()
-        TeleportService:Teleport(game.PlaceId, player)
-    end
-})
-
-Tabs.Status:AddButton({
-    Title = "🎲 Random Server",
-    Callback = function()
-        local success, result = pcall(function()
-            return HttpService:JSONDecode(game:HttpGet(
-                "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?limit=100"
-            ))
-        end)
-        
-        if success and result then
-            local servers = {}
-            for _, server in ipairs(result.data) do
-                if server.playing < server.maxPlayers then
-                    table.insert(servers, server.id)
-                end
-            end
-            if #servers > 0 then
-                TeleportService:TeleportToPlaceInstance(game.PlaceId, 
-                    servers[math.random(#servers)], player)
+Tabs.Status:AddButton({ Title = "📋 Copy Job ID", Callback = function() if setclipboard then setclipboard(tostring(game.JobId)) end end })
+Tabs.Status:AddButton({ Title = "🔄 Rejoin Server", Callback = function() TeleportService:Teleport(game.PlaceId, player) end })
+Tabs.Status:AddButton({ Title = "🎲 Random Server", Callback = function()
+    local success, result = pcall(function()
+        return HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?limit=100"))
+    end)
+    if success and result then
+        for _, server in ipairs(result.data) do
+            if server.playing < server.maxPlayers then
+                TeleportService:TeleportToPlaceInstance(game.PlaceId, server.id, player)
+                break
             end
         end
     end
-})
+end })
 
 --====================
--- FARMING TAB
+-- FARM TAB
 --====================
 local FarmSection = Tabs.Farm:AddSection("Main Settings")
 
--- Weapon selection
 FarmSection:AddDropdown({
     Title = "⚔️ Select Weapon",
-    Description = "Choose weapon type for farming",
     Values = {"Melee", "Sword", "Blox Fruit", "Gun"},
     Default = GetSetting("ChooseWP_Save", "Melee"),
     Callback = function(value)
@@ -291,7 +675,6 @@ FarmSection:AddDropdown({
     end
 })
 
--- Auto select weapon
 spawn(function()
     while task.wait(0.1) do
         pcall(function()
@@ -306,7 +689,6 @@ end)
 
 FarmSection:AddToggle({
     Title = "⚡ Super Attack",
-    Description = "Fast attack speed",
     Default = GetSetting("AutoAttack_Save", true),
     Callback = function(value)
         _G.Seriality = value
@@ -317,7 +699,6 @@ FarmSection:AddToggle({
 
 FarmSection:AddToggle({
     Title = "🔄 Bring Mobs",
-    Description = "Bring enemies to you",
     Default = GetSetting("BringMobs_Save", true),
     Callback = function(value)
         _B = value
@@ -328,7 +709,6 @@ FarmSection:AddToggle({
 
 FarmSection:AddButton({
     Title = "🚀 FPS Boost",
-    Description = "Reduce lag by removing effects",
     Callback = function()
         local terrain = workspace.Terrain
         terrain.WaterWaveSize = 0
@@ -336,13 +716,9 @@ FarmSection:AddButton({
         Lighting.GlobalShadows = false
         Lighting.FogEnd = 9e9
         settings().Rendering.QualityLevel = "Level01"
-        
         for _, obj in pairs(game:GetDescendants()) do
-            if obj:IsA("ParticleEmitter") or obj:IsA("Trail") then
-                obj.Lifetime = NumberRange.new(0)
-            elseif obj:IsA("Fire") or obj:IsA("SpotLight") then
-                obj.Enabled = false
-            end
+            if obj:IsA("ParticleEmitter") or obj:IsA("Trail") then obj.Lifetime = NumberRange.new(0)
+            elseif obj:IsA("Fire") or obj:IsA("SpotLight") then obj.Enabled = false end
         end
         Fluent:Notify({ Title = "FPS Boost", Content = "Effects removed!", Duration = 3 })
     end
@@ -351,13 +727,14 @@ FarmSection:AddButton({
 -- Auto Farm Mode
 Tabs.Farm:AddSection("Auto Farm")
 
-local farmModes = {"Level", "Bone", "Cake Prince", "Tyrant"}
+local farmModes = {"Level", "Bone", "Cake Prince"}
+if World1 then table.insert(farmModes, "Tyrant") end
 if World2 then table.insert(farmModes, "Factory") end
 if World3 then table.insert(farmModes, "Pirate Raid") end
 
 FarmSection = Tabs.Farm:AddSection("Farm Mode")
 
-local farmModeDropdown = FarmSection:AddDropdown({
+FarmSection:AddDropdown({
     Title = "📋 Select Mode",
     Values = farmModes,
     Default = GetSetting("SelectedFarmMode_Save", "Level"),
@@ -373,29 +750,16 @@ FarmSection:AddToggle({
     Default = GetSetting("StartFarm_Save", false),
     Callback = function(value)
         _G.StartFarm = value
-        _G.Level = false
-        _G.AutoFarm_Bone = false
-        _G.AutoFarm_Cake = false
-        _G.AutoTyrant = false
-        _G.AutoFactory = false
-        _G.AutoRaidCastle = false
-
+        _G.Level = false; _G.AutoFarm_Bone = false; _G.AutoFarm_Cake = false
+        _G.AutoTyrant = false; _G.AutoFactory = false; _G.AutoRaidCastle = false
         if value then
-            if _G.SelectedFarmMode == "Level" then
-                _G.Level = true
-            elseif _G.SelectedFarmMode == "Bone" then
-                _G.AutoFarm_Bone = true
-            elseif _G.SelectedFarmMode == "Cake Prince" then
-                _G.AutoFarm_Cake = true
-            elseif _G.SelectedFarmMode == "Tyrant" then
-                _G.AutoTyrant = true
-            elseif _G.SelectedFarmMode == "Factory" then
-                _G.AutoFactory = true
-            elseif _G.SelectedFarmMode == "Pirate Raid" then
-                _G.AutoRaidCastle = true
-            end
+            if _G.SelectedFarmMode == "Level" then _G.Level = true
+            elseif _G.SelectedFarmMode == "Bone" then _G.AutoFarm_Bone = true
+            elseif _G.SelectedFarmMode == "Cake Prince" then _G.AutoFarm_Cake = true
+            elseif _G.SelectedFarmMode == "Tyrant" then _G.AutoTyrant = true
+            elseif _G.SelectedFarmMode == "Factory" then _G.AutoFactory = true
+            elseif _G.SelectedFarmMode == "Pirate Raid" then _G.AutoRaidCastle = true end
         end
-
         _G.SaveData["StartFarm_Save"] = value
         SaveSettings()
     end
@@ -411,6 +775,40 @@ FarmSection:AddToggle({
     end
 })
 
+-- Kill Nearest
+FarmSection = Tabs.Farm:AddSection("Other")
+
+FarmSection:AddToggle({
+    Title = "⚔️ Kill Nearest Mobs",
+    Default = GetSetting("AutoFarmNear_Save", false),
+    Callback = function(value)
+        _G.AutoFarmNear = value
+        _G.SaveData["AutoFarmNear_Save"] = value
+        SaveSettings()
+    end
+})
+
+-- Auto Collect
+FarmSection:AddToggle({
+    Title = "📦 Auto Collect Chests",
+    Default = GetSetting("AutoFarmChest_Save", false),
+    Callback = function(value)
+        _G.AutoFarmChest = value
+        _G.SaveData["AutoFarmChest_Save"] = value
+        SaveSettings()
+    end
+})
+
+FarmSection:AddToggle({
+    Title = "🫐 Auto Collect Berries",
+    Default = GetSetting("AutoBerry_Save", false),
+    Callback = function(value)
+        _G.AutoBerry = value
+        _G.SaveData["AutoBerry_Save"] = value
+        SaveSettings()
+    end
+})
+
 -- Material Farm
 Tabs.Farm:AddSection("Material Farm")
 
@@ -418,8 +816,8 @@ FarmSection = Tabs.Farm:AddSection("Materials")
 
 FarmSection:AddDropdown({
     Title = "📦 Select Material",
-    Values = {"Leather", "Scrap Metal", "Angel Wings", "Magma Ore", "Ectoplasm", "Dragon Scale"},
-    Default = GetSetting("SelectMaterial_Save", "Leather"),
+    Values = MaterialList,
+    Default = GetSetting("SelectMaterial_Save", MaterialList[1]),
     Callback = function(value)
         getgenv().SelectMaterial = value
         _G.SaveData["SelectMaterial_Save"] = value
@@ -436,6 +834,1119 @@ FarmSection:AddToggle({
         SaveSettings()
     end
 })
+
+--====================
+-- STACK FARM TAB
+--====================
+local StackSection = Tabs.Stack:AddSection("Fishing System")
+
+-- Fishing Rod selection
+StackSection:AddDropdown({
+    Title = "🎣 Select Fishing Rod",
+    Values = {"Fishing Rod", "Gold Rod", "Shark Rod", "Shell Rod", "Treasure Rod"},
+    Default = GetSetting("Fish_SelectedRod", "Fishing Rod"),
+    Callback = function(value)
+        _G.SelectedRod = value
+        _G.SaveData["Fish_SelectedRod"] = value
+        SaveSettings()
+    end
+})
+
+StackSection:AddDropdown({
+    Title = "🪱 Select Bait",
+    Values = {"Basic Bait", "Kelp Bait", "Good Bait", "Abyssal Bait", "Frozen Bait", "Epic Bait", "Carnivore Bait"},
+    Default = GetSetting("Fish_SelectedBait", "Basic Bait"),
+    Callback = function(value)
+        _G.SelectedBait = value
+        _G.SaveData["Fish_SelectedBait"] = value
+        SaveSettings()
+    end
+})
+
+StackSection:AddToggle({
+    Title = "💰 Auto Buy Bait",
+    Default = GetSetting("Fish_AutoBuyBait", false),
+    Callback = function(value)
+        _G.AutoBuyBait = value
+        _G.SaveData["Fish_AutoBuyBait"] = value
+        SaveSettings()
+    end
+})
+
+StackSection:AddToggle({
+    Title = "🎣 Auto Fishing",
+    Default = GetSetting("Fish_AutoFishing", false),
+    Callback = function(value)
+        _G.AutoFishing = value
+        _G.SaveData["Fish_AutoFishing"] = value
+        SaveSettings()
+    end
+})
+
+StackSection:AddToggle({
+    Title = "📋 Auto Quest Fishing",
+    Default = GetSetting("Fish_AutoQuest", false),
+    Callback = function(value)
+        _G.AutoFishingQuest = value
+        _G.SaveData["Fish_AutoQuest"] = value
+        SaveSettings()
+    end
+})
+
+StackSection:AddToggle({
+    Title = "✅ Auto Complete Quest",
+    Default = GetSetting("Fish_AutoComplete", false),
+    Callback = function(value)
+        _G.AutoQuestComplete = value
+        _G.SaveData["Fish_AutoComplete"] = value
+        SaveSettings()
+    end
+})
+
+StackSection:AddToggle({
+    Title = "💰 Auto Sell Fish",
+    Default = GetSetting("Fish_AutoSell", false),
+    Callback = function(value)
+        _G.AutoSellFish = value
+        _G.SaveData["Fish_AutoSell"] = value
+        SaveSettings()
+    end
+})
+
+StackSection:AddToggle({
+    Title = "✨ Auto Skill Z",
+    Default = GetSetting("Fish_AutoSkillZ", false),
+    Callback = function(value)
+        _G.AutoSkillZ = value
+        _G.SaveData["Fish_AutoSkillZ"] = value
+        SaveSettings()
+    end
+})
+
+-- Boss Farm
+StackSection = Tabs.Stack:AddSection("Boss Farm")
+
+local BossDropdown = StackSection:AddDropdown({
+    Title = "👾 Select Boss",
+    Values = Boss,
+    Default = Boss[1],
+    Callback = function(value) _G.FindBoss = value end
+})
+
+StackSection:AddButton({
+    Title = "🔄 Refresh Boss List",
+    Callback = function()
+        local liveBosses = {}
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("Model") and obj:GetAttribute("IsBoss") and not table.find(liveBosses, obj.Name) then
+                table.insert(liveBosses, obj.Name)
+            end
+        end
+        for _, obj in pairs(ReplicatedStorage:GetDescendants()) do
+            if obj:IsA("Model") and obj:GetAttribute("IsBoss") and not table.find(liveBosses, obj.Name) then
+                table.insert(liveBosses, obj.Name)
+            end
+        end
+        if #liveBosses > 0 then
+            table.sort(liveBosses)
+            BossDropdown:Refresh(liveBosses, true)
+        end
+    end
+})
+
+StackSection:AddToggle({
+    Title = "⚔️ Auto Farm Selected Boss",
+    Default = false,
+    Callback = function(value) _G.AutoBoss = value end
+})
+
+StackSection:AddToggle({
+    Title = "📜 Accept Boss Quest",
+    Default = false,
+    Callback = function(value) _G.AutoAcceptQuest = value end
+})
+
+StackSection:AddToggle({
+    Title = "⚔️ Farm All Bosses",
+    Default = false,
+    Callback = function(value) _G.FarmAllBoss = value end
+})
+
+-- Quests
+StackSection = Tabs.Stack:AddSection("Quests")
+
+StackSection:AddToggle({
+    Title = "👁️ Auto Farm Observation",
+    Default = GetSetting("AutoObsFarm_Save", false),
+    Callback = function(value)
+        _G.obsFarm = value
+        _G.SaveData["AutoObsFarm_Save"] = value
+        SaveSettings()
+    end
+})
+
+if World3 then
+    StackSection:AddToggle({
+        Title = "👁️ Auto Observation V2",
+        Default = GetSetting("AutoKenV2_Save", false),
+        Callback = function(value)
+            _G.AutoKenVTWO = value
+            _G.SaveData["AutoKenV2_Save"] = value
+            SaveSettings()
+        end
+    })
+end
+
+-- Cursed Swords
+if World3 then
+    StackSection = Tabs.Stack:AddSection("Cursed Swords")
+    
+    local EliteProgress = StackSection:AddParagraph({ Title = "Elite Progress", Content = "0" })
+    spawn(function()
+        while wait() do
+            pcall(function()
+                EliteProgress:SetContent(tostring(commF:InvokeServer("EliteHunter", "Progress") or 0))
+            end)
+        end
+    end)
+    
+    StackSection:AddToggle({
+        Title = "⚔️ Auto Elite Quest",
+        Default = GetSetting("AutoEliteQuest_Save", false),
+        Callback = function(value)
+            _G.FarmEliteHunt = value
+            _G.SaveData["AutoEliteQuest_Save"] = value
+            SaveSettings()
+        end
+    })
+    
+    StackSection:AddToggle({
+        Title = "⛔ Stop when Chalice",
+        Default = GetSetting("StopChalice_Save", true),
+        Callback = function(value)
+            _G.StopWhenChalice = value
+            _G.SaveData["StopChalice_Save"] = value
+            SaveSettings()
+        end
+    })
+    
+    StackSection:AddToggle({
+        Title = "⚔️ Auto Tushita",
+        Default = false,
+        Callback = function(value) _G.Auto_Tushita = value end
+    })
+    
+    StackSection:AddToggle({
+        Title = "⚔️ Auto Yama",
+        Default = GetSetting("AutoYama_Save", false),
+        Callback = function(value)
+            _G.Auto_Yama = value
+            _G.SaveData["AutoYama_Save"] = value
+            SaveSettings()
+        end
+    })
+end
+
+--====================
+-- MASTERY TAB
+--====================
+local MasterySection = Tabs.Mastery:AddSection("Mastery Farm")
+
+MasterySection:AddDropdown({
+    Title = "🏝️ Select Island",
+    Values = {"Cake", "Bone"},
+    Default = "Cake",
+    Callback = function(value) SelectIsland = value end
+})
+
+MasterySection:AddToggle({
+    Title = "🍎 Auto Farm Fruit Mastery",
+    Default = GetSetting("FarmMastery_Dev", false),
+    Callback = function(value)
+        _G.FarmMastery_Dev = value
+        _G.SaveData["FarmMastery_Dev"] = value
+        SaveSettings()
+    end
+})
+
+MasterySection:AddToggle({
+    Title = "🔫 Auto Farm Gun Mastery",
+    Default = false,
+    Callback = function(value) _G.FarmMastery_G = value end
+})
+
+MasterySection:AddToggle({
+    Title = "⚔️ Auto Farm Sword Mastery",
+    Default = false,
+    Callback = function(value) _G.FarmMastery_S = value end
+})
+
+-- Fruit Skills
+MasterySection = Tabs.Mastery:AddSection("Fruit Skills")
+
+MasterySection:AddToggle({ Title = "Z Skill", Default = false, Callback = function(v) _G.FruitSkills.Z = v end })
+MasterySection:AddToggle({ Title = "X Skill", Default = false, Callback = function(v) _G.FruitSkills.X = v end })
+MasterySection:AddToggle({ Title = "C Skill", Default = false, Callback = function(v) _G.FruitSkills.C = v end })
+MasterySection:AddToggle({ Title = "V Skill", Default = false, Callback = function(v) _G.FruitSkills.V = v end })
+MasterySection:AddToggle({ Title = "F Skill", Default = false, Callback = function(v) _G.FruitSkills.F = v end })
+
+--====================
+-- SEA EVENT TAB
+--====================
+local EventSection = Tabs.Event:AddSection("Sea Events")
+
+local boats = {"Guardian", "PirateGrandBrigade", "MarineGrandBrigade", "PirateBrigade", "MarineBrigade", "PirateSloop", "MarineSloop", "Beast Hunter"}
+
+EventSection:AddDropdown({
+    Title = "🚤 Select Boat",
+    Values = boats,
+    Default = "Guardian",
+    Callback = function(value) _G.SelectedBoat = value end
+})
+
+if World3 then
+    local dangerLevels = {"Lv 1", "Lv 2", "Lv 3", "Lv 4", "Lv 5", "Lv 6", "Lv Infinite"}
+    EventSection:AddDropdown({
+        Title = "🌊 Danger Level",
+        Values = dangerLevels,
+        Default = "Lv 1",
+        Callback = function(value) _G.DangerSc = value end
+    })
+end
+
+EventSection:AddToggle({
+    Title = "⛵ Auto Sail",
+    Default = false,
+    Callback = function(value) _G.SailBoats = value end
+})
+
+EventSection:AddToggle({
+    Title = "⚡ Boat Speed Boost",
+    Default = false,
+    Callback = function(value) _G.SpeedBoat = value end
+})
+
+EventSection:AddSlider({
+    Title = "🚤 Speed Value",
+    Range = {100, 1000},
+    Default = 300,
+    Increment = 10,
+    Callback = function(value) _G.SetSpeedBoat = value end
+})
+
+-- Sea Events Toggles
+EventSection = Tabs.Event:AddSection("Targets")
+
+EventSection:AddToggle({ Title = "🦈 Sea Beast", Default = false, Callback = function(v) _G.SeaBeast1 = v end })
+EventSection:AddToggle({ Title = "🚢 Pirate GrandBrigade", Default = false, Callback = function(v) _G.PGB = v end })
+if World3 then
+    EventSection:AddToggle({ Title = "🦈 Shark", Default = false, Callback = function(v) _G.Shark = v end })
+    EventSection:AddToggle({ Title = "🐡 Piranha", Default = false, Callback = function(v) _G.Piranha = v end })
+    EventSection:AddToggle({ Title = "🦈 Terror Shark", Default = false, Callback = function(v) _G.TerrorShark = v end })
+    EventSection:AddToggle({ Title = "🐟 Fish Crew", Default = false, Callback = function(v) _G.MobCrew = v end })
+    EventSection:AddToggle({ Title = "👻 Haunted Crew", Default = false, Callback = function(v) _G.HCM = v end })
+    EventSection:AddToggle({ Title = "🚤 Fish Boat", Default = false, Callback = function(v) _G.FishBoat = v end })
+end
+
+-- Kitsune Island
+if World3 then
+    EventSection = Tabs.Event:AddSection("Kitsune Island")
+    
+    EventSection:AddToggle({
+        Title = "🔍 Auto Find Kitsune",
+        Default = GetSetting("FindKitsune_Save", false),
+        Callback = function(v)
+            _G.AutofindKitIs = v
+            _G.SaveData["FindKitsune_Save"] = v
+            SaveSettings()
+        end
+    })
+    
+    EventSection:AddToggle({
+        Title = "🔥 Collect Azure Ember",
+        Default = GetSetting("CollectAzureEmber_Save", false),
+        Callback = function(v)
+            _G.Collect_Ember = v
+            _G.SaveData["CollectAzureEmber_Save"] = v
+            SaveSettings()
+        end
+    })
+end
+
+-- Mirage Island
+EventSection = Tabs.Event:AddSection("Mirage Island")
+
+EventSection:AddToggle({
+    Title = "🔍 Auto Find Mirage",
+    Default = GetSetting("FindMirage_Save", false),
+    Callback = function(v)
+        _G.FindMirage = v
+        _G.SaveData["FindMirage_Save"] = v
+        SaveSettings()
+    end
+})
+
+EventSection:AddToggle({
+    Title = "⚙️ Auto Collect Gear",
+    Default = GetSetting("AutoCollectGear_Save", false),
+    Callback = function(v)
+        _G.TPGEAR = v
+        _G.SaveData["AutoCollectGear_Save"] = v
+        SaveSettings()
+    end
+})
+
+-- Prehistoric Island
+if World3 then
+    EventSection = Tabs.Event:AddSection("Prehistoric Island")
+    
+    EventSection:AddToggle({
+        Title = "🔍 Auto Find Prehistoric",
+        Default = GetSetting("PrehistoricFinder_Save", false),
+        Callback = function(v)
+            _G.Prehis_Find = v
+            _G.SaveData["PrehistoricFinder_Save"] = v
+            SaveSettings()
+        end
+    })
+    
+    EventSection:AddToggle({
+        Title = "⚔️ Auto Event Prehistoric",
+        Default = GetSetting("AutoEventPrehistoric_Save", false),
+        Callback = function(v)
+            _G.PrehistoricEvent = v
+            _G.Prehis_Skills = v
+            _G.SaveData["AutoEventPrehistoric_Save"] = v
+            SaveSettings()
+        end
+    })
+    
+    EventSection:AddToggle({
+        Title = "🦴 Auto Collect Dino Bones",
+        Default = GetSetting("DinoBones_Save", false),
+        Callback = function(v)
+            _G.Prehis_DB = v
+            _G.SaveData["DinoBones_Save"] = v
+            SaveSettings()
+        end
+    })
+    
+    EventSection:AddToggle({
+        Title = "🥚 Auto Collect Dragon Eggs",
+        Default = GetSetting("DragonEggs_Save", false),
+        Callback = function(v)
+            _G.Prehis_DE = v
+            _G.SaveData["DragonEggs_Save"] = v
+            SaveSettings()
+        end
+    })
+end
+
+--====================
+-- RACE V4 TAB
+--====================
+local RaceSection = Tabs.Race:AddSection("Race Upgrades")
+
+if World2 then
+    RaceSection:AddToggle({ Title = "🐒 Auto Mink V2/V3", Default = false, Callback = function(v) G.Auto_Mink = v end })
+    RaceSection:AddToggle({ Title = "👤 Auto Human V2/V3", Default = false, Callback = function(v) G.Auto_Human = v end })
+    RaceSection:AddToggle({ Title = "👼 Auto Angel V2/V3", Default = false, Callback = function(v) G.Auto_Skypiea = v end })
+    RaceSection:AddToggle({ Title = "🦈 Auto Shark V2/V3", Default = false, Callback = function(v) G.Auto_Fish = v end })
+end
+
+if World3 then
+    RaceSection = Tabs.Race:AddSection("V4 Trials")
+    
+    local TierLabel = RaceSection:AddParagraph({ Title = "Tier Status", Content = "Loading..." })
+    spawn(function()
+        while wait() do
+            pcall(function()
+                TierLabel:SetContent("Tier: " .. tostring(plr.Data.Race.C.Value))
+            end)
+        end
+    end)
+    
+    RaceSection:AddToggle({ Title = "🌕 Auto Look at Moon", Default = false, Callback = function(v) LookM = v end })
+    RaceSection:AddToggle({ Title = "🔧 Auto Pull Lever", Default = false, Callback = function(v) _G.Lver = v end })
+    RaceSection:AddToggle({ Title = "⚔️ Auto Train V4", Default = false, Callback = function(v) _G.AcientOne = v end })
+    RaceSection:AddToggle({ Title = "🚪 Auto TP to Race Doors", Default = false, Callback = function(v) _G.TPDoor = v end })
+    RaceSection:AddToggle({ Title = "✅ Auto Complete Trials", Default = false, Callback = function(v) _G.Complete_Trials = v end })
+end
+
+--====================
+-- DOJO & DRAGO TAB
+--====================
+if World3 then
+    local DojoSection = Tabs.Dojo:AddSection("Dojo")
+    
+    DojoSection:AddToggle({
+        Title = "🥋 Auto Dojo Trainer",
+        Default = false,
+        Callback = function(v) _G.Dojoo = v end
+    })
+    
+    DojoSection:AddToggle({
+        Title = "🐉 Auto Dragon Hunter",
+        Default = false,
+        Callback = function(v) _G.FarmBlazeEM = v end
+    })
+    
+    DojoSection = Tabs.Dojo:AddSection("Draco Race")
+    
+    DojoSection:AddToggle({
+        Title = "⬆️ Upgrade Draco Trial",
+        Default = false,
+        Callback = function(v) _G.UPGDrago = v end
+    })
+    
+    DojoSection:AddToggle({
+        Title = "🐉 Draco V1",
+        Default = false,
+        Callback = function(v) _G.DragoV1 = v end
+    })
+    
+    DojoSection:AddToggle({
+        Title = "🔥 Draco V2 (Fire Flowers)",
+        Default = false,
+        Callback = function(v) _G.AutoFireFlowers = v end
+    })
+    
+    DojoSection:AddToggle({
+        Title = "🦈 Draco V3 (Terror Shark)",
+        Default = false,
+        Callback = function(v) _G.DragoV3 = v end
+    })
+    
+    DojoSection:AddToggle({
+        Title = "🔮 Auto Relic Draco",
+        Default = false,
+        Callback = function(v) _G.Relic123 = v end
+    })
+    
+    DojoSection:AddToggle({
+        Title = "⚔️ Train Draco V4",
+        Default = false,
+        Callback = function(v) _G.TrainDrago = v end
+    })
+    
+    DojoSection:AddToggle({
+        Title = "🪶 Fly",
+        Default = false,
+        Callback = function(v) _G.Fly = v end
+    })
+end
+
+--====================
+-- GET ITEMS TAB
+--====================
+if World3 then
+    local GetSection = Tabs.Get:AddSection("Skull Guitar")
+    
+    GetSection:AddToggle({
+        Title = "🎸 Auto Skull Guitar",
+        Default = false,
+        Callback = function(v) _G.Auto_Soul_Guitar = v end
+    })
+end
+
+if World2 or World3 then
+    local GetSection = Tabs.Get:AddSection("Materials")
+    
+    GetSection:AddToggle({
+        Title = "🦴 Auto Farm Soul Guitar Mats",
+        Default = false,
+        Callback = function(v) _G.AutoMatSoul = v end
+    })
+end
+
+if World3 then
+    local GetSection = Tabs.Get:AddSection("Cursed Dual Katana")
+    
+    GetSection:AddParagraph({ Title = "CDK Progress", Content = "Waiting..." })
+    
+    GetSection:AddToggle({
+        Title = "⚔️ Auto Get CDK",
+        Default = GetSetting("AutoCDK_Save", false),
+        Callback = function(v)
+            _G.CDK = v
+            _G.SaveData["AutoCDK_Save"] = v
+            SaveSettings()
+        end
+    })
+    
+    GetSection:AddToggle({
+        Title = "⚔️ Auto Yama CDK",
+        Default = GetSetting("AutoYamaCDK_Save", false),
+        Callback = function(v)
+            _G.CDK_YM = v
+            _G.SaveData["AutoYamaCDK_Save"] = v
+            SaveSettings()
+        end
+    })
+    
+    GetSection:AddToggle({
+        Title = "⚔️ Auto Tushita CDK",
+        Default = GetSetting("AutoTushitaCDK_Save", false),
+        Callback = function(v)
+            _G.CDK_TS = v
+            _G.SaveData["AutoTushitaCDK_Save"] = v
+            SaveSettings()
+        end
+    })
+end
+
+if World2 then
+    local GetSection = Tabs.Get:AddSection("World 2 Items")
+    
+    GetSection:AddToggle({ Title = "🔑 Auto Rengoku", Default = false, Callback = function(v) _G.AutoKeyRen = v end })
+    GetSection:AddToggle({ Title = "🔱 Auto Dragon Trident", Default = false, Callback = function(v) _G.AutoTridentW2 = v end })
+    GetSection:AddToggle({ Title = "⚔️ Auto Long Sword", Default = false, Callback = function(v) _G.LongsWord = v end })
+    GetSection:AddToggle({ Title = "⚫ Auto Black Spikey", Default = false, Callback = function(v) _G.BlackSpikey = v end })
+    GetSection:AddToggle({ Title = "🌙 Auto Midnight Blade", Default = false, Callback = function(v) _G.AutoEcBoss = v end })
+    GetSection:AddToggle({ Title = "👊 Auto Darkbeard", Default = false, Callback = function(v) _G.Auto_Def_DarkCoat = v end })
+    GetSection:AddToggle({ Title = "🦩 Auto Don Swan", Default = false, Callback = function(v) _G.Auto_DonAcces = v end })
+    GetSection:AddToggle({ Title = "👓 Auto Swan Glasses", Default = false, Callback = function(v) _G.Auto_SwanGG = v end })
+end
+
+if World1 then
+    local GetSection = Tabs.Get:AddSection("World 1 Items")
+    
+    GetSection:AddToggle({ Title = "🪚 Auto Saw Sword", Default = false, Callback = function(v) _G.AutoSaw = v end })
+    GetSection:AddToggle({ Title = "⚔️ Auto Saber", Default = false, Callback = function(v) _G.AutoSaber = v end })
+    GetSection:AddToggle({ Title = "🎩 Auto Usoap's Hat", Default = false, Callback = function(v) _G.AutoGetUsoap = v end })
+    GetSection:AddToggle({ Title = "⚔️ Auto Bisento V2", Default = false, Callback = function(v) _G.Greybeard = v end })
+    GetSection:AddToggle({ Title = "⚔️ Auto Warden Sword", Default = false, Callback = function(v) _G.WardenBoss = v end })
+    GetSection:AddToggle({ Title = "🧥 Auto Marine Coat", Default = false, Callback = function(v) _G.MarinesCoat = v end })
+    GetSection:AddToggle({ Title = "🧥 Auto Swan Coat", Default = false, Callback = function(v) _G.SwanCoat = v end })
+end
+
+--====================
+-- FRUIT/RAID TAB
+--====================
+local FruitSection = Tabs.Fruit:AddSection("Raid")
+
+local fruits = {"Flame", "Ice", "Quake", "Light", "Dark", "String", "Rumble", "Magma", "Human: Buddha", "Sand", "Bird: Phoenix", "Dough"}
+
+FruitSection:AddDropdown({
+    Title = "🎴 Select Chip",
+    Values = fruits,
+    Default = "Flame",
+    Callback = function(v) _G.SelectChip = v end
+})
+
+FruitSection:AddToggle({
+    Title = "🔄 Auto Select Chip",
+    Default = false,
+    Callback = function(v) _G.AutoSelectDungeon = v end
+})
+
+FruitSection:AddToggle({
+    Title = "💰 Auto Buy Chip",
+    Default = false,
+    Callback = function(v) _G.AutoBuyChip = v end
+})
+
+FruitSection = Tabs.Fruit:AddSection("Raid Farming")
+
+FruitSection:AddToggle({
+    Title = "▶️ Auto Start Raid",
+    Default = false,
+    Callback = function(v) _G.Auto_StartRaid = v end
+})
+
+FruitSection:AddToggle({
+    Title = "⚔️ Auto Complete Raid",
+    Default = false,
+    Callback = function(v) _G.Raiding = v end
+})
+
+FruitSection:AddToggle({
+    Title = "✨ Auto Awakening",
+    Default = false,
+    Callback = function(v) _G.Auto_Awakener = v end
+})
+
+FruitSection = Tabs.Fruit:AddSection("Fruit Options")
+
+FruitSection:AddToggle({
+    Title = "🎲 Auto Random Fruit",
+    Default = GetSetting("AutoRandomFruit_Save", false),
+    Callback = function(v)
+        _G.Random_Auto = v
+        _G.SaveData["AutoRandomFruit_Save"] = v
+        SaveSettings()
+    end
+})
+
+FruitSection:AddToggle({
+    Title = "📦 Auto Store Fruit",
+    Default = GetSetting("AutoStoreFruit_Save", false),
+    Callback = function(v)
+        _G.StoreF = v
+        _G.SaveData["AutoStoreFruit_Save"] = v
+        SaveSettings()
+    end
+})
+
+FruitSection:AddToggle({
+    Title = "🗑️ Auto Drop Fruit",
+    Default = false,
+    Callback = function(v) _G.DropFruit = v end
+})
+
+FruitSection:AddToggle({
+    Title = "🚀 Auto TP to Fruit",
+    Default = GetSetting("AutoTweenFruit_Save", false),
+    Callback = function(v)
+        _G.TwFruits = v
+        _G.SaveData["AutoTweenFruit_Save"] = v
+        SaveSettings()
+    end
+})
+
+FruitSection:AddToggle({
+    Title = "🧲 Auto Collect Fruit",
+    Default = GetSetting("AutoCollectFruit_Save", false),
+    Callback = function(v)
+        _G.InstanceF = v
+        _G.SaveData["AutoCollectFruit_Save"] = v
+        SaveSettings()
+    end
+})
+
+--====================
+-- PLAYER TAB
+--====================
+local PlayerSection = Tabs.Player:AddSection("Player List")
+
+local playerList = {}
+for _, p in pairs(Players:GetPlayers()) do
+    if p.Name ~= player.Name then table.insert(playerList, p.Name) end
+end
+
+local PlayerDropdown = PlayerSection:AddDropdown({
+    Title = "👥 Select Player",
+    Values = playerList,
+    Callback = function(v) _G.PlayersList = v end
+})
+
+PlayerSection:AddButton({
+    Title = "🔄 Refresh List",
+    Callback = function()
+        local newList = {}
+        for _, p in pairs(Players:GetPlayers()) do
+            if p.Name ~= player.Name then table.insert(newList, p.Name) end
+        end
+        PlayerDropdown:Refresh(newList, true)
+    end
+})
+
+PlayerSection:AddToggle({
+    Title = "🚀 TP to Player",
+    Default = false,
+    Callback = function(v) _G.TpPly = v end
+})
+
+PlayerSection:AddToggle({
+    Title = "👁️ Spectate Player",
+    Default = false,
+    Callback = function(v) SpectatePlys = v end
+})
+
+PlayerSection = Tabs.Player:AddSection("Aimbot")
+
+PlayerSection:AddToggle({
+    Title = "🎯 Aimbot Cam Lock",
+    Default = false,
+    Callback = function(v) _G.AimCam = v end
+})
+
+PlayerSection:AddToggle({
+    Title = "🎯 Aimbot Skills",
+    Default = false,
+    Callback = function(v) SilentAim_Enabled = v end
+})
+
+PlayerSection = Tabs.Player:AddSection("Movement")
+
+local speedSlider = PlayerSection:AddSlider({
+    Title = "🏃 WalkSpeed",
+    Range = {16, 350},
+    Default = 16,
+    Increment = 1,
+    Callback = function(value)
+        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character.Humanoid.WalkSpeed = value
+        end
+    end
+})
+
+local jumpSlider = PlayerSection:AddSlider({
+    Title = "🦘 JumpPower",
+    Range = {50, 350},
+    Default = 50,
+    Increment = 1,
+    Callback = function(value)
+        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character.Humanoid.JumpPower = value
+        end
+    end
+})
+
+RunService.Heartbeat:Connect(function()
+    if speedSlider.Value and player.Character then
+        local hum = player.Character:FindFirstChildOfClass("Humanoid")
+        if hum and hum.WalkSpeed ~= speedSlider.Value then hum.WalkSpeed = speedSlider.Value end
+    end
+    if jumpSlider.Value and player.Character then
+        local hum = player.Character:FindFirstChildOfClass("Humanoid")
+        if hum and hum.JumpPower ~= jumpSlider.Value then hum.JumpPower = jumpSlider.Value end
+    end
+end)
+
+PlayerSection = Tabs.Player:AddSection("Infinity Abilities")
+
+PlayerSection:AddToggle({
+    Title = "♾️ Infinity Mink V3",
+    Default = false,
+    Callback = function(v) InfAblities = v end
+})
+
+PlayerSection:AddToggle({
+    Title = "♾️ Infinity Energy",
+    Default = false,
+    Callback = function(v) infEnergy = v end
+})
+
+PlayerSection:AddToggle({
+    Title = "♾️ Infinity Soru",
+    Default = false,
+    Callback = function(v) _G.InfSoru = v end
+})
+
+PlayerSection:AddToggle({
+    Title = "♾️ Infinity Observation Range",
+    Default = false,
+    Callback = function(v) _G.InfiniteObRange = v end
+})
+
+--====================
+-- SHOP TAB
+--====================
+local ShopSection = Tabs.Shop:AddSection("Fighting Styles")
+
+local fightingStyles = {
+    {"Black Leg", "BuyBlackLeg"}, {"Fishman Karate", "BuyFishmanKarate"},
+    {"Electro", "BuyElectro"}, {"Dragon Breath", "BlackbeardReward", "DragonClaw", "1"},
+    {"Superhuman", "BuySuperhuman"}, {"Death Step", "BuyDeathStep"},
+    {"Sharkman Karate", "BuySharkmanKarate"}, {"Electric Claw", "BuyElectricClaw"},
+    {"Dragon Talon", "BuyDragonTalon"}, {"God Human", "BuyGodhuman"},
+    {"Sanguine Art", "BuySanguineArt"}
+}
+
+for _, style in ipairs(fightingStyles) do
+    ShopSection:AddButton({
+        Title = "🥋 " .. style[1],
+        Callback = function()
+            if #style == 2 then commF:InvokeServer(style[2])
+            elseif #style == 4 then commF:InvokeServer(style[2], style[3], style[4]) end
+            Fluent:Notify({ Title = "Shop", Content = style[1] .. " purchased!", Duration = 2 })
+        end
+    })
+end
+
+ShopSection = Tabs.Shop:AddSection("Swords")
+
+local swords = {
+    {"Cutlass [1K]", "Cutlass"}, {"Katana [1K]", "Katana"},
+    {"Iron Mace [25K]", "Iron Mace"}, {"Dual Katana [12K]", "Duel Katana"},
+    {"Triple Katana [60K]", "Triple Katana"}, {"Pipe [100K]", "Pipe"},
+    {"Dual-Headed Blade [400K]", "Dual-Headed Blade"}, {"Bisento [1.2M]", "Bisento"},
+    {"Soul Cane [750K]", "Soul Cane"}, {"Pole v.2 [5K Frags]", "ThunderGodTalk"}
+}
+
+for _, sword in ipairs(swords) do
+    ShopSection:AddButton({
+        Title = "⚔️ " .. sword[1],
+        Callback = function()
+            if sword[1] == "Pole v.2 [5K Frags]" then
+                commF:InvokeServer(sword[2])
+            else
+                commF:InvokeServer("BuyItem", sword[2])
+            end
+            Fluent:Notify({ Title = "Shop", Content = sword[1] .. " purchased!", Duration = 2 })
+        end
+    })
+end
+
+ShopSection = Tabs.Shop:AddSection("Guns")
+
+local guns = {
+    {"Slingshot [5K]", "Slingshot"}, {"Musket [8K]", "Musket"},
+    {"Flintlock [10.5K]", "Flintlock"}, {"Refined Slingshot [30K]", "Refined Flintlock"},
+    {"Cannon [100K]", "Cannon"}, {"Kabucha [1.5K Frags]", "BlackbeardReward", "Slingshot"},
+    {"Bizarre Rifle [250 Ecto]", "Ectoplasm", "Buy", 1}
+}
+
+for _, gun in ipairs(guns) do
+    ShopSection:AddButton({
+        Title = "🔫 " .. gun[1],
+        Callback = function()
+            if gun[1] == "Kabucha [1.5K Frags]" then
+                commF:InvokeServer(gun[2], gun[3], "1")
+                commF:InvokeServer(gun[2], gun[3], "2")
+            elseif gun[1] == "Bizarre Rifle [250 Ecto]" then
+                commF:InvokeServer(gun[2], gun[3], gun[4])
+            else
+                commF:InvokeServer("BuyItem", gun[2])
+            end
+            Fluent:Notify({ Title = "Shop", Content = gun[1] .. " purchased!", Duration = 2 })
+        end
+    })
+end
+
+ShopSection = Tabs.Shop:AddSection("Abilities")
+
+local abilities = {
+    {"Skyjump [10K]", "BuyHaki", "Geppo"}, {"Buso Haki [25K]", "BuyHaki", "Buso"},
+    {"Observation [750K]", "KenTalk", "Buy"}, {"Soru [100K]", "BuyHaki", "Soru"}
+}
+
+for _, ability in ipairs(abilities) do
+    ShopSection:AddButton({
+        Title = "✨ " .. ability[1],
+        Callback = function()
+            commF:InvokeServer(ability[2], ability[3])
+            Fluent:Notify({ Title = "Shop", Content = ability[1] .. " purchased!", Duration = 2 })
+        end
+    })
+end
+
+ShopSection = Tabs.Shop:AddSection("Misc")
+
+local misc = {
+    {"🔄 Refund Stats (2500F)", "BlackbeardReward", "Refund"},
+    {"🎲 Reroll Race (3000F)", "BlackbeardReward", "Reroll"},
+    {"🐉 Buy Draco Race", nil, "DragonRace"},
+    {"🧛 Buy Ghoul Race", "Ectoplasm", "Change", 4},
+    {"🤖 Buy Cyborg Race (2500F)", "CyborgTrainer", "Buy"}
+}
+
+for _, item in ipairs(misc) do
+    ShopSection:AddButton({
+        Title = item[1],
+        Callback = function()
+            if item[1] == "🐉 Buy Draco Race" then
+                _tp(CFrame.new(5814.42724609375, 1208.3267822265625, 884.5785522460938))
+                wait(1)
+                local args = { { NPC = "Dragon Wizard", Command = "DragonRace" } }
+                ReplicatedStorage.Modules.Net:FindFirstChild("RF/InteractDragonQuest"):InvokeServer(unpack(args))
+            elseif item[1] == "🔄 Refund Stats (2500F)" or item[1] == "🎲 Reroll Race (3000F)" then
+                commF:InvokeServer(item[2], item[3], "1")
+                commF:InvokeServer(item[2], item[3], "2")
+            else
+                commF:InvokeServer(item[2], item[3], item[4])
+            end
+            Fluent:Notify({ Title = "Shop", Content = "Purchased!", Duration = 2 })
+        end
+    })
+end
+
+--====================
+-- ESP TAB
+--====================
+local EspSection = Tabs.Esp:AddSection("ESP Toggles")
+
+local espToggles = {
+    {"👤 Players", "PlayerEsp"}, {"📦 Chests", "ChestESP"}, {"🍎 Fruits", "DevilFruitESP"},
+    {"🏝️ Islands", "IslandESP"}, {"🌺 Flowers", "FlowerESP"}, {"⚙️ Gears", "ESPGear"},
+    {"🫐 Berries", "BerryEsp"}, {"🎴 Legendary Sword", "LegenS"}, {"🌈 Aura Dealers", "ColorEsp"},
+    {"🍎 Advanced Dealer", "advanEsp"}
+}
+
+for _, esp in ipairs(espToggles) do
+    EspSection:AddToggle({
+        Title = esp[1],
+        Default = false,
+        Callback = function(value) _G[esp[2]] = value end
+    })
+end
+
+-- Stats分配
+EspSection = Tabs.Esp:AddSection("Auto Stats")
+
+local stats = {"Melee", "Defense", "Sword", "Gun", "Devil Fruit"}
+
+for _, stat in ipairs(stats) do
+    EspSection:AddToggle({
+        Title = "📊 Auto " .. stat,
+        Default = GetSetting("Auto" .. stat .. "_Save", false),
+        Callback = function(value)
+            _G["Auto_" .. stat] = value
+            _G.SaveData["Auto" .. stat .. "_Save"] = value
+            SaveSettings()
+        end
+    })
+end
+
+spawn(function()
+    while task.wait(1) do
+        pcall(function()
+            if player.Data.Points.Value > 0 then
+                if _G.Auto_Melee then commF:InvokeServer("AddPoint", "Melee", 1) end
+                if _G.Auto_Defense then commF:InvokeServer("AddPoint", "Defense", 1) end
+                if _G.Auto_Sword then commF:InvokeServer("AddPoint", "Sword", 1) end
+                if _G.Auto_Gun then commF:InvokeServer("AddPoint", "Gun", 1) end
+                if _G.Auto_DevilFruit then commF:InvokeServer("AddPoint", "Demon Fruit", 1) end
+            end
+        end)
+    end
+end)
+
+-- Font changer
+EspSection = Tabs.Esp:AddSection("Font Changer")
+
+local fonts = {"Arial", "ArialBold", "Gotham", "GothamBold", "Code", "Cartoon", "AmaticSC", "Bangers", "Creepster", "Arcade"}
+
+for _, font in ipairs(fonts) do
+    EspSection:AddButton({
+        Title = "📝 " .. font,
+        Callback = function()
+            for _, obj in pairs(player.PlayerGui:GetDescendants()) do
+                if obj:IsA("TextLabel") or obj:IsA("TextButton") then
+                    obj.Font = Enum.Font[font]
+                end
+            end
+            Fluent:Notify({ Title = "Font", Content = "Changed to " .. font, Duration = 2 })
+        end
+    })
+end
+
+--====================
+-- TELEPORT TAB
+--====================
+local TeleportSection = Tabs.Teleport:AddSection("World Teleport")
+
+local worldTeleports = {
+    {"🌴 Sea 1", "TravelMain"}, {"🏝️ Sea 2", "TravelDressrosa"}, {"🗻 Sea 3", "TravelZou"}
+}
+
+for _, tp in ipairs(worldTeleports) do
+    TeleportSection:AddButton({
+        Title = tp[1],
+        Callback = function() commF:InvokeServer(tp[2]) end
+    })
+end
+
+-- Island teleport
+TeleportSection = Tabs.Teleport:AddSection("Island Teleport")
+
+local islands = {}
+for _, island in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
+    table.insert(islands, island.Name)
+end
+
+local IslandDropdown = TeleportSection:AddDropdown({
+    Title = "📍 Select Island",
+    Values = islands,
+    Callback = function(value) _G.SelectedIsland = value end
+})
+
+TeleportSection:AddButton({
+    Title = "🔄 Refresh Islands",
+    Callback = function()
+        local newIslands = {}
+        for _, island in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
+            table.insert(newIslands, island.Name)
+        end
+        IslandDropdown:Refresh(newIslands, true)
+    end
+})
+
+TeleportSection:AddToggle({
+    Title = "🚀 Auto Travel",
+    Default = false,
+    Callback = function(value)
+        _G.Teleport = value
+        if value and _G.SelectedIsland then
+            local target = workspace._WorldOrigin.Locations:FindFirstChild(_G.SelectedIsland)
+            if target then
+                _tp(target.CFrame * CFrame.new(0, 50, 0))
+                task.wait(2)
+                _G.Teleport = false
+            end
+        end
+    end
+})
+
+-- Portal teleport
+TeleportSection = Tabs.Teleport:AddSection("Portal Teleport")
+
+local portals = {}
+if World1 then portals = {"Sky", "UnderWater"}
+elseif World2 then portals = {"SwanRoom", "Cursed Ship"}
+elseif World3 then portals = {"Castle On The Sea", "Mansion Cafe", "Hydra Teleport", "Canvendish Room", "Temple of Time"} end
+
+local portalCoords = {
+    Sky = Vector3.new(-7894, 5547, -380), UnderWater = Vector3.new(61163, 11, 1819),
+    SwanRoom = Vector3.new(2285, 15, 905), ["Cursed Ship"] = Vector3.new(923, 126, 32852),
+    ["Castle On The Sea"] = Vector3.new(-5097.93164, 316.447021, -3142.66602),
+    ["Mansion Cafe"] = Vector3.new(-12471.169921875, 374.94024658203, -7551.677734375),
+    ["Hydra Teleport"] = Vector3.new(5643.4526367188, 1013.0858154297, -340.51025390625),
+    ["Canvendish Room"] = Vector3.new(5314.5463867188, 22.562219619751, -127.06755065918),
+    ["Temple of Time"] = Vector3.new(28310.0234, 14895.1123, 109.456741)
+}
+
+TeleportSection:AddDropdown({
+    Title = "🚪 Select Portal",
+    Values = portals,
+    Callback = function(value) _G.SelectedPortal = value end
+})
+
+TeleportSection:AddButton({
+    Title = "✨ Enter Portal",
+    Callback = function()
+        if _G.SelectedPortal and portalCoords[_G.SelectedPortal] then
+            commF:InvokeServer("requestEntrance", portalCoords[_G.SelectedPortal])
+        end
+    end
+})
+
+-- NPC teleport
+TeleportSection = Tabs.Teleport:AddSection("NPC Teleport")
+
+local npcList = {}
+for _, npc in pairs(ReplicatedStorage.NPCs:GetChildren()) do
+    table.insert(npcList, npc.Name)
+end
+
+TeleportSection:AddDropdown({
+    Title = "👤 Select NPC",
+    Values = npcList,
+    Callback = function(value) _G.SelectedNPC = value end
+})
+
+TeleportSection:AddToggle({
+    Title = "🚀 Auto TP to NPC",
+    Default = false,
+    Callback = function(value)
+        _G.TPNpc = value
+    end
+})
+
+spawn(function()
+    while wait(0.5) do
+        if _G.TPNpc and _G.SelectedNPC then
+            pcall(function()
+                for _, npc in pairs(ReplicatedStorage.NPCs:GetChildren()) do
+                    if npc.Name == _G.SelectedNPC and npc:FindFirstChild("HumanoidRootPart") then
+                        _tp(npc.HumanoidRootPart.CFrame)
+                    end
+                end
+            end)
+        end
+    end
+end)
 
 --====================
 -- SETTINGS TAB
@@ -465,7 +1976,6 @@ SettingsSection = Tabs.Settings:AddSection("Farm Settings")
 
 SettingsSection:AddSlider({
     Title = "📏 Bring Range",
-    Description = "Distance to bring mobs",
     Range = {50, 500},
     Default = GetSetting("BringRange_Save", 250),
     Increment = 10,
@@ -478,7 +1988,6 @@ SettingsSection:AddSlider({
 
 SettingsSection:AddSlider({
     Title = "📐 Farm Height",
-    Description = "Height above mobs",
     Range = {10, 100},
     Default = GetSetting("MobHeight_Save", 30),
     Increment = 5,
@@ -502,7 +2011,6 @@ SettingsSection:AddSlider({
 
 SettingsSection:AddToggle({
     Title = "🛡️ Safe Mode",
-    Description = "Auto heal when low health",
     Default = GetSetting("SafeMode_Save", false),
     Callback = function(value)
         _G.Safemode = value
@@ -513,7 +2021,6 @@ SettingsSection:AddToggle({
 
 SettingsSection:AddToggle({
     Title = "🌀 Auto Haki",
-    Description = "Auto activate Buso Haki",
     Default = GetSetting("AutoHaki_Save", true),
     Callback = function(value)
         Boud = value
@@ -522,7 +2029,6 @@ SettingsSection:AddToggle({
     end
 })
 
--- Auto Haki loop
 spawn(function()
     while task.wait(0.5) do
         pcall(function()
@@ -541,25 +2047,67 @@ SettingsSection:AddToggle({
     end
 })
 
--- Anti AFK
 player.Idled:Connect(function()
     VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
     task.wait(1)
     VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
 end)
 
+SettingsSection:AddToggle({
+    Title = "🔇 Disable Notifications",
+    Default = GetSetting("DisableNotify_Save", false),
+    Callback = function(value)
+        RemoveDamage = value
+        _G.SaveData["DisableNotify_Save"] = value
+        SaveSettings()
+    end
+})
+
+spawn(function()
+    while wait(0.5) do
+        pcall(function()
+            if RemoveDamage then
+                ReplicatedStorage.Assets.GUI.DamageCounter.Enabled = false
+                player.PlayerGui.Notifications.Enabled = false
+            else
+                ReplicatedStorage.Assets.GUI.DamageCounter.Enabled = true
+                player.PlayerGui.Notifications.Enabled = true
+            end
+        end)
+    end
+end)
+
+SettingsSection:AddToggle({
+    Title = "🚶 Walk on Water",
+    Default = true,
+    Callback = function(value)
+        _G.WalkWater_Part = value
+        local water = workspace.Map["WaterBase-Plane"]
+        if water then
+            water.Size = value and Vector3.new(1000, 112, 1000) or Vector3.new(1000, 80, 1000)
+        end
+    end
+})
+
+SettingsSection:AddToggle({
+    Title = "🎭 No Animation",
+    Default = GetSetting("NoAni_Save", false),
+    Callback = function(value)
+        _G.NoAni = value
+        _G.SaveData["NoAni_Save"] = value
+        SaveSettings()
+    end
+})
+
 SettingsSection:AddButton({
     Title = "🛑 Stop Tween",
-    Description = "Emergency stop",
     Callback = function()
         shouldTween = false
         local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
         if hrp then
             hrp.Anchored = false
             for _, v in pairs(hrp:GetChildren()) do
-                if v:IsA("BodyVelocity") or v:IsA("BodyPosition") then
-                    v:Destroy()
-                end
+                if v:IsA("BodyVelocity") or v:IsA("BodyPosition") then v:Destroy() end
             end
         end
         task.wait(0.5)
@@ -567,280 +2115,24 @@ SettingsSection:AddButton({
     end
 })
 
---====================
--- SHOP TAB
---====================
-local ShopSection = Tabs.Shop:AddSection("Fighting Styles")
-
-local fightingStyles = {
-    {"Black Leg", "BuyBlackLeg"},
-    {"Fishman Karate", "BuyFishmanKarate"},
-    {"Electro", "BuyElectro"},
-    {"Dragon Breath", "BlackbeardReward", "DragonClaw", "1"},
-    {"Superhuman", "BuySuperhuman"},
-    {"Death Step", "BuyDeathStep"},
-    {"Sharkman Karate", "BuySharkmanKarate"},
-    {"Electric Claw", "BuyElectricClaw"},
-    {"Dragon Talon", "BuyDragonTalon"},
-    {"God Human", "BuyGodhuman"},
-    {"Sanguine Art", "BuySanguineArt"}
-}
-
-for _, style in ipairs(fightingStyles) do
-    ShopSection:AddButton({
-        Title = "🥋 " .. style[1],
-        Callback = function()
-            if #style == 2 then
-                commF:InvokeServer(style[2])
-            elseif #style == 4 then
-                commF:InvokeServer(style[2], style[3], style[4])
-            end
-            Fluent:Notify({ Title = "Shop", Content = style[1] .. " purchased!", Duration = 2 })
+SettingsSection:AddButton({
+    Title = "📜 Redeem All Codes",
+    Callback = function()
+        local codes = {
+            "KITT_RESET", "Sub2UncleKizaru", "SUB2GAMERROBOT_RESET1", "Sub2Fer999",
+            "Enyu_is_Pro", "JCWK", "StarcodeHEO", "MagicBus", "KittGaming",
+            "Sub2CaptainMaui", "Sub2OfficalNoobie", "TheGreatAce", "Sub2NoobMaster123",
+            "Sub2Daigrock", "Axiore", "StrawHatMaine", "TantaiGaming", "Bluxxy",
+            "SUB2GAMERROBOT_EXP1", "Chandler", "NOMOREHACK", "BANEXPLOIT", "WildDares",
+            "BossBuild", "GetPranked", "EARN_FRUITS", "FIGHT4FRUIT", "NOEXPLOITER",
+            "NOOB2ADMIN", "CODESLIDE", "ADMINHACKED", "ADMINDARES", "fruitconcepts",
+            "krazydares", "TRIPLEABUSE", "SEATROLLING", "24NOADMIN", "REWARDFUN",
+            "NEWTROLL", "fudd10_v2", "Fudd10", "Bignews", "SECRET_ADMIN"
+        }
+        for _, code in ipairs(codes) do
+            pcall(function() ReplicatedStorage.Remotes.Redeem:InvokeServer(code) end)
         end
-    })
-end
-
-ShopSection = Tabs.Shop:AddSection("Swords")
-
-local swords = {
-    {"Cutlass [1K]", "Cutlass"},
-    {"Katana [1K]", "Katana"},
-    {"Iron Mace [25K]", "Iron Mace"},
-    {"Dual Katana [12K]", "Duel Katana"},
-    {"Triple Katana [60K]", "Triple Katana"},
-    {"Pipe [100K]", "Pipe"},
-    {"Dual-Headed Blade [400K]", "Dual-Headed Blade"},
-    {"Bisento [1.2M]", "Bisento"},
-    {"Soul Cane [750K]", "Soul Cane"}
-}
-
-for _, sword in ipairs(swords) do
-    ShopSection:AddButton({
-        Title = "⚔️ " .. sword[1],
-        Callback = function()
-            commF:InvokeServer("BuyItem", sword[2])
-            Fluent:Notify({ Title = "Shop", Content = sword[1] .. " purchased!", Duration = 2 })
-        end
-    })
-end
-
-ShopSection = Tabs.Shop:AddSection("Abilities")
-
-local abilities = {
-    {"Skyjump [10K]", "BuyHaki", "Geppo"},
-    {"Buso Haki [25K]", "BuyHaki", "Buso"},
-    {"Observation [750K]", "KenTalk", "Buy"},
-    {"Soru [100K]", "BuyHaki", "Soru"}
-}
-
-for _, ability in ipairs(abilities) do
-    ShopSection:AddButton({
-        Title = "✨ " .. ability[1],
-        Callback = function()
-            if #ability == 3 then
-                commF:InvokeServer(ability[2], ability[3])
-            else
-                commF:InvokeServer(ability[2], ability[3])
-            end
-            Fluent:Notify({ Title = "Shop", Content = ability[1] .. " purchased!", Duration = 2 })
-        end
-    })
-end
-
---====================
--- PLAYER TAB
---====================
-local PlayerSection = Tabs.Player:AddSection("Movement")
-
-local speedSlider = PlayerSection:AddSlider({
-    Title = "🏃 WalkSpeed",
-    Range = {16, 250},
-    Default = 16,
-    Increment = 1,
-    Callback = function(value)
-        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-            player.Character.Humanoid.WalkSpeed = value
-        end
-    end
-})
-
-local jumpSlider = PlayerSection:AddSlider({
-    Title = "🦘 JumpPower",
-    Range = {50, 250},
-    Default = 50,
-    Increment = 1,
-    Callback = function(value)
-        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
-            player.Character.Humanoid.JumpPower = value
-        end
-    end
-})
-
--- Keep speed/jump values
-RunService.Heartbeat:Connect(function()
-    if speedSlider.Value and player.Character then
-        local hum = player.Character:FindFirstChildOfClass("Humanoid")
-        if hum and hum.WalkSpeed ~= speedSlider.Value then
-            hum.WalkSpeed = speedSlider.Value
-        end
-    end
-    if jumpSlider.Value and player.Character then
-        local hum = player.Character:FindFirstChildOfClass("Humanoid")
-        if hum and hum.JumpPower ~= jumpSlider.Value then
-            hum.JumpPower = jumpSlider.Value
-        end
-    end
-end)
-
--- Infinity abilities
-PlayerSection = Tabs.Player:AddSection("Infinity Abilities")
-
-PlayerSection:AddToggle({
-    Title = "♾️ Infinity Energy",
-    Default = false,
-    Callback = function(value)
-        if value then
-            player.Character.Energy.Changed:Connect(function()
-                player.Character.Energy.Value = player.Character.Energy.MaxValue
-            end)
-        end
-    end
-})
-
-PlayerSection:AddToggle({
-    Title = "♾️ Infinity Soru",
-    Default = false,
-    Callback = function(value)
-        _G.InfSoru = value
-    end
-})
-
---====================
--- ESP TAB
---====================
-local EspSection = Tabs.Esp:AddSection("ESP Toggles")
-
-local espToggles = {
-    {"👤 Players", "PlayerEsp"},
-    {"📦 Chests", "ChestESP"},
-    {"🍎 Fruits", "DevilFruitESP"},
-    {"🏝️ Islands", "IslandESP"},
-    {"🌺 Flowers", "FlowerESP"},
-    {"⚙️ Gears", "ESPGear"}
-}
-
-for _, esp in ipairs(espToggles) do
-    EspSection:AddToggle({
-        Title = esp[1],
-        Default = false,
-        Callback = function(value)
-            _G[esp[2]] = value
-        end
-    })
-end
-
--- Stats auto分配
-EspSection = Tabs.Esp:AddSection("Auto Stats")
-
-local stats = {"Melee", "Defense", "Sword", "Gun", "Devil Fruit"}
-
-for _, stat in ipairs(stats) do
-    EspSection:AddToggle({
-        Title = "📊 Auto " .. stat,
-        Default = GetSetting("Auto" .. stat .. "_Save", false),
-        Callback = function(value)
-            _G["Auto_" .. stat] = value
-            _G.SaveData["Auto" .. stat .. "_Save"] = value
-            SaveSettings()
-        end
-    })
-end
-
--- Auto stats loop
-spawn(function()
-    while task.wait(1) do
-        pcall(function()
-            if player.Data.Points.Value > 0 then
-                if _G.Auto_Melee then commF:InvokeServer("AddPoint", "Melee", 1) end
-                if _G.Auto_Defense then commF:InvokeServer("AddPoint", "Defense", 1) end
-                if _G.Auto_Sword then commF:InvokeServer("AddPoint", "Sword", 1) end
-                if _G.Auto_Gun then commF:InvokeServer("AddPoint", "Gun", 1) end
-                if _G.Auto_DevilFruit then commF:InvokeServer("AddPoint", "Demon Fruit", 1) end
-            end
-        end)
-    end
-end)
-
--- Font changer
-EspSection = Tabs.Esp:AddSection("Font Changer")
-
-local fonts = {
-    "Arial", "ArialBold", "Gotham", "GothamBold", "Code", "Cartoon",
-    "AmaticSC", "Bangers", "Creepster", "Arcade", "Fantasy", "Antique"
-}
-
-for _, font in ipairs(fonts) do
-    EspSection:AddButton({
-        Title = "📝 " .. font,
-        Callback = function()
-            for _, obj in pairs(player.PlayerGui:GetDescendants()) do
-                if obj:IsA("TextLabel") or obj:IsA("TextButton") then
-                    obj.Font = Enum.Font[font]
-                end
-            end
-            Fluent:Notify({ Title = "Font", Content = "Changed to " .. font, Duration = 2 })
-        end
-    })
-end
-
---====================
--- TELEPORT TAB
---====================
-local TeleportSection = Tabs.Teleport:AddSection("World Teleport")
-
-local worldTeleports = {
-    {"🌴 Sea 1", "TravelMain"},
-    {"🏝️ Sea 2", "TravelDressrosa"},
-    {"🗻 Sea 3", "TravelZou"}
-}
-
-for _, tp in ipairs(worldTeleports) do
-    TeleportSection:AddButton({
-        Title = tp[1],
-        Callback = function()
-            commF:InvokeServer(tp[2])
-        end
-    })
-end
-
--- Island teleport
-TeleportSection = Tabs.Teleport:AddSection("Island Teleport")
-
-local islands = {}
-for _, island in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
-    table.insert(islands, island.Name)
-end
-
-TeleportSection:AddDropdown({
-    Title = "📍 Select Island",
-    Values = islands,
-    Callback = function(value)
-        _G.SelectedIsland = value
-    end
-})
-
-TeleportSection:AddToggle({
-    Title = "🚀 Teleport to Island",
-    Default = false,
-    Callback = function(value)
-        if value and _G.SelectedIsland then
-            local target = workspace._WorldOrigin.Locations:FindFirstChild(_G.SelectedIsland)
-            if target then
-                _tp(target.CFrame * CFrame.new(0, 50, 0))
-                task.wait(2)
-                _G.Teleport = false
-            end
-        end
+        Fluent:Notify({ Title = "Codes", Content = "All codes redeemed!", Duration = 3 })
     end
 })
 
@@ -856,8 +2148,10 @@ SaveManager:SetFolder("TurboLiteHub/configs")
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
--- Auto-load config
 task.wait(1)
 SaveManager:LoadAutoloadConfig()
 
-print("Turbo Lite Hub - Fluent Edition loaded!")
+-- Load attack module
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TurboLite/Script/refs/heads/main/attack-module.lua"))()
+
+print("Turbo Lite Hub - Full Version loaded!")
