@@ -1,4 +1,5 @@
 
+
 --[[
     Abacaxi Hub Source - Cak Thai Dúi 
     crack the code they come undone <3xd
@@ -2324,7 +2325,7 @@ screenGui.Parent = game.CoreGui
 local imageButton = Instance.new("ImageButton")
 imageButton.Size = UDim2.new(0, 35, 0, 35)
 imageButton.Position = UDim2.new(0.15, 0, 0.15, 0)
-imageButton.Image = "rbxassetid://80909425320793",
+imageButton.Image = "rbxassetid://93001597062691"
 imageButton.BackgroundTransparency = 1
 imageButton.Parent = screenGui
 
@@ -2468,7 +2469,7 @@ local Setting = Library:MakeTab({
 Status:AddDiscordInvite({
     Name = "Server Discord Bamia Hub",
     Description = "join for Update <3",
-    Logo = "rbxassetid://80909425320793",
+    Logo = "rbxassetid://93001597062691",
     Invite = "https://discord.gg/cJcQvFU79N"
 
 Shop:AddSection("Fighting Shop")
