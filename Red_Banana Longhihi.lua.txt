@@ -2310,31 +2310,167 @@ QuestNeta = function()
 			[6] = PosQ,
 		};
 	end;
-Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Graihub/Uigay/refs/heads/main/bananaui"))()
-    
-Window = Library:CreateWindow({
-	Title = "BaMia Hub",
+	local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Graihub/Uigay/refs/heads/main/Redui"))():MakeWindow({
+    Title = "BaMia Hub",
     SubTitle = "By BelBel",
     SaveFolder = "turbolite.json"
 })
+-- Criar ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ControlGUI"
+screenGui.Parent = game.CoreGui
 
-Tabs = {
-    ["Info"]     = wrapTab(Window:AddTab("Thông Tin")),
-    ["Main"]     = wrapTab(Window:AddTab("Cày Cấp")),
-    ["Sea"]      = wrapTab(Window:AddTab("Sự Kiện")),
-    ["Item"]     = wrapTab(Window:AddTab("Lấy & Nâng Cấp Vật Phẩm")),
-    ["Setting"]  = wrapTab(Window:AddTab("Cài Đặt")),
-    ["Status"]   = wrapTab(Window:AddTab("Webhook")),
-    ["Stats"]    = wrapTab(Window:AddTab("Chỉ Số")),
-    ["Player"]   = wrapTab(Window:AddTab("Người Chơi")),
-    ["Teleport"] = wrapTab(Window:AddTab("Dịch Chuyển")),
-    ["Visual"]   = wrapTab(Window:AddTab("Giả Mạo")),
-    ["Fruit"]    = wrapTab(Window:AddTab("Trái Ác Quỷ")),
-    ["Raid"]     = wrapTab(Window:AddTab("Đột Kích")),
-    ["Race"]     = wrapTab(Window:AddTab("Nâng Cấp Chủng Tộc")),
-    ["Shop"]     = wrapTab(Window:AddTab("Cửa Hàng")),
-    ["Misc"]     = wrapTab(Window:AddTab("Khác")),
-}
+-- Criar ImageButton
+local imageButton = Instance.new("ImageButton")
+imageButton.Size = UDim2.new(0, 35, 0, 35)
+imageButton.Position = UDim2.new(0.15, 0, 0.15, 0)
+imageButton.Image = "rbxassetid://78631941162769"
+imageButton.BackgroundTransparency = 1
+imageButton.Parent = screenGui
+
+-- Adicionar cantos arredondados
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0.5, 0)
+uiCorner.Parent = imageButton
+
+-- Adicionar borda AMARELA
+local uiStroke = Instance.new("UIStroke", imageButton)
+uiStroke.Thickness = 2
+uiStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+uiStroke.Color = Color3.fromRGB(204, 153, 102) -- Màu khô gà (nâu vàng)
+
+-- Variáveis para arrastar
+local dragging = false
+local dragInput
+local dragStart
+local startPos
+
+-- Função para atualizar posição
+local function update(input)
+    local delta = input.Position - dragStart
+    imageButton.Position = UDim2.new(
+        startPos.X.Scale,
+        startPos.X.Offset + delta.X,
+        startPos.Y.Scale,
+        startPos.Y.Offset + delta.Y
+    )
+end
+
+-- Detectar início do arrasto
+imageButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = imageButton.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+-- Detectar movimento do mouse
+imageButton.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+-- Atualizar posição durante arrasto
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and input == dragInput then
+        update(input)
+    end
+end)
+
+-- Abrir/Fechar GUI (Minimize)
+local isOpen = true
+imageButton.MouseButton1Click:Connect(function()
+    isOpen = not isOpen
+    if isOpen then
+        Library:Minimize(false)
+    else
+        Library:Minimize(true)
+    end
+end)
+
+local Status = Library:MakeTab({
+    Title = "Info & Server",
+    Icon = "rbxassetid://7040410130"
+})
+
+local Farm = Library:MakeTab({
+    Title = "Tab Farming",
+    Icon = "rbxassetid://127561653320876"
+})
+
+local Others = Library:MakeTab({
+    Title = "Stack Farm",
+    Icon = "rbxassetid://10723405360"
+})
+
+local Maestry = Library:MakeTab({
+    Title = "Farm Mastery",
+    Icon = "rbxassetid://10709782497"
+})
+
+local Event = Library:MakeTab({
+    Title = "Sea Event",
+    Icon = "rbxassetid://10709783577"
+})
+
+local Race = Library:MakeTab({
+    Title = "Upgrade V4",
+    Icon = "rbxassetid://115164375298022"
+})
+
+local Dojo = Library:MakeTab({
+    Title = "Dojo & Drago Race",
+    Icon = "rbxassetid://91920478152016"
+})
+
+local Get = Library:MakeTab({
+    Title = "Get Item & Upgrade",
+    Icon = "rbxassetid://13075622619"
+})
+
+local Fruit = Library:MakeTab({
+    Title = "Raid & Fruit",
+    Icon = "rbxassetid://11155986081"
+})
+
+local Player = Library:MakeTab({
+    Title = "Local Player",
+    Icon = "rbxassetid://13075651575"
+})
+
+local Shop = Library:MakeTab({
+    Title = "Local Shop",
+    Icon = "rbxassetid://6031265976"
+})
+
+local Esp = Library:MakeTab({
+    Title = "Stats & ESP",
+    Icon = "rbxassetid://11155851001"
+})
+
+local Teleport = Library:MakeTab({
+    Title = "Tab Teleport",
+    Icon = "rbxassetid://10734886004"
+})
+
+local Setting = Library:MakeTab({
+    Title = "Setting & UI",
+    Icon = "rbxassetid://7734053495"
+})
+Status:AddDiscordInvite({
+    Name = "Server Discord Bamia Hub",
+    Description = "join for Update <3",
+    Logo = "rbxassetid://78631941162769",
+    Invite = "https://discord.gg/cJcQvFU79N"
+})
 
 Shop:AddSection("Fighting Shop")
 Shop:AddButton({
