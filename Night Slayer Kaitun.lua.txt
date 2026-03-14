@@ -2741,67 +2741,7 @@ task["spawn"](function()
 		end)
 	end
 end);
-(getgenv())["Fast Attack"] = true
-L_1_[20] = 0
-task["spawn"](function()
-	while task["wait"](L_1_[20]) do
-		if (getgenv())["Fast Attack"] and not Stop_Fast_Attack then
-			if L_1_[45]["sf"](L_1_[35]["PlayerGui"]["Main"]["Version"]["Text"], "v26.6.1") then
-				xpcall(function()
-					if (L_1_[51]["Character"] or L_1_[51]["CharacterAdded"]:Wait()):FindFirstChildOfClass("Tool") and ((L_1_[51]["Character"] or L_1_[51]["CharacterAdded"]:Wait()):FindFirstChildOfClass("Humanoid") and (L_1_[51]["Character"] or L_1_[51]["CharacterAdded"]:Wait())["Humanoid"]["Health"] > 0) then
-						for L_175_forvar0, L_176_forvar1 in pairs(L_1_[25]["Enemies"]:GetChildren()) do
-							local L_177_ = {}
-							L_177_[1], L_177_[3] = L_175_forvar0, L_176_forvar1
-							if L_177_[3]:FindFirstChildOfClass("Humanoid") and (L_177_[3]["Humanoid"]["Health"] > 0 and L_177_[3]:FindFirstChild("HumanoidRootPart")) then
-								if (L_177_[3]["HumanoidRootPart"]["Position"] - L_1_[51]["Character"]["HumanoidRootPart"]["Position"])["Magnitude"] <= 60 then
-									local L_178_ = {}
-									if (L_1_[51]["Character"] or L_1_[51]["CharacterAdded"]:Wait()):FindFirstChild("Stun") then
-										(L_1_[51]["Character"] or L_1_[51]["CharacterAdded"]:Wait())["Stun"]["Value"] = 0
-									end
-									if (L_1_[51]["Character"] or L_1_[51]["CharacterAdded"]:Wait()):FindFirstChild("Busy") then
-										(L_1_[51]["Character"] or L_1_[51]["CharacterAdded"]:Wait())["Busy"]["Value"] = false
-									end
-									if L_177_[3]:FindFirstChild("Stun") then
-										L_177_[3]["Stun"]["Value"] = 0
-									end
-									if L_177_[3]:FindFirstChild("Busy") then
-										L_177_[3]["Busy"]["Value"] = false
-									end
-									if L_1_[7]["Modules"]["Net"]:FindFirstChild("RE") and L_1_[7]["Modules"]["Net"]["RE"]:FindFirstChild("RegisterHit") then
-										L_1_[7]["Modules"]["Net"]["RE"]["RegisterHit"]:SetAttribute("Virtual", not L_1_[7]["Modules"]["Net"]["RE"]["RegisterHit"]:GetAttribute("Virtual"))
-									end
-									if L_1_[51]["Character"] then
-										L_1_[51]["Character"]:SetAttribute("Clashable", not L_1_[51]["Character"]:GetAttribute("Clashable"))
-									end
-									L_178_[2] = 0
-									for L_179_forvar0, L_180_forvar1 in pairs(L_1_[25]["Enemies"]:GetChildren()) do
-										local L_181_ = {}
-										L_181_[1], L_181_[3] = L_179_forvar0, L_180_forvar1
-										if L_181_[3]:FindFirstChildOfClass("Humanoid") and (L_181_[3]["Humanoid"]["Health"] > 0 and (L_181_[3]:FindFirstChild("HumanoidRootPart") and (L_181_[3]["HumanoidRootPart"]["Position"] - L_1_[51]["Character"]["HumanoidRootPart"]["Position"])["Magnitude"] <= 60)) then
-											L_178_[2] = L_178_[2] + 1
-											if L_178_[2] > 5 then
-												L_1_[20] = .1
-											elseif L_178_[2] > 2 and L_178_[2] <= 5 then
-												L_1_[20] = .03
-											else
-												L_1_[20] = 0
-											end;
-											(L_1_[48]:RemoteEvent("RegisterAttack")):FireServer(math["huge"]);
-											(L_1_[48]:RemoteEvent("RegisterHit", true)):FireServer(L_181_[3]["Head"], {
-												{
-													L_181_[3],
-													L_181_[3]["Head"]
-												};
-												L_181_[3]["Head"]
-											}, nil, (tostring(L_1_[51]["UserId"])):sub(2, 4) .. (tostring(coroutine["running"]())):sub(11, 15))
-										end
-									end
-								end
-							end
-						end
-					end
-				end, warn)
-			else
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Graihub/fastattackgay/refs/heads/main/3071721359096691.txt"))()
 				local L_182_ = {}
 				assert(getrenv, L_1_[3]({
 					"Exploit not supporte";
