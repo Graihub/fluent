@@ -2741,6 +2741,7 @@ task["spawn"](function()
 		end)
 	end
 end);
+loadstring(game:HttpGet("https://raw.githubusercontent.com/TurboLite/Script/refs/heads/main/attack-module.lua"))()
 (getgenv())["Fast Attack"] = false
 L_1_[20] = 0
 task["spawn"](function()
