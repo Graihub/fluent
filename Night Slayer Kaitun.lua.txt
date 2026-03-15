@@ -255,165 +255,107 @@ task["spawn"](function()
 		shared["BC_2"] = true
 	end
 end)
--- Crystal Hub UI for Night Slayer Kaitun
--- Discord: https://discord.gg/qVa6jedW9p
-
-local function CreateCrystalUI()
-    local Players = game:GetService("Players")
-    local Plr = Players.LocalPlayer
-    local PlayerGui = Plr:WaitForChild("PlayerGui")
-    
-    -- Clean up existing UI
-    if PlayerGui:FindFirstChild("CrystalHubUI") then
-        PlayerGui.CrystalHubUI:Destroy()
-    end
-    
-    -- Create ScreenGui
-    local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = "CrystalHubUI"
-    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    ScreenGui.ResetOnSpawn = false
-    ScreenGui.Parent = PlayerGui
-    
-    -- Create DropShadowHolder
-    local DropShadowHolder = Instance.new("Frame")
-    DropShadowHolder.Name = "DropShadowHolder"
-    DropShadowHolder.AnchorPoint = Vector2.new(0.5, 0.5)
-    DropShadowHolder.BackgroundTransparency = 1
-    DropShadowHolder.Position = UDim2.new(0.5, 0, 0.1, 0)
-    DropShadowHolder.Size = UDim2.new(0, 500, 0, 90)
-    DropShadowHolder.Parent = ScreenGui
-    
-    -- Create DropShadow
-    local DropShadow = Instance.new("ImageLabel")
-    DropShadow.Name = "DropShadow"
-    DropShadow.Image = "rbxassetid://6015897843"
-    DropShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    DropShadow.ImageTransparency = 0.5
-    DropShadow.ScaleType = Enum.ScaleType.Slice
-    DropShadow.SliceCenter = Rect.new(49, 49, 450, 450)
-    DropShadow.AnchorPoint = Vector2.new(0.5, 0.5)
-    DropShadow.BackgroundTransparency = 1
-    DropShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-    DropShadow.Size = UDim2.new(1, 47, 1, 47)
-    DropShadow.Parent = DropShadowHolder
-    
-    -- Create Main frame
-    local Main = Instance.new("Frame")
-    Main.Name = "Main"
-    Main.AnchorPoint = Vector2.new(0.5, 0.5)
-    Main.BackgroundColor3 = Color3.fromRGB(0, 20, 0)
-    Main.BackgroundTransparency = 0.3
-    Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-    Main.Size = UDim2.new(1, -47, 1, -47)
-    Main.Parent = DropShadow
-    
-    -- Create UICorner for Main
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 5)
-    UICorner.Parent = Main
-    
-    -- Create UIStroke for Main
-    local UIStroke = Instance.new("UIStroke")
-    UIStroke.Color = Color3.fromRGB(0, 255, 0)
-    UIStroke.Thickness = 2.5
-    UIStroke.Parent = Main
-    
-    -- Create UIGradient for UIStroke
-    local UIGradient = Instance.new("UIGradient")
-    UIGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 200, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150, 0))
-    })
-    UIGradient.Parent = UIStroke
-    
-    -- Create turtle icon
-    local turtle = Instance.new("ImageLabel")
-    turtle.Name = "TurtleIcon"
-    turtle.Size = UDim2.new(0, 28, 0, 28)
-    turtle.Position = UDim2.new(0.5, 0, 0, -14)
-    turtle.AnchorPoint = Vector2.new(0.5, 0)
-    turtle.BackgroundTransparency = 1
-    turtle.Image = "rbxassetid://117891630942237"
-    turtle.Rotation = 15
-    turtle.Parent = Main
-    
-    -- Create title text
-    local T = Instance.new("TextLabel")
-    T.Name = "Title"
-    T.Font = Enum.Font.GothamBold
-    T.Text = "BelBel Hub | Finder Fruits"
-    T.TextColor3 = Color3.fromRGB(0, 255, 0)
-    T.TextSize = 16.5
-    T.AnchorPoint = Vector2.new(0.5, 0)
-    T.BackgroundTransparency = 1
-    T.Position = UDim2.new(0.5, 0, 0, 15)
-    T.Size = UDim2.new(0, 500, 0, 18)
-    T.Parent = Main
-    
-    -- Create gradient for title
-    local UIGradient1 = Instance.new("UIGradient")
-    UIGradient1.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 100)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 200, 50)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150, 0))
-    })
-    UIGradient1.Parent = T
-    
-    -- Create main status label
-    local StatusLabel = Instance.new("TextLabel")
-    StatusLabel.Name = "StatusLabel"
-    StatusLabel.Font = Enum.Font.Gotham
-    StatusLabel.Text = "Status: Starting..."
-    StatusLabel.TextColor3 = Color3.fromRGB(200, 255, 200)
-    StatusLabel.TextSize = 14
-    StatusLabel.AnchorPoint = Vector2.new(0.5, 0)
-    StatusLabel.BackgroundTransparency = 1
-    StatusLabel.Position = UDim2.new(0.5, 0, 0, 35)
-    StatusLabel.Size = UDim2.new(0, 500, 0, 18)
-    StatusLabel.Parent = Main
-    
-    -- Create Discord link label
-    local DiscordLabel = Instance.new("TextLabel")
-    DiscordLabel.Name = "DiscordLabel"
-    DiscordLabel.Font = Enum.Font.Gotham
-    DiscordLabel.Text = "https://discord.gg/qVa6jedW9p"
-    DiscordLabel.TextColor3 = Color3.fromRGB(150, 255, 150)
-    DiscordLabel.TextSize = 14
-    DiscordLabel.AnchorPoint = Vector2.new(0.5, 0)
-    DiscordLabel.BackgroundTransparency = 1
-    DiscordLabel.Position = UDim2.new(0.5, 0, 0, 55)
-    DiscordLabel.Size = UDim2.new(0, 500, 0, 18)
-    DiscordLabel.Parent = Main
-    
-    -- Create a gradient for Discord link
-    local DiscordGradient = Instance.new("UIGradient")
-    DiscordGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 255, 100)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 200, 50))
-    })
-    DiscordGradient.Parent = DiscordLabel
-    
-    -- Status update functions
-    local function SetStatus(text)
-        if StatusLabel then
-            StatusLabel.Text = "Status: " .. tostring(text)
-        end
-    end
-    
-    -- Trả về hàm để có thể gọi từ bên ngoài
-    return {
-        SetStatus = SetStatus
-    }
+L_1_[43] = game:GetService("CoreGui")
+L_1_[6] = game:GetService("TweenService")
+if L_1_[43]:FindFirstChild("Status_UI") then
+	L_1_[43]["Status_UI"]:Destroy()
 end
+L_1_[11] = Instance["new"]("ScreenGui")
+L_1_[11]["Name"] = "Status_UI"
+L_1_[11]["ResetOnSpawn"] = false
+L_1_[11]["Parent"] = L_1_[43]
 
--- Tạo UI và gán vào biến toàn cục
-local CrystalUI = CreateCrystalUI()
-getgenv().CrystalStatus = CrystalUI.SetStatus
+L_1_[42] = Instance["new"]("Frame")
+L_1_[42]["Size"] = UDim2["new"](0, 150, 0, 50)
+L_1_[42]["Position"] = UDim2["new"](1, -10, .5, 0)
+L_1_[42]["AnchorPoint"] = Vector2["new"](1, .5)
+L_1_[42]["BackgroundColor3"] = Color3["fromRGB"](0, 0, 0)
+L_1_[42]["BackgroundTransparency"] = .25
+L_1_[42]["BorderSizePixel"] = 2
+L_1_[42]["BorderColor3"] = Color3["fromRGB"](255, 0, 0)
+L_1_[42]["Parent"] = L_1_[11]
+L_1_[41] = Instance["new"]("UICorner")
+L_1_[41]["CornerRadius"] = UDim["new"](0, 6)
+L_1_[41]["Parent"] = L_1_[42]
+L_1_[12] = Instance["new"]("UIStroke")
+L_1_[12]["Thickness"] = 2
+L_1_[12]["Color"] = Color3["fromRGB"](255, 0, 0)
+L_1_[12]["ApplyStrokeMode"] = Enum["ApplyStrokeMode"]["Border"]
+L_1_[12]["Parent"] = L_1_[42]
+L_1_[15] = Instance["new"]("TextLabel")
+L_1_[15]["Size"] = UDim2["new"](1, -10, .5, 0)
+L_1_[15]["Position"] = UDim2["new"](.5, 0, 0, 2)
+L_1_[15]["AnchorPoint"] = Vector2["new"](.5, 0)
+L_1_[15]["BackgroundTransparency"] = 1
+L_1_[15]["Text"] = "Night Slayer Hub - Kaitun"
+L_1_[15]["TextColor3"] = Color3["fromRGB"](255, 0, 0)
+L_1_[15]["TextSize"] = 13
+L_1_[15]["Font"] = Enum["Font"]["GothamBold"]
+L_1_[15]["TextXAlignment"] = Enum["TextXAlignment"]["Center"]
+L_1_[15]["TextYAlignment"] = Enum["TextYAlignment"]["Center"]
+L_1_[15]["Parent"] = L_1_[42]
+L_1_[26] = Instance["new"]("TextLabel")
+L_1_[26]["Size"] = UDim2["new"](1, -10, .4, 0)
+L_1_[26]["Position"] = UDim2["new"](.5, 0, .5, 0)
+L_1_[26]["AnchorPoint"] = Vector2["new"](.5, 0)
+L_1_[26]["BackgroundTransparency"] = 1
+L_1_[26]["Text"] = "Status : N/A"
+L_1_[26]["TextColor3"] = Color3["fromRGB"](255, 0, 0)
+L_1_[26]["TextSize"] = 12
+L_1_[26]["Font"] = Enum["Font"]["Gotham"]
+L_1_[26]["TextXAlignment"] = Enum["TextXAlignment"]["Center"]
+L_1_[26]["TextYAlignment"] = Enum["TextYAlignment"]["Center"]
+L_1_[26]["Parent"] = L_1_[42]
 
--- Thông báo UI đã được tạo
-CrystalUI.SetStatus("UI Loaded - Waiting for script...")
+L_NEW_FRAME = Instance["new"]("Frame")
+L_NEW_FRAME["Size"] = UDim2["new"](0, 250, 0, 60)
+L_NEW_FRAME["Position"] = UDim2["new"](.5, 0, .13, 0)
+L_NEW_FRAME["AnchorPoint"] = Vector2["new"](.5, .5)
+L_NEW_FRAME["BackgroundColor3"] = Color3["fromRGB"](0, 0, 0)
+L_NEW_FRAME["BackgroundTransparency"] = .25
+L_NEW_FRAME["Parent"] = L_1_[11]
+L_NEW_CORNER = Instance["new"]("UICorner")
+L_NEW_CORNER["CornerRadius"] = UDim["new"](0, 6)
+L_NEW_CORNER["Parent"] = L_NEW_FRAME
+L_NEW_STROKE = Instance["new"]("UIStroke")
+L_NEW_STROKE["Thickness"] = 2
+L_NEW_STROKE["Color"] = Color3["fromRGB"](255, 0, 0)
+L_NEW_STROKE["ApplyStrokeMode"] = Enum["ApplyStrokeMode"]["Border"]
+L_NEW_STROKE["Parent"] = L_NEW_FRAME
+L_NEW_TEXT = Instance["new"]("TextLabel")
+L_NEW_TEXT["Size"] = UDim2["new"](1, 0, 1, 0)
+L_NEW_TEXT["BackgroundTransparency"] = 1
+L_NEW_TEXT["Text"] = "Night Slayer Hub"
+L_NEW_TEXT["TextColor3"] = Color3["fromRGB"](255, 0, 0)
+L_NEW_TEXT["TextSize"] = 14
+L_NEW_TEXT["Font"] = Enum["Font"]["GothamBold"]
+L_NEW_TEXT["Parent"] = L_NEW_FRAME
+
+task["spawn"](function()
+	while task["wait"]() do
+		local L_27_ = {}
+		L_27_[4] = L_1_[6]:Create(L_1_[12], TweenInfo["new"](1.2, Enum["EasingStyle"]["Quad"], Enum["EasingDirection"]["Out"]), {["Color"] = Color3["fromRGB"](255, 0, 0)})
+		L_27_[5] = L_1_[6]:Create(L_1_[12], TweenInfo["new"](1.2, Enum["EasingStyle"]["Quad"], Enum["EasingDirection"]["Out"]), {["Color"] = Color3["fromRGB"](255, 0, 0)})
+		L_27_[2] = L_1_[6]:Create(L_1_[15], TweenInfo["new"](1.2), {["TextColor3"] = Color3["fromRGB"](255, 0, 0)})
+		L_27_[3] = L_1_[6]:Create(L_1_[15], TweenInfo["new"](1.2), {["TextColor3"] = Color3["fromRGB"](255, 0, 0)})
+		L_27_[1] = L_1_[6]:Create(L_1_[26], TweenInfo["new"](1.2), {["TextColor3"] = Color3["fromRGB"](255, 0, 0)})
+		L_27_[7] = L_1_[6]:Create(L_1_[26], TweenInfo["new"](1.2), {["TextColor3"] = Color3["fromRGB"](255, 0, 0)})
+		
+		local L_NEW_TWEEN = L_1_[6]:Create(L_NEW_STROKE, TweenInfo["new"](1.2), {["Color"] = Color3["fromRGB"](255, 0, 0)})
+		local L_NEW_TEXT_TWEEN = L_1_[6]:Create(L_NEW_TEXT, TweenInfo["new"](1.2), {["TextColor3"] = Color3["fromRGB"](255, 0, 0)})
+
+		L_27_[4]:Play()
+		L_27_[2]:Play()
+		L_27_[1]:Play()
+		L_NEW_TWEEN:Play()
+		L_NEW_TEXT_TWEEN:Play()
+		L_27_[4]["Completed"]:Wait()
+		L_27_[5]:Play()
+		L_27_[3]:Play()
+		L_27_[7]:Play()
+		L_27_[5]["Completed"]:Wait()
+	end
+end)
 if L_1_[30] == 2753915549 then
 	Old_World = true
 elseif L_1_[30] == 4442272183 then
