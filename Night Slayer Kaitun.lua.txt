@@ -255,9 +255,10 @@ task["spawn"](function()
 		shared["BC_2"] = true
 	end
 end)
+
 local function CreateCrystalUI()
-    local function CreateCrystalUI()
-    local function CreateCrystalUI()
+    local Players = game:GetService("Players")
+    local Plr = Players.LocalPlayer
     local PlayerGui = Plr:WaitForChild("PlayerGui")
     
     -- Clean up existing UI
@@ -278,7 +279,7 @@ local function CreateCrystalUI()
     DropShadowHolder.AnchorPoint = Vector2.new(0.5, 0.5)
     DropShadowHolder.BackgroundTransparency = 1
     DropShadowHolder.Position = UDim2.new(0.5, 0, 0.1, 0)
-    DropShadowHolder.Size = UDim2.new(0, 500, 0, 90) -- Increased height for additional status
+    DropShadowHolder.Size = UDim2.new(0, 500, 0, 90)
     DropShadowHolder.Parent = ScreenGui
     
     -- Create DropShadow
@@ -299,7 +300,7 @@ local function CreateCrystalUI()
     local Main = Instance.new("Frame")
     Main.Name = "Main"
     Main.AnchorPoint = Vector2.new(0.5, 0.5)
-    Main.BackgroundColor3 = Color3.fromRGB(0, 20, 0) -- Dark green background
+    Main.BackgroundColor3 = Color3.fromRGB(0, 20, 0)
     Main.BackgroundTransparency = 0.3
     Main.Position = UDim2.new(0.5, 0, 0.5, 0)
     Main.Size = UDim2.new(1, -47, 1, -47)
@@ -312,16 +313,16 @@ local function CreateCrystalUI()
     
     -- Create UIStroke for Main
     local UIStroke = Instance.new("UIStroke")
-    UIStroke.Color = Color3.fromRGB(0, 255, 0) -- Green stroke
+    UIStroke.Color = Color3.fromRGB(0, 255, 0)
     UIStroke.Thickness = 2.5
     UIStroke.Parent = Main
     
     -- Create UIGradient for UIStroke
     local UIGradient = Instance.new("UIGradient")
     UIGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 0)), -- Bright green
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 200, 0)), -- Medium green
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150, 0)) -- Dark green
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 200, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150, 0))
     })
     UIGradient.Parent = UIStroke
     
@@ -341,7 +342,7 @@ local function CreateCrystalUI()
     T.Name = "Title"
     T.Font = Enum.Font.GothamBold
     T.Text = "BelBel Hub | Finder Fruits"
-    T.TextColor3 = Color3.fromRGB(0, 255, 0) -- Green text
+    T.TextColor3 = Color3.fromRGB(0, 255, 0)
     T.TextSize = 16.5
     T.AnchorPoint = Vector2.new(0.5, 0)
     T.BackgroundTransparency = 1
@@ -352,9 +353,9 @@ local function CreateCrystalUI()
     -- Create gradient for title
     local UIGradient1 = Instance.new("UIGradient")
     UIGradient1.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 100)), -- Bright green
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 200, 50)), -- Medium green
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150, 0)) -- Dark green
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 100)),
+        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 200, 50)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 150, 0))
     })
     UIGradient1.Parent = T
     
@@ -363,7 +364,7 @@ local function CreateCrystalUI()
     StatusLabel.Name = "StatusLabel"
     StatusLabel.Font = Enum.Font.Gotham
     StatusLabel.Text = "Status: Starting..."
-    StatusLabel.TextColor3 = Color3.fromRGB(200, 255, 200) -- Light green
+    StatusLabel.TextColor3 = Color3.fromRGB(200, 255, 200)
     StatusLabel.TextSize = 14
     StatusLabel.AnchorPoint = Vector2.new(0.5, 0)
     StatusLabel.BackgroundTransparency = 1
@@ -372,25 +373,25 @@ local function CreateCrystalUI()
     StatusLabel.Parent = Main
     
     -- Create Discord link label
-    local FruitStatusLabel = Instance.new("TextLabel")
-    FruitStatusLabel.Name = "FruitStatusLabel"
-    FruitStatusLabel.Font = Enum.Font.Gotham
-    FruitStatusLabel.Text = "https://discord.gg/qVa6jedW9p"
-    FruitStatusLabel.TextColor3 = Color3.fromRGB(150, 255, 150) -- Light green
-    FruitStatusLabel.TextSize = 14
-    FruitStatusLabel.AnchorPoint = Vector2.new(0.5, 0)
-    FruitStatusLabel.BackgroundTransparency = 1
-    FruitStatusLabel.Position = UDim2.new(0.5, 0, 0, 55)
-    FruitStatusLabel.Size = UDim2.new(0, 500, 0, 18)
-    FruitStatusLabel.Parent = Main
+    local DiscordLabel = Instance.new("TextLabel")
+    DiscordLabel.Name = "DiscordLabel"
+    DiscordLabel.Font = Enum.Font.Gotham
+    DiscordLabel.Text = "https://discord.gg/qVa6jedW9p"
+    DiscordLabel.TextColor3 = Color3.fromRGB(150, 255, 150)
+    DiscordLabel.TextSize = 14
+    DiscordLabel.AnchorPoint = Vector2.new(0.5, 0)
+    DiscordLabel.BackgroundTransparency = 1
+    DiscordLabel.Position = UDim2.new(0.5, 0, 0, 55)
+    DiscordLabel.Size = UDim2.new(0, 500, 0, 18)
+    DiscordLabel.Parent = Main
     
     -- Create a gradient for Discord link
-    local FruitGradient = Instance.new("UIGradient")
-    FruitGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 255, 100)), -- Bright green
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 200, 50)) -- Medium green
+    local DiscordGradient = Instance.new("UIGradient")
+    DiscordGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 255, 100)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 200, 50))
     })
-    FruitGradient.Parent = FruitStatusLabel
+    DiscordGradient.Parent = DiscordLabel
     
     -- Status update functions
     local function SetStatus(text)
@@ -404,6 +405,13 @@ local function CreateCrystalUI()
         SetStatus = SetStatus
     }
 end
+
+-- Tạo UI và gán vào biến toàn cục
+local CrystalUI = CreateCrystalUI()
+getgenv().CrystalStatus = CrystalUI.SetStatus
+
+-- Thông báo UI đã được tạo
+CrystalUI.SetStatus("UI Loaded - Waiting for script...")
 
 task["spawn"](function()
 	while task["wait"]() do
