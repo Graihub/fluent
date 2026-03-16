@@ -48,7 +48,7 @@ end;
 		"Bizarre Revolver";
 		"Bazooka"
 	};
-	["FPS Booster"] = false
+	["FPS Booster"] = true
 }
 wait(5)
 if game["Players"]["LocalPlayer"]["PlayerGui"]:FindFirstChild("Main (minimal)") then
@@ -2186,26 +2186,22 @@ L_1_[14] = function()
 				L_1_[7]["Remotes"]["CommF_"]:InvokeServer("LoadItem", "Yama")
 			end
 		end
-if L_48_ == "Sword" then
-    for _, tool in pairs(L_1_[35]["Backpack"]:GetChildren()) do
-        if tool:IsA("Tool") and tostring(tool.ToolTip) == "Sword" then
-            local selectedTool = game.Players.LocalPlayer.Backpack:FindFirstChild(SelectWeapon)
-            if selectedTool then
-                game.Players.LocalPlayer.Character.Humanoid:EquipTool(selectedTool)
-                break -- Exit after equipping
-            end
-        end
-    end
-else
-    for _, tool in pairs(L_1_[35]["Backpack"]:GetChildren()) do
-        if tool:IsA("Tool") and tostring(tool.ToolTip) == "Melee" then
-            local selectedTool = game.Players.LocalPlayer.Backpack:FindFirstChild(SelectWeapon)
-            if selectedTool then
-                game.Players.LocalPlayer.Character.Humanoid:EquipTool(selectedTool)
-                break -- Exit after equipping
-            end
-        end
-    end
+		for L_47_forvar0, L_48_forvar1 in pairs(L_1_[35]["Backpack"]:GetChildren()) do
+			local L_49_ = {}
+			L_49_[2], L_49_[1] = L_47_forvar0, L_48_forvar1
+			if L_49_[1]:IsA("Tool") and tostring(L_49_[1]["ToolTip"]) == "Sword" then
+				(L_1_[35]["Character"]:WaitForChild("Humanoid")):EquipTool(L_49_[1])
+			end
+		end
+	else
+		for L_50_forvar0, L_51_forvar1 in pairs(L_1_[35]["Backpack"]:GetChildren()) do
+			local L_52_ = {}
+			L_52_[2], L_52_[1] = L_50_forvar0, L_51_forvar1
+			if L_52_[1]:IsA("Tool") and tostring(L_52_[1]["ToolTip"]) == "Melee" then
+				(L_1_[35]["Character"]:WaitForChild("Humanoid")):EquipTool(L_52_[1])
+			end
+		end
+	end
 end
 function TPBoat(L_53_arg0, L_54_arg1, L_55_arg2, L_56_arg3)
 	local L_57_ = {}
@@ -3333,6 +3329,7 @@ L_1_[39] = function()
 						if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 							L_1_[35]["Character"]["HumanoidRootPart"]["Remotes"]["CommF_"]:InvokeServer("Buso")
 						end
+						L_1_[14]()
 					until not L_256_[3]["Parent"] or L_256_[3]["Humanoid"]["Health"] <= 0
 				end
 			end
@@ -3351,6 +3348,7 @@ L_1_[39] = function()
 								L_1_[35]["Character"]["HumanoidRootPart"]["Remotes"]["CommF_"]:InvokeServer("Buso")
 							end
 							L_1_[31](L_259_[1]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, -30, 0), 1.5)
+							L_1_[14]()
 						until not L_259_[1]["Parent"] or L_259_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 					end
 				end
@@ -3365,6 +3363,7 @@ L_1_[39] = function()
 								L_1_[35]["Character"]["HumanoidRootPart"]["Remotes"]["CommF_"]:InvokeServer("Buso")
 							end
 							L_1_[31](L_262_[1]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, -30, 0), 1.5)
+							L_1_[14]()
 						until not L_262_[1]["Parent"] or L_262_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 					end
 				end
@@ -3384,6 +3383,7 @@ L_1_[39] = function()
 							if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 								L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 							end
+							L_1_[14]()
 						until not L_265_[2]["Parent"] or L_265_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 					end
 				end
@@ -3398,6 +3398,7 @@ L_1_[39] = function()
 							if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 								L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 							end
+							L_1_[14]()
 						until not L_268_[2]["Parent"] or L_268_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 					end
 				end
@@ -3424,6 +3425,7 @@ L_1_[39] = function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until L_271_[2]["Humanoid"]["Health"] <= 0 or not L_1_[40]:FindFirstChild(Enemy) or not(L_1_[35]["PlayerGui"]["Main"]:FindFirstChild("Quest"))["Visible"] or not(getgenv())["AutoFarm"] or Quest ~= nil
 							end
 						end
@@ -3454,6 +3456,7 @@ L_1_[39] = function()
 								L_1_[45]["wt"]()
 								SROP = true
 								L_1_[31](L_274_[1]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 30, 0), 1.5)
+								L_1_[14]()
 								L_1_[45]["BN"](L_274_[1]["Name"])
 							until not L_274_[1]["Parent"] or L_274_[1]["Humanoid"]["Health"] <= 0 or L_1_[24]["Value"] >= 91 or not(getgenv())["AutoFarm"] or Quest ~= nil
 						end
@@ -3480,6 +3483,7 @@ L_1_[39] = function()
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
 									L_1_[45]["BN"](L_277_[2]["Name"])
+									L_1_[14]()
 								until L_277_[2]["Humanoid"]["Health"] <= 0 or not L_1_[40]:FindFirstChild(Enemy) or not(L_1_[35]["PlayerGui"]["Main"]:FindFirstChild("Quest"))["Visible"] or Quest ~= nil
 							end
 						end
@@ -3534,6 +3538,7 @@ L_1_[39] = function()
 								L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 							end
 							L_1_[45]["BN"](L_286_[2]["Name"])
+							L_1_[14]()
 						until L_286_[2]["Humanoid"]["Health"] <= 0 or not L_1_[40]:FindFirstChild(Enemy) or not(L_1_[35]["PlayerGui"]["Main"]:FindFirstChild("Quest"))["Visible"] or Quest ~= nil
 					end
 				end
@@ -3580,6 +3585,7 @@ Ewx = true
 task["spawn"](function()
 	while L_1_[45]["wt"]() do
 		if _G["Ew"] then
+			L_1_[14]()
 		else
 			L_1_[38]()
 			if Ewx then
@@ -3597,6 +3603,7 @@ task["spawn"](function()
 				repeat
 					L_1_[45]["wt"](L_1_[21])
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuyBlackLeg")
+					L_1_[14]()
 					L_1_[45]["wt"](.05)
 					if L_1_[45]["ffc"](L_1_[35]["Character"], "Black Leg") or L_1_[45]["ffc"](L_1_[35]["Backpack"], "Black Leg") and not Black_Leg_C then
 						Black_Leg_C = true
@@ -3607,6 +3614,7 @@ task["spawn"](function()
 			if not Electro_C then
 				repeat
 					L_1_[45]["wt"](L_1_[21])
+					L_1_[14]()
 					L_1_[2]:SendKeyEvent(true, "V", false, game)
 					wait(.5)
 					L_1_[2]:SendKeyEvent(false, "V", false, game)
@@ -3623,6 +3631,7 @@ task["spawn"](function()
 			if not Fishman_Karate_C then
 				repeat
 					L_1_[45]["wt"](L_1_[21])
+					L_1_[14]()
 					if L_1_[45]["ffc"](L_1_[35]["Character"], "Electro") and (L_1_[35]["Character"]["Electro"]["Level"]["Value"] >= 300 and not Fishman_Karate_C) then
 						if L_1_[35]["Character"]["Electro"]["Level"]["Value"] >= 400 then
 							Electro_C_M = true
@@ -3637,6 +3646,7 @@ task["spawn"](function()
 				repeat
 					local L_295_ = {}
 					task["wait"](L_1_[21])
+					L_1_[14]()
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuyFishmanKarate")
 					L_295_[2] = L_1_[35]["Character"]:FindFirstChild("Fishman Karate")
 					if L_295_[2] and (L_295_[2]:FindFirstChild("Level") and L_295_[2]["Level"]["Value"] >= 400) then
@@ -3659,6 +3669,7 @@ task["spawn"](function()
 			end
 			repeat
 				task["wait"](L_1_[21])
+				L_1_[14]()
 				if not Super_human then
 					if Dragon_Claw_C then
 						if L_1_[45]["ffc"](L_1_[35]["Character"], "Dragon Claw") and L_1_[35]["Character"]["Dragon Claw"]["Level"]["Value"] >= 300 then
@@ -3688,6 +3699,7 @@ task["spawn"](function()
 				repeat
 					local L_298_ = {}
 					task["wait"](L_1_[21])
+					L_1_[14]()
 					L_298_[1] = L_1_[35]["Character"]:FindFirstChild("Death Step")
 					if L_298_[1] and (L_298_[1]:FindFirstChild("Level") and L_298_[1]["Level"]["Value"] >= 400) then
 						local L_299_ = {}
@@ -3703,6 +3715,7 @@ task["spawn"](function()
 				repeat
 					local L_300_ = {}
 					task["wait"](L_1_[21])
+					L_1_[14]()
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuyDeathStep")
 					L_300_[1] = L_1_[35]["Character"]:FindFirstChild("Death Step")
 					if L_300_[1] and (L_300_[1]:FindFirstChild("Level") and L_300_[1]["Level"]["Value"] >= 400) then
@@ -3714,6 +3727,7 @@ task["spawn"](function()
 				repeat
 					local L_301_ = {}
 					task["wait"](L_1_[21])
+					L_1_[14]()
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuyElectro")
 					L_301_[1] = L_1_[35]["Character"]:FindFirstChild("Electro")
 					if L_301_[1] and (L_301_[1]:FindFirstChild("Level") and L_301_[1]["Level"]["Value"] >= 400) then
@@ -3737,6 +3751,7 @@ task["spawn"](function()
 				repeat
 					local L_303_ = {}
 					task["wait"](L_1_[21])
+					L_1_[14]()
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BlackbeardReward", "DragonClaw", "2")
 					L_303_[1] = L_1_[35]["Character"]:FindFirstChild("Dragon Claw")
 					if L_303_[1] and (L_303_[1]:FindFirstChild("Level") and L_303_[1]["Level"]["Value"] >= 400) then
@@ -3747,6 +3762,7 @@ task["spawn"](function()
 			if not Sharkman_Karate_C then
 				repeat
 					L_1_[45]["wt"](L_1_[21])
+					L_1_[14]()
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuySharkmanKarate")
 					if L_1_[45]["ffc"](L_1_[35]["Backpack"], "Sharkman Karate") or L_1_[45]["ffc"](L_1_[35]["Character"], "Sharkman Karate") then
 						Sharkman_Karate_C = true
@@ -3757,6 +3773,7 @@ task["spawn"](function()
 				repeat
 					local L_304_ = {}
 					task["wait"](L_1_[21])
+					L_1_[14]()
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuySharkmanKarate")
 					L_304_[1] = L_1_[35]["Character"]:FindFirstChild("Sharkman Karate")
 					if L_304_[1] and (L_304_[1]:FindFirstChild("Level") and L_304_[1]["Level"]["Value"] >= 400) then
@@ -3776,6 +3793,7 @@ task["spawn"](function()
 				repeat
 					local L_305_ = {}
 					task["wait"](L_1_[21])
+					L_1_[14]()
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuyElectricClaw")
 					L_305_[2] = L_1_[35]["Character"]:FindFirstChild("Electric Claw")
 					if L_305_[2] and (L_305_[2]:FindFirstChild("Level") and L_305_[2]["Level"]["Value"] >= 400) then
@@ -3795,6 +3813,7 @@ task["spawn"](function()
 				repeat
 					local L_306_ = {}
 					task["wait"](L_1_[21])
+					L_1_[14]()
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuyDragonTalon")
 					L_306_[1] = L_1_[35]["Character"]:FindFirstChild("Dragon Talon")
 					if L_306_[1] and (L_306_[1]:FindFirstChild("Level") and L_306_[1]["Level"]["Value"] >= 400) then
@@ -3814,6 +3833,7 @@ task["spawn"](function()
 				repeat
 					local L_307_ = {}
 					task["wait"](L_1_[21])
+					L_1_[14]()
 					L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuyGodhuman")
 					L_307_[2] = L_1_[35]["Character"]:FindFirstChild("Godhuman")
 					if L_307_[2] and (L_307_[2]:FindFirstChild("Level") and L_307_[2]["Level"]["Value"] >= 400) then
@@ -4048,6 +4068,7 @@ task["spawn"](function()
 							if not Dragon_Claw_C then
 								repeat
 									L_1_[45]["wt"]()
+									L_1_[14]()
 									if L_1_[45]["ffc"](L_1_[35]["Backpack"], "Dragon Claw") or L_1_[45]["ffc"](L_1_[35]["Character"], "Dragon Claw") then
 										Dragon_Claw_C = true
 										return
@@ -4120,6 +4141,7 @@ task["spawn"](function()
 																if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 																	L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 																end
+																L_1_[14]()
 															until not L_323_[1]["Parent"] or L_323_[1]["Humanoid"]["Health"] <= 0 or #L_1_[45]["GetMobRaid"]() == 0
 														end
 													end
@@ -4311,11 +4333,13 @@ task["spawn"](function()
 							if not Death_Step then
 								repeat
 									L_1_[45]["wt"]()
+									L_1_[14]()
 									if not Super_humanw_C_M then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuySuperhuman")
 										if L_1_[35]["Character"]["Superhuman"]["Level"]["Value"] < 400 then
 											repeat
 												L_1_[45]["wt"]()
+												L_1_[14]()
 												Quest = nil
 												L_1_[45]["Status"](L_1_[3]({
 													" Status : Auto Farm ",
@@ -4338,6 +4362,7 @@ task["spawn"](function()
 													Death_Step = true
 													return
 												else
+													L_1_[14]()
 													Quest = nil
 													L_1_[45]["Status"](L_1_[3]({
 														" Status : Auto Farm ",
@@ -4349,6 +4374,7 @@ task["spawn"](function()
 												repeat
 													L_1_[45]["wt"]()
 													L_1_[7]["Remotes"]["CommF_"]:InvokeServer("BuyBlackLeg")
+													L_1_[14]()
 													Quest = nil
 													L_1_[45]["Status"](L_1_[3]({
 														" Status : Auto Farm ";
@@ -4419,6 +4445,7 @@ task["spawn"](function()
 																if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 																	L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 																end
+																L_1_[14]()
 															until not L_350_[1]["Parent"] or L_350_[1]["Humanoid"]["Health"] <= 0 or #L_1_[45]["GetMobRaid"]() == 0
 														end
 													end
@@ -4567,6 +4594,7 @@ task["spawn"](function()
 							if not Sharkman_Karate_C then
 								repeat
 									L_1_[45]["wt"]()
+									L_1_[14]()
 									if L_1_[45]["ffc"](L_1_[35]["Backpack"], "Sharkman Karate") or L_1_[45]["ffc"](L_1_[35]["Character"], "Sharkman Karate") then
 										Sharkman_Karate_C = true
 										return
@@ -4578,6 +4606,7 @@ task["spawn"](function()
 												Sharkman_Karate_C = true
 												return
 											else
+												L_1_[14]()
 												Quest = nil
 												L_1_[45]["Status"](L_1_[3]({
 													" Status : Auto Farm ",
@@ -4642,6 +4671,7 @@ task["spawn"](function()
 																if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 																	L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 																end
+																L_1_[14]()
 															until not L_367_[1]["Parent"] or L_367_[1]["Humanoid"]["Health"] <= 0 or #L_1_[45]["GetMobRaid"]() == 0
 														end
 													end
@@ -4787,6 +4817,7 @@ task["spawn"](function()
 							if not Electric_Claw_C then
 								repeat
 									L_1_[45]["wt"]()
+									L_1_[14]()
 									if L_1_[45]["ffc"](L_1_[35]["Backpack"], "Electric Claw") or L_1_[45]["ffc"](L_1_[35]["Character"], "Electric Claw") then
 										Electric_Claw_C = true
 										return
@@ -4811,6 +4842,7 @@ task["spawn"](function()
 												end
 												return
 											else
+												L_1_[14]()
 												Quest = nil
 												L_1_[45]["Status"](L_1_[3]({
 													" Status : Auto Farm ";
@@ -4875,6 +4907,7 @@ task["spawn"](function()
 																if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 																	L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 																end
+																L_1_[14]()
 															until not L_384_[2]["Parent"] or L_384_[2]["Humanoid"]["Health"] <= 0 or #L_1_[45]["GetMobRaid"]() == 0
 														end
 													end
@@ -5025,6 +5058,7 @@ task["spawn"](function()
 							if not Dragon_Talon_C then
 								repeat
 									L_1_[45]["wt"]()
+									L_1_[14]()
 									if L_1_[45]["ffc"](L_1_[35]["Backpack"], "Dragon Talon") or L_1_[45]["ffc"](L_1_[35]["Character"], "Dragon Talon") then
 										Dragon_Talon_C = true
 										return
@@ -5039,6 +5073,7 @@ task["spawn"](function()
 												}))
 												L_1_[45]["FarmBone"](true)
 											else
+												L_1_[14]()
 												Quest = nil
 												L_1_[45]["Status"](L_1_[3]({
 													" Status : Auto Farm ",
@@ -5103,6 +5138,7 @@ task["spawn"](function()
 																if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 																	L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 																end
+																L_1_[14]()
 															until not L_401_[3]["Parent"] or L_401_[3]["Humanoid"]["Health"] <= 0 or #L_1_[45]["GetMobRaid"]() == 0
 														end
 													end
@@ -5251,6 +5287,7 @@ task["spawn"](function()
 							if not God_Human_C then
 								repeat
 									L_1_[45]["wt"]()
+									L_1_[14]()
 									if L_1_[45]["ffc"](L_1_[35]["Backpack"], "Godhuman") or L_1_[45]["ffc"](L_1_[35]["Character"], "Godhuman") then
 										God_Human_C = true
 										return
@@ -5260,6 +5297,7 @@ task["spawn"](function()
 											if L_1_[1]["Value"] >= 5000000 then
 												Quest = "Godhuman"
 											else
+												L_1_[14]()
 												Quest = nil
 												L_1_[45]["Status"](L_1_[3]({
 													" Status : Auto Farm ",
@@ -5324,6 +5362,7 @@ task["spawn"](function()
 																if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 																	L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 																end
+																L_1_[14]()
 															until not L_418_[1]["Parent"] or L_418_[1]["Humanoid"]["Health"] <= 0 or #L_1_[45]["GetMobRaid"]() == 0
 														end
 													end
@@ -5537,6 +5576,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_437_[3]["Parent"] or L_437_[3]["Humanoid"]["Health"] <= 0 or L_1_[45]["gi"]("Saber")
 								L_1_[7]["Remotes"]["CommF_"]:InvokeServer("ProQuestProgress", "RichSon")
 							end
@@ -5560,6 +5600,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_440_[3]["Parent"] or L_440_[3]["Humanoid"]["Health"] <= 0 or L_1_[45]["gi"]("Saber")
 							end
 						end
@@ -5600,6 +5641,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_444_[2]["Parent"] or L_444_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or L_441_[1]["KilledIceBoss"]
 								L_1_[45]["wt"](2)
 								L_1_[7]["Remotes"]["CommF_"]:InvokeServer("TravelDressrosa")
@@ -5635,6 +5677,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_447_[1]["Parent"] or L_447_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Thunder God")
 							end
 						end
@@ -5652,6 +5695,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_450_[3]["Parent"] or L_450_[3]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Thunder God")
 							end
 						end
@@ -5677,6 +5721,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_453_[3]["Parent"] or L_453_[3]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("The Saw")
 							end
 						end
@@ -5694,6 +5739,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_456_[3]["Parent"] or L_456_[3]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("The Saw")
 							end
 						end
@@ -5719,6 +5765,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_459_[1]["Parent"] or L_459_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Smoke Admiral")
 							end
 						end
@@ -5736,6 +5783,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_462_[2]["Parent"] or L_462_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Smoke Admiral")
 							end
 						end
@@ -5761,6 +5809,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_465_[1]["Parent"] or L_465_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Chief Warden")
 							end
 						end
@@ -5778,6 +5827,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_468_[2]["Parent"] or L_468_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Chief Warden")
 							end
 						end
@@ -5803,6 +5853,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_471_[2]["Parent"] or L_471_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Magma Admiral")
 							end
 						end
@@ -5820,6 +5871,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_474_[3]["Parent"] or L_474_[3]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Magma Admiral")
 							end
 						end
@@ -5845,6 +5897,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_477_[2]["Parent"] or L_477_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Wysper")
 							end
 						end
@@ -5862,6 +5915,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_480_[1]["Parent"] or L_480_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Wysper")
 							end
 						end
@@ -5887,6 +5941,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_483_[3]["Parent"] or L_483_[3]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Captain Elephant")
 							end
 						end
@@ -5904,6 +5959,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_486_[2]["Parent"] or L_486_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Captain Elephant")
 							end
 						end
@@ -5926,6 +5982,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_489_[1]["Parent"] or L_489_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Orbitus")
 							end
 						end
@@ -5940,6 +5997,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_492_[2]["Parent"] or L_492_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Orbitus")
 							end
 						end
@@ -5962,6 +6020,7 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_495_[2]["Parent"] or L_495_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Diamond")
 							end
 						end
@@ -5976,7 +6035,8 @@ task["spawn"](function()
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
-until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Diamond")
+									L_1_[14]()
+								until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Diamond")
 							end
 						end
 					end
@@ -5998,6 +6058,7 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_501_[2]["Parent"] or L_501_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Awakened Ice Admiral")
 							end
 						end
@@ -6012,6 +6073,7 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_504_[2]["Parent"] or L_504_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Awakened Ice Admiral")
 							end
 						end
@@ -6036,6 +6098,7 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 											if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 												L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 											end
+											L_1_[14]()
 										until (L_508_[2]["HumanoidRootPart"]["Position"] - L_1_[35]["Character"]["HumanoidRootPart"]["Position"])["Magnitude"] <= 50 or L_508_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 									end
 								end
@@ -6057,6 +6120,7 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 										if not game["Players"]["LocalPlayer"]["Character"]:FindFirstChild("HasBuso") then
 											L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 										end
+										L_1_[14]()
 									until not L_511_[1]["Parent"] or L_511_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 								end
 							end
@@ -6099,6 +6163,7 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 										if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 											L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 										end
+										L_1_[14]()
 									until not L_514_[2]["Parent"] or L_514_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 								end
 							end
@@ -6113,6 +6178,7 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 										if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 											L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 										end
+										L_1_[14]()
 									until not L_517_[2]["Parent"] or L_517_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 								end
 							end
@@ -6140,6 +6206,7 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 											if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 												L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 											end
+											L_1_[14]()
 										until not L_520_[1]["Parent"] or L_520_[1]["Humanoid"]["Health"] <= 0 or L_1_[45]["ffc"](L_1_[35]["Backpack"], "Flower 3") or L_1_[45]["ffc"](L_1_[35]["Character"], "Flower 3") or not(getgenv())["AutoFarm"]
 									end
 								end
@@ -6217,6 +6284,7 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 																if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 																	L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 																end
+																L_1_[14]()
 															else
 																Kill_Orbitus = true
 																break
@@ -6249,6 +6317,7 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 																if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 																	L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 																end
+																L_1_[14]()
 															else
 																Kill_Jeremy = true
 																break
@@ -6281,7 +6350,8 @@ until not L_498_[3]["Parent"] or L_498_[3]["Humanoid"]["Health"] <= 0 or not(get
 																if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 																	L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 																end
-else
+																L_1_[14]()
+															else
 																Kill_Diamond = true
 																break
 															end
@@ -6438,6 +6508,7 @@ else
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_539_[2]["Parent"] or L_539_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Don Swan")
 							end
 						end
@@ -6452,6 +6523,7 @@ else
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_542_[1]["Parent"] or L_542_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Don Swan")
 							end
 						end
@@ -6478,6 +6550,7 @@ else
 								end
 								repeat
 									L_1_[45]["wt"](.1)
+									L_1_[14]()
 									L_1_[31](L_545_[3]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 30, 0), 1.5)
 								until L_545_[3]["Humanoid"]["Health"] <= 0 or not L_545_[3]["Parent"] or L_1_[7]["Remotes"]["CommF_"]:InvokeServer("ZQuestProgress", "Check") == 1
 								if L_1_[7]["Remotes"]["CommF_"]:InvokeServer("ZQuestProgress", "Check") == 1 then
@@ -6509,6 +6582,7 @@ else
 					end
 					okokok = true
 				else
+					L_1_[14]()
 					Quest = nil
 					L_1_[45]["Status"](L_1_[3]({
 						" Status : Auto Farm ",
@@ -6528,6 +6602,7 @@ else
 								end
 								repeat
 									wait(.1)
+									L_1_[14]()
 									L_551_[3]["HumanoidRootPart"]["Size"] = Vector3["new"](50, 50, 50)
 									L_1_[31](L_551_[3]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 15, 0), 1.5)
 									L_1_[33]:Button1Down(Vector2["new"](1280, 600))
@@ -6574,6 +6649,7 @@ else
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_557_[1]["Parent"] or L_557_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Hydra Leader")
 							end
 						end
@@ -6588,6 +6664,7 @@ else
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_560_[2]["Parent"] or L_560_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Hydra Leader")
 							end
 						end
@@ -6661,6 +6738,7 @@ else
 									repeat
 										L_1_[45]["wt"]()
 										L_1_[31](L_564_[3]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 20, 0), 1.5)
+										L_1_[14]()
 										L_1_[45]["BN"](L_564_[3]["Name"])
 									until not L_564_[3]["Parent"] or L_564_[3]["Humanoid"]["Health"] <= 0
 									StatrMagnet = false
@@ -6682,6 +6760,7 @@ else
 									repeat
 										L_1_[45]["wt"]()
 										L_1_[31](L_567_[3]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 20, 0), 1.5)
+										L_1_[14]()
 										L_1_[45]["BN"](L_567_[3]["Name"])
 									until not L_567_[3]["Parent"] or L_567_[3]["Humanoid"]["Health"] <= 0
 									StatrMagnet = false
@@ -6704,6 +6783,7 @@ else
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_570_[2]["Parent"] or L_570_[2]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Longma")
 							end
 						end
@@ -6718,6 +6798,7 @@ else
 									if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 										L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 									end
+									L_1_[14]()
 								until not L_573_[3]["Parent"] or L_573_[3]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"] or not L_1_[45]["CheckBoss"]("Longma")
 							end
 						end
@@ -6758,6 +6839,7 @@ else
 								repeat
 									wait()
 									L_1_[31](Monster["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 20, 0), 1.5)
+									L_1_[14]()
 								until not Monster["Parent"] or Monster["Humanoid"]["Health"] <= 0
 								StatrMagnet = false
 							elseif Monster == nil then
@@ -6808,6 +6890,7 @@ else
 									end
 								end
 								wait(1)
+								L_1_[14]()
 								wait(2)
 							end
 						end
@@ -6890,6 +6973,7 @@ else
 											if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 												L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 											end
+											L_1_[14]()
 										until not L_595_[3]["Parent"] or L_595_[3]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 									end
 								end
@@ -6904,6 +6988,7 @@ else
 											if not L_1_[45]["ffc"](L_1_[35]["Character"], "HasBuso") then
 												L_1_[7]["Remotes"]["CommF_"]:InvokeServer("Buso")
 											end
+											L_1_[14]()
 										until not L_598_[1]["Parent"] or L_598_[1]["Humanoid"]["Health"] <= 0 or not(getgenv())["AutoFarm"]
 									end
 								end
@@ -7108,6 +7193,7 @@ else
 											repeat
 												wait(.1)
 												L_1_[31](L_616_[2]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 25, 0), 1.5)
+												L_1_[14]()
 											until not L_616_[2]["Parent"] or L_616_[2]["Humanoid"]["Health"] <= 0
 										end
 									end
@@ -7130,6 +7216,7 @@ else
 									if L_619_[1]:FindFirstChild("Humanoid") and (L_619_[1]["Humanoid"]["Health"] > 0 and (L_619_[1]["HumanoidRootPart"]["Position"] - L_1_[35]["Character"]["HumanoidRootPart"]["Position"])["Magnitude"] <= 1500) then
 										repeat
 											wait(.3)
+											L_1_[14]()
 											L_1_[31](L_619_[1]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 30, 0), 1.5)
 										until not L_619_[1]["Parent"] or L_619_[1]["Humanoid"]["Health"] <= 0
 									end
@@ -7151,6 +7238,7 @@ else
 												wait(.3)
 												if L_1_[45]["ffc"](L_622_[2], "HumanoidRootPart") then
 													L_1_[31](L_622_[2]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 30, 0), 1.5)
+													L_1_[14]()
 												else
 													break
 												end
@@ -7172,6 +7260,7 @@ else
 										wait(1)
 										Ceyma_HeavenlyDimension = true
 									elseif Ceyma_HeavenlyDimension then
+										L_1_[14]()
 										if L_1_[40]:FindFirstChildOfClass("Model") then
 											for L_623_forvar0, L_624_forvar1 in pairs(L_1_[40]:GetChildren()) do
 												local L_625_ = {}
@@ -7181,6 +7270,7 @@ else
 														repeat
 															wait()
 															L_1_[31](L_625_[2]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 30, 0), 1.5)
+															L_1_[14]()
 														until not L_625_[2]["Parent"] or L_625_[2]["Humanoid"]["Health"] <= 0
 													end
 												end
@@ -7220,6 +7310,7 @@ else
 									until ((L_1_[19]["Map"]:FindFirstChild("HellDimension"))["WorldPivot"]["Position"] - L_1_[35]["Character"]["HumanoidRootPart"]["Position"])["Magnitude"] <= 10
 									wait(1)
 								elseif ((L_1_[19]["Map"]:FindFirstChild("HellDimension"))["WorldPivot"]["Position"] - L_1_[35]["Character"]["HumanoidRootPart"]["Position"])["Magnitude"] <= 1200 then
+									L_1_[14]()
 									if L_1_[40]:FindFirstChildOfClass("Model") then
 										for L_626_forvar0, L_627_forvar1 in pairs(L_1_[40]:GetChildren()) do
 											local L_628_ = {}
@@ -7229,6 +7320,7 @@ else
 													repeat
 														wait()
 														L_1_[31](L_628_[1]["HumanoidRootPart"]["CFrame"] * CFrame["new"](0, 30, 0), 1.5)
+														L_1_[14]()
 													until not L_628_[1]["Parent"] or L_628_[1]["Humanoid"]["Health"] <= 0
 												end
 											end
@@ -7328,6 +7420,7 @@ else
 						wait(1)
 						L_1_[45]["click"](L_1_[35]["PlayerGui"]["Main"]["Dialogue"])
 					elseif L_607_[2]["Good"] == 4 and (L_607_[2]["Evil"] == 4 and L_1_[19]["Map"]["Turtle"]["Cursed"]["BossDoor"]["Position"]["Y"] > 584) then
+						L_1_[14]()
 						repeat
 							wait(.1)
 							L_1_[31](CFrame["new"](-12359.1719, 603.319702, -6550.59717, .481593847, 0, -0.87639451, 0, 1, 0, .87639451, 0, .481593847), 1.5)
