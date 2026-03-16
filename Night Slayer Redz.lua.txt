@@ -7540,8 +7540,8 @@ task["spawn"](function()
 				local L_646_ = {}
 				L_646_[1] = Instance["new"]("Highlight")
 				L_646_[1]["Name"] = "Highlight"
-				L_646_[1]["FillColor"] = Color3["fromRGB"](255, 0, 0)
-				L_646_[1]["OutlineColor"] = Color3["fromRGB"](255, 0, 0)
+				L_646_[1]["FillColor"] = Color3["fromRGB"](255, 165, 0)
+				L_646_[1]["OutlineColor"] = Color3["fromRGB"](255, 165, 0)
 				L_646_[1]["FillTransparency"] = 0.5
 				L_646_[1]["OutlineTransparency"] = 0
 				L_646_[1]["Adornee"] = L_1_[35]["Character"]
