@@ -2186,28 +2186,26 @@ L_1_[14] = function()
 				L_1_[7]["Remotes"]["CommF_"]:InvokeServer("LoadItem", "Yama")
 			end
 		end
-		for L_47_forvar0, L_48_forvar1 in pairs(L_1_[35]["Backpack"]:GetChildren()) do
-			local L_49_ = {}
-			L_49_[2], L_49_[1] = L_47_forvar0, L_48_forvar1
-			if L_49_[1]:IsA("Tool") and tostring(L_49_[1]["ToolTip"]) == "Sword" then
-				local tool = game.Players.LocalPlayer.Backpack:FindFirstChild(SelectWeapon)
-if tool then
-    game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
-end
-			end
-		end
-	else
-		for L_50_forvar0, L_51_forvar1 in pairs(L_1_[35]["Backpack"]:GetChildren()) do
-			local L_52_ = {}
-			L_52_[2], L_52_[1] = L_50_forvar0, L_51_forvar1
-			if L_52_[1]:IsA("Tool") and tostring(L_52_[1]["ToolTip"]) == "Melee" then
-				local tool = game.Players.LocalPlayer.Backpack:FindFirstChild(SelectWeapon)
-if tool then
-    game.Players.LocalPlayer.Character.Humanoid:EquipTool(tool)
-end
-			end
-		end
-	end
+if L_48_ == "Sword" then
+    for _, tool in pairs(L_1_[35]["Backpack"]:GetChildren()) do
+        if tool:IsA("Tool") and tostring(tool.ToolTip) == "Sword" then
+            local selectedTool = game.Players.LocalPlayer.Backpack:FindFirstChild(SelectWeapon)
+            if selectedTool then
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(selectedTool)
+                break -- Exit after equipping
+            end
+        end
+    end
+else
+    for _, tool in pairs(L_1_[35]["Backpack"]:GetChildren()) do
+        if tool:IsA("Tool") and tostring(tool.ToolTip) == "Melee" then
+            local selectedTool = game.Players.LocalPlayer.Backpack:FindFirstChild(SelectWeapon)
+            if selectedTool then
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(selectedTool)
+                break -- Exit after equipping
+            end
+        end
+    end
 end
 function TPBoat(L_53_arg0, L_54_arg1, L_55_arg2, L_56_arg3)
 	local L_57_ = {}
