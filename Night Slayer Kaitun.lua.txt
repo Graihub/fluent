@@ -292,7 +292,7 @@ L_1_[12].Parent = L_1_[42]
 -- Turtle Icon
 local turtle = Instance.new("ImageLabel")
 turtle.Name = "TurtleIcon"
-turtle.Size = UDim2.new(0, 28, 0, 28)
+turtle.Size = UDim2.new(0, 24, 0, 24)
 turtle.Position = UDim2.new(0.5, 0, 0, -14)
 turtle.AnchorPoint = Vector2.new(0.5, 0)
 turtle.BackgroundTransparency = 1
