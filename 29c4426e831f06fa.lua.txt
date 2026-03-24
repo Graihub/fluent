@@ -1,0 +1,2798 @@
+-- by Skidder Hideout
+
+game:GetService('StarterGui'):SetCore('SendNotification', {
+    Title = 'loading ^^',
+    Text = 'wait a minite',
+    Icon = 'http://www.roblox.com/asset/?id=18423735714',
+    Duration = 5,
+})
+print('dsasda')
+
+function _G.Kick(p1)
+    game.Players.LocalPlayer:kick(p1)
+end
+
+local _PlaceId = game.PlaceId
+local u3 = _PlaceId == 2753915549
+local u4 = _PlaceId == 4442272183
+local u5 = _PlaceId == 7449423635
+
+getgenv().plr = game:GetService('Players')
+getgenv().lpr = plr.LocalPlayer
+getgenv().TS = game:GetService('TweenService')
+getgenv().BringDis = 1000
+getgenv().SelectWeapon = 'Melee'
+getgenv().ShitExecute = {}
+getgenv().FastAttack = {true, false}
+getgenv().BringMob = {true, false}
+getgenv().GetDevice = function()
+    local _UserInputService = game:GetService('UserInputService')
+
+    return _UserInputService.TouchEnabled and 3 or (_UserInputService.MouseEnabled and _UserInputService.KeyboardEnabled and 2 or 1)
+end
+
+local _ = {
+    UDim2.fromOffset(500, 430),
+    UDim2.fromOffset(600, 430),
+    UDim2.fromOffset(470, 370),
+}
+
+getgenv().GetDis = function(p7, p8)
+    local v9 = p8 or lpr.Character:WaitForChild('HumanoidRootPart')
+
+    if typeof(p7) ~= 'CFrame' then
+        return (p7 - v9.Position).Magnitude
+    else
+        return (p7.Position - v9.Position).Magnitude
+    end
+end
+getgenv().Tobj = function(p10, p11, p12)
+    local v13 = TweenInfo.new(GetDis(p10.CFrame, p11) / (p12 or 200), Enum.EasingStyle.Linear)
+
+    TS:Create(p10, v13, {CFrame = p11}):Play()
+end
+getgenv().BigHitbox = function(_) end
+getgenv().hihi = function(p14)
+    local v15, v16, v17 = pairs(p14:GetDescendants())
+
+    while true do
+        local v18
+
+        v17, v18 = v15(v16, v17)
+
+        if v17 == nil then
+            break
+        end
+        if v18:IsA('BasePart') then
+            v18.CanCollide = false
+        end
+    end
+
+    pcall(function()
+        if not p14.HumanoidRootPart:FindFirstChild('BodyClip') then
+            local _BodyVelocity = Instance.new('BodyVelocity')
+
+            _BodyVelocity.Name = 'BodyClip'
+            _BodyVelocity.Parent = p14.HumanoidRootPart
+            _BodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+            _BodyVelocity.Velocity = Vector3.new(0, 0, 0)
+        end
+    end)
+end
+getgenv().EnemiesCFrame = loadstring(game:HttpGet('https://raw.githubusercontent.com/Iamkhnah/DatTHG/refs/heads/main/CFrameMob.lua'))()
+EnemiesCFrame['Skull Slayer'] = CFrame.new(-16859.0391, 71.2833176, 1603.79199, 0.979253232, -5.14903782e-8, 0.202640235, 5.78981698e-8, 1, -2.56937778e-8, -0.202640235, 3.6893211999999997e-8, 0.979253232)
+EnemiesCFrame['Serpent Hunter'] = CFrame.new(-16555.5039, 106.285683, 1559.49622, -0.569250286, -4.14039221e-8, 0.822164297, -2.3537422699999997e-8, 1, 3.4062821899999998e-8, -0.822164297, 3.8642041e-11, -0.569250286)
+EnemiesCFrame['Isle Outlaw'] = CFrame.new(-16216.8105, 21.802906, -205.280075, -0.998889863, -8.43277377e-8, -0.0471068658, -8.39130081e-8, 1, -1.07814921e-8, 0.0471068658, -6.81664458e-9, -0.998889863)
+
+spawn(function()
+    while wait() do
+        local v20, v21, v22 = pairs(game:GetService('Workspace').Enemies:GetChildren())
+
+        while true do
+            local u23
+
+            v22, u23 = v20(v21, v22)
+
+            if v22 == nil then
+                break
+            end
+            if u23:FindFirstChild('HumanoidRootPart') and GetDis(u23.HumanoidRootPart.CFrame) < BringDis then
+                spawn(function()
+                    hihi(u23)
+                    wait()
+                    pcall(function()
+                        if setscriptable then
+                            setscriptable(lpr, 'SimulationRadius', true)
+                        end
+                        if sethiddenproperty then
+                            sethiddenproperty(lpr, 'SimulationRadius', math.huge)
+                        end
+                    end)
+
+                    if getgenv().BringMob[1] and (getgenv().BringMob[2] and EnemiesCFrame[u23.Name]) then
+                        if typeof(EnemiesCFrame[u23.Name]) ~= 'table' then
+                            local v24 = EnemiesCFrame[u23.Name]
+
+                            Tobj(u23.HumanoidRootPart, v24, 500)
+                        else
+                            local _ = math.huge
+                            local v25, v26, v27 = pairs(EnemiesCFrame[u23.Name])
+                            local v28 = nil
+
+                            while true do
+                                local v29
+
+                                v27, v29 = v25(v26, v27)
+
+                                if v27 == nil then
+                                    break
+                                end
+                                if GetDis(v29) < v28 then
+                                    GetDis(v29)
+
+                                    v28 = v29
+                                end
+                            end
+
+                            if v28 then
+                                Tobj(u23.HumanoidRootPart, v28, 500)
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end
+end)
+
+getgenv().GetCFrameBring = function(p30)
+    if EnemiesCFrame[p30] then
+        if typeof(EnemiesCFrame[p30]) ~= 'table' then
+            return EnemiesCFrame[p30]
+        end
+
+        local _huge = math.huge
+        local v32, v33, v34 = pairs(game.Workspace.Enemies:GetChildren())
+        local v35 = nil
+
+        while true do
+            local v36
+
+            v34, v36 = v32(v33, v34)
+
+            if v34 == nil then
+                break
+            end
+            if v36:FindFirstChild('HumanoidRootPart') and (EnemiesCFrame[p30] - v36.HumanoidRootPart.Position).Magnitude < _huge then
+                _huge = (v36.HumanoidRootPart.CFrame.Position - EnemiesCFrame[p30].Position).Magnitude
+                v35 = EnemiesCFrame[p30]
+            end
+        end
+
+        return v35
+    end
+end
+getgenv().EQ = function()
+    local _Humanoid = lpr.Character:WaitForChild('Humanoid')
+    local v38, v39, v40 = pairs(lpr.Backpack:GetChildren())
+
+    while true do
+        local v41
+
+        v40, v41 = v38(v39, v40)
+
+        if v40 == nil then
+            break
+        end
+        if v41:IsA('Tool') and v41.ToolTip == getgenv().SelectWeapon then
+            _Humanoid:EquipTool(v41)
+        end
+    end
+end
+
+local u43 = setmetatable({}, {
+    __index = function(_, p42)
+        if p42 == '2753915549' then
+            return {
+                Sky_Island_1 = Vector3.new(-4652, 873, -1754),
+                Sky_Island_2 = Vector3.new(-7895, 5547, -380),
+                Under_Water_Island = Vector3.new(61164, 5, 1820),
+                Under_Water_Island_Entrance = Vector3.new(3865, 5, -1926),
+            }
+        end
+        if p42 == '4442272183' then
+            return {
+                Flamingo_Mansion = Vector3.new(-317, 331, 597),
+                Flamingo_Room = Vector3.new(2283, 15, 867),
+                Cursed_Ship = Vector3.new(923, 125, 32853),
+                Zombie_Island = Vector3.new(-6509, 83, -133),
+            }
+        end
+        if p42 == '7449423635' then
+            return {
+                Mansion = Vector3.new(-12471, 374, -7551),
+                Hydra = Vector3.new(5659, 1013, -341),
+                Caslte_On_The_Sea = Vector3.new(-5092, 315, -3130),
+                Floating_Turtle = Vector3.new(-12001, 332, -8861),
+                Beautiful_Pirate = Vector3.new(5319, 23, -93),
+                Temple_Of_Time = Vector3.new(28286, 14897, 103),
+            }
+        end
+    end,
+})
+
+function getdis(p44, p45)
+    local v46 = p45 or game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+
+    return (p44.Position - v46.Position).Magnitude
+end
+function cd(p47)
+    if u43[tostring(game.PlaceId)] then
+        local v48 = {
+            math.huge,
+            nil,
+        }
+        local v49, v50, v51 = pairs(u43[tostring(game.PlaceId)])
+
+        while true do
+            local v52
+
+            v51, v52 = v49(v50, v51)
+
+            if v51 == nil then
+                break
+            end
+            if getdis(CFrame.new(v52), p47) < v48[1] then
+                v48[1] = getdis(CFrame.new(v52), p47)
+                v48[2] = v52
+            end
+        end
+
+        if getdis(p47) > v48[1] then
+            game.ReplicatedStorage.Remotes.CommF_:InvokeServer('requestEntrance', v48[2])
+            wait(1)
+        end
+    end
+end
+function topos(p53)
+    local _TweenService = game:GetService('TweenService')
+
+    cd(p53)
+
+    local _Y = p53.Position.Y
+
+    if math.floor(math.abs(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Position.Y - _Y)) > 5 then
+        local _Position = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Position
+
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(_Position.X, _Y, _Position.Z)
+
+        wait(0.5)
+    end
+    if getdis(p53) >= 200 then
+        _TweenService:Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(getdis(p53) / (getgenv().TweenSpeed or 300), Enum.EasingStyle.Linear), {CFrame = p53}):Play()
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = p53
+    end
+end
+
+print(30)
+
+function GetQuest()
+    MyLevel = game:GetService('Players').LocalPlayer.Data.Level.value
+
+    local v57 = nil
+    local v58 = nil
+    local v59 = nil
+    local v60 = nil
+    local v61 = nil
+    local v62 = nil
+
+    if u3 then
+        if MyLevel ~= 1 or MyLevel > 9 then
+            if MyLevel ~= 10 or MyLevel > 14 then
+                if MyLevel ~= 15 or MyLevel > 29 then
+                    if MyLevel ~= 30 or MyLevel > 39 then
+                        if MyLevel ~= 40 or MyLevel > 59 then
+                            if MyLevel ~= 60 or MyLevel > 74 then
+                                if MyLevel ~= 75 or MyLevel > 89 then
+                                    if MyLevel ~= 90 or MyLevel > 99 then
+                                        if MyLevel ~= 100 or MyLevel > 119 then
+                                            if MyLevel ~= 120 or MyLevel > 149 then
+                                                if MyLevel ~= 150 or MyLevel > 174 then
+                                                    if MyLevel ~= 175 or MyLevel > 189 then
+                                                        if MyLevel ~= 190 or MyLevel > 209 then
+                                                            if MyLevel ~= 210 or MyLevel > 249 then
+                                                                if MyLevel ~= 250 or MyLevel > 299 then
+                                                                    if MyLevel ~= 300 or MyLevel > 324 then
+                                                                        if MyLevel ~= 325 or MyLevel > 374 then
+                                                                            if MyLevel ~= 375 or MyLevel > 399 then
+                                                                                if MyLevel ~= 400 or MyLevel > 440 then
+                                                                                    if MyLevel ~= 450 or MyLevel > 474 then
+                                                                                        if MyLevel ~= 475 or MyLevel > 524 then
+                                                                                            if MyLevel ~= 525 or MyLevel > 549 then
+                                                                                                if MyLevel ~= 550 or MyLevel > 624 then
+                                                                                                    if MyLevel ~= 625 or MyLevel > 649 then
+                                                                                                        if MyLevel >= 650 then
+                                                                                                            v61 = CFrame.new(5259.81982, 37.3500175, 4050.0293, 0.087131381, -0, 0.996196866, -0, 1, -0, -0.996196866, -0, 0.087131381)
+                                                                                                            v62 = CFrame.new(5441.95166015625, 42.50205993652344, 4950.09375)
+                                                                                                            v57 = 'Galley Captain'
+                                                                                                            v59 = 'FountainQuest'
+                                                                                                            v58 = 2
+                                                                                                            v60 = 'Galley Captain'
+                                                                                                        end
+                                                                                                    else
+                                                                                                        v61 = CFrame.new(5259.81982, 37.3500175, 4050.0293, 0.087131381, -0, 0.996196866, -0, 1, -0, -0.996196866, -0, 0.087131381)
+                                                                                                        v62 = CFrame.new(5551.02197265625, 78.90135192871094, 3930.412841796875)
+                                                                                                        v57 = 'Galley Pirate'
+                                                                                                        v59 = 'FountainQuest'
+                                                                                                        v58 = 1
+                                                                                                        v60 = 'Galley Pirate'
+                                                                                                    end
+                                                                                                else
+                                                                                                    v61 = CFrame.new(-7906.81592, 5634.6626, -1411.99194, -0, -0, -1, -0, 1, -0, 1, -0, -0)
+                                                                                                    v62 = CFrame.new(-7836.75341796875, 5645.6640625, -1790.6236572265625)
+                                                                                                    v57 = 'Royal Soldier'
+                                                                                                    v59 = 'SkyExp2Quest'
+                                                                                                    v58 = 2
+                                                                                                    v60 = 'Royal Soldier'
+                                                                                                end
+                                                                                            else
+                                                                                                v61 = CFrame.new(-7906.81592, 5634.6626, -1411.99194, -0, -0, -1, -0, 1, -0, 1, -0, -0)
+                                                                                                v62 = CFrame.new(-7624.25244140625, 5658.13330078125, -1467.354248046875)
+                                                                                                v57 = 'Royal Squad'
+                                                                                                v59 = 'SkyExp2Quest'
+                                                                                                v58 = 1
+                                                                                                v60 = 'Royal Squad'
+                                                                                            end
+                                                                                        else
+                                                                                            v57 = 'Shanda'
+                                                                                            v58 = 2
+                                                                                            v59 = 'SkyExp1Quest'
+                                                                                            v60 = 'Shanda'
+                                                                                            v61 = CFrame.new(-7859.09814, 5544.19043, -381.476196, -0.422592998, -0, 0.906319618, -0, 1, -0, -0.906319618, -0, -0.422592998)
+                                                                                            v62 = CFrame.new(-7678.48974609375, 5566.40380859375, -497.2156066894531)
+
+                                                                                            if _G.AutoFarm and (v61.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+                                                                                                game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(-7894.6176757813, 5547.1416015625, -380.29119873047))
+                                                                                            end
+                                                                                        end
+                                                                                    else
+                                                                                        v57 = "God's Guard"
+                                                                                        v58 = 1
+                                                                                        v59 = 'SkyExp1Quest'
+                                                                                        v60 = "God's Guard"
+                                                                                        v61 = CFrame.new(-4721.88867, 843.874695, -1949.96643, 0.996191859, -0, -0.0871884301, -0, 1, -0, 0.0871884301, -0, 0.996191859)
+                                                                                        v62 = CFrame.new(-4710.04296875, 845.2769775390625, -1927.3079833984375)
+
+                                                                                        if _G.AutoFarm and (v61.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+                                                                                            game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(-4607.82275, 872.54248, -1667.55688))
+                                                                                        end
+                                                                                    end
+                                                                                else
+                                                                                    v57 = 'Fishman Commando'
+                                                                                    v58 = 2
+                                                                                    v59 = 'FishmanQuest'
+                                                                                    v60 = 'Fishman Commando'
+                                                                                    v61 = CFrame.new(61122.65234375, 18.497442245483, 1569.3997802734)
+                                                                                    v62 = CFrame.new(61922.6328125, 18.482830047607422, 1493.934326171875)
+
+                                                                                    if _G.AutoFarm and (v61.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+                                                                                        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(61163.8515625, 11.6796875, 1819.7841796875))
+                                                                                    end
+                                                                                end
+                                                                            else
+                                                                                v57 = 'Fishman Warrior'
+                                                                                v58 = 1
+                                                                                v59 = 'FishmanQuest'
+                                                                                v60 = 'Fishman Warrior'
+                                                                                v61 = CFrame.new(61122.65234375, 18.497442245483, 1569.3997802734)
+                                                                                v62 = CFrame.new(60878.30078125, 18.482830047607422, 1543.7574462890625)
+
+                                                                                if _G.AutoFarm and (v61.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+                                                                                    game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(61163.8515625, 11.6796875, 1819.7841796875))
+                                                                                end
+                                                                            end
+                                                                        else
+                                                                            v61 = CFrame.new(-5313.37012, 10.9500084, 8515.29395, -0.499959469, -0, 0.866048813, -0, 1, -0, -0.866048813, -0, -0.499959469)
+                                                                            v62 = CFrame.new(-5802.8681640625, 86.26241302490234, 8828.859375)
+                                                                            v57 = 'Military Spy'
+                                                                            v59 = 'MagmaQuest'
+                                                                            v58 = 2
+                                                                            v60 = 'Military Spy'
+                                                                        end
+                                                                    else
+                                                                        v61 = CFrame.new(-5313.37012, 10.9500084, 8515.29395, -0.499959469, -0, 0.866048813, -0, 1, -0, -0.866048813, -0, -0.499959469)
+                                                                        v62 = CFrame.new(-5411.16455078125, 11.081554412841797, 8454.29296875)
+                                                                        v57 = 'Military Soldier'
+                                                                        v59 = 'MagmaQuest'
+                                                                        v58 = 1
+                                                                        v60 = 'Military Soldier'
+                                                                    end
+                                                                else
+                                                                    v61 = CFrame.new(-1580.04663, 6.35000277, -2986.47534, -0.515037298, -0, -0.857167721, -0, 1, -0, 0.857167721, -0, -0.515037298)
+                                                                    v62 = CFrame.new(-1820.21484375, 51.68385696411133, -2740.6650390625)
+                                                                    v57 = 'Toga Warrior'
+                                                                    v59 = 'ColosseumQuest'
+                                                                    v58 = 1
+                                                                    v60 = 'Toga Warrior'
+                                                                end
+                                                            else
+                                                                v61 = CFrame.new(5308.93115, 1.65517521, 475.120514, -0.0894274712, -5.00292918e-9, -0.995993316, 1.60817859e-9, 1, -5.16744869e-9, 0.995993316, -2.06384709e-9, -0.0894274712)
+                                                                v62 = CFrame.new(5654.5634765625, 15.633401870727539, 866.2991943359375)
+                                                                v57 = 'Dangerous Prisoner'
+                                                                v59 = 'PrisonerQuest'
+                                                                v58 = 2
+                                                                v60 = 'Dangerous Prisoner'
+                                                            end
+                                                        else
+                                                            v61 = CFrame.new(5308.93115, 1.65517521, 475.120514, -0.0894274712, -5.00292918e-9, -0.995993316, 1.60817859e-9, 1, -5.16744869e-9, 0.995993316, -2.06384709e-9, -0.0894274712)
+                                                            v62 = CFrame.new(5098.9736328125, -0.3204058110713959, 474.2373352050781)
+                                                            v57 = 'Prisoner'
+                                                            v59 = 'PrisonerQuest'
+                                                            v58 = 1
+                                                            v60 = 'Prisoner'
+                                                        end
+                                                    else
+                                                        v61 = CFrame.new(-4839.53027, 716.368591, -2619.44165, 0.866007268, -0, 0.500031412, -0, 1, -0, -0.500031412, -0, 0.866007268)
+                                                        v62 = CFrame.new(-5259.8447265625, 391.3976745605469, -2229.035400390625)
+                                                        v57 = 'Dark Master'
+                                                        v59 = 'SkyQuest'
+                                                        v58 = 2
+                                                        v60 = 'Dark Master'
+                                                    end
+                                                else
+                                                    v61 = CFrame.new(-4839.53027, 716.368591, -2619.44165, 0.866007268, -0, 0.500031412, -0, 1, -0, -0.500031412, -0, 0.866007268)
+                                                    v62 = CFrame.new(-4953.20703125, 295.74420166015625, -2899.22900390625)
+                                                    v57 = 'Sky Bandit'
+                                                    v59 = 'SkyQuest'
+                                                    v58 = 1
+                                                    v60 = 'Sky Bandit'
+                                                end
+                                            else
+                                                v61 = CFrame.new(-5039.58643, 27.3500385, 4324.68018, -0, -0, -1, -0, 1, -0, 1, -0, -0)
+                                                v62 = CFrame.new(-4881.23095703125, 22.65204429626465, 4273.75244140625)
+                                                v57 = 'Chief Petty Officer'
+                                                v59 = 'MarineQuest2'
+                                                v58 = 1
+                                                v60 = 'Chief Petty Officer'
+                                            end
+                                        else
+                                            v61 = CFrame.new(1389.74451, 88.1519318, -1298.90796, -0.342042685, -0, 0.939684391, -0, 1, -0, -0.939684391, -0, -0.342042685)
+                                            v62 = CFrame.new(1201.6412353515625, 144.57958984375, -1550.0670166015625)
+                                            v57 = 'Snowman'
+                                            v59 = 'SnowQuest'
+                                            v58 = 2
+                                            v60 = 'Snowman'
+                                        end
+                                    else
+                                        v61 = CFrame.new(1389.74451, 88.1519318, -1298.90796, -0.342042685, -0, 0.939684391, -0, 1, -0, -0.939684391, -0, -0.342042685)
+                                        v62 = CFrame.new(1354.347900390625, 87.27277374267578, -1393.946533203125)
+                                        v57 = 'Snow Bandit'
+                                        v59 = 'SnowQuest'
+                                        v58 = 1
+                                        v60 = 'Snow Bandit'
+                                    end
+                                else
+                                    v61 = CFrame.new(894.488647, 5.14000702, 4392.43359, 0.819155693, -0, -0.573571265, -0, 1, -0, 0.573571265, -0, 0.819155693)
+                                    v62 = CFrame.new(1608.2822265625, 8.614224433898926, 4371.00732421875)
+                                    v57 = 'Desert Officer'
+                                    v59 = 'DesertQuest'
+                                    v58 = 2
+                                    v60 = 'Desert Officer'
+                                end
+                            else
+                                v61 = CFrame.new(894.488647, 5.14000702, 4392.43359, 0.819155693, -0, -0.573571265, -0, 1, -0, 0.573571265, -0, 0.819155693)
+                                v62 = CFrame.new(924.7998046875, 6.44867467880249, 4481.5859375)
+                                v57 = 'Desert Bandit'
+                                v59 = 'DesertQuest'
+                                v58 = 1
+                                v60 = 'Desert Bandit'
+                            end
+                        else
+                            v61 = CFrame.new(-1141.07483, 4.10001802, 3831.5498, 0.965929627, -0, -0.258804798, -0, 1, -0, 0.258804798, -0, 0.965929627)
+                            v62 = CFrame.new(-1140.083740234375, 14.809885025024414, 4322.92138671875)
+                            v57 = 'Brute'
+                            v59 = 'BuggyQuest1'
+                            v58 = 2
+                            v60 = 'Brute'
+                        end
+                    else
+                        v61 = CFrame.new(-1141.07483, 4.10001802, 3831.5498, 0.965929627, -0, -0.258804798, -0, 1, -0, 0.258804798, -0, 0.965929627)
+                        v62 = CFrame.new(-1103.513427734375, 13.752052307128906, 3896.091064453125)
+                        v57 = 'Pirate'
+                        v59 = 'BuggyQuest1'
+                        v58 = 1
+                        v60 = 'Pirate'
+                    end
+                else
+                    v61 = CFrame.new(-1598.08911, 35.5501175, 153.377838, -0, -0, 1, -0, 1, -0, -1, -0, -0)
+                    v62 = CFrame.new(-1129.8836669921875, 40.46354675292969, -525.4237060546875)
+                    v57 = 'Gorilla'
+                    v59 = 'JungleQuest'
+                    v58 = 2
+                    v60 = 'Gorilla'
+                end
+            else
+                v61 = CFrame.new(-1598.08911, 35.5501175, 153.377838, -0, -0, 1, -0, 1, -0, -1, -0, -0)
+                v62 = CFrame.new(-1448.51806640625, 67.85301208496094, 11.46579647064209)
+                v57 = 'Monkey'
+                v59 = 'JungleQuest'
+                v58 = 1
+                v60 = 'Monkey'
+            end
+        else
+            v61 = CFrame.new(1059.37195, 15.4495068, 1550.4231, 0.939700544, -0, -0.341998369, -0, 1, -0, 0.341998369, -0, 0.939700544)
+            v62 = CFrame.new(1045.962646484375, 27.00250816345215, 1560.8203125)
+            v57 = 'Bandit'
+            v59 = 'BanditQuest1'
+            v58 = 1
+            v60 = 'Bandit'
+        end
+    elseif u4 then
+        if MyLevel ~= 700 or MyLevel > 724 then
+            if MyLevel ~= 725 or MyLevel > 774 then
+                if MyLevel ~= 775 or MyLevel > 799 then
+                    if MyLevel ~= 800 or MyLevel > 874 then
+                        if MyLevel ~= 875 or MyLevel > 899 then
+                            if MyLevel ~= 900 or MyLevel > 949 then
+                                if MyLevel ~= 950 or MyLevel > 974 then
+                                    if MyLevel ~= 975 or MyLevel > 999 then
+                                        if MyLevel ~= 1000 or MyLevel > 1049 then
+                                            if MyLevel ~= 1050 or MyLevel > 1099 then
+                                                if MyLevel ~= 1100 or MyLevel > 1124 then
+                                                    if MyLevel ~= 1125 or MyLevel > 1174 then
+                                                        if MyLevel ~= 1175 or MyLevel > 1199 then
+                                                            if MyLevel ~= 1200 or MyLevel > 1249 then
+                                                                if MyLevel ~= 1250 or MyLevel > 1274 then
+                                                                    if MyLevel ~= 1275 or MyLevel > 1299 then
+                                                                        if MyLevel ~= 1300 or MyLevel > 1324 then
+                                                                            if MyLevel ~= 1325 or MyLevel > 1349 then
+                                                                                if MyLevel ~= 1350 or MyLevel > 1374 then
+                                                                                    if MyLevel ~= 1375 or MyLevel > 1424 then
+                                                                                        if MyLevel ~= 1425 or MyLevel > 1449 then
+                                                                                            if MyLevel >= 1450 then
+                                                                                                v61 = CFrame.new(-3054.44458, 235.544281, -10142.8193, 0.990270376, -0, -0.13915664, -0, 1, -0, 0.13915664, -0, 0.990270376)
+                                                                                                v62 = CFrame.new(-3352.9013671875, 285.01556396484375, -10534.841796875)
+                                                                                                v57 = 'Water Fighter'
+                                                                                                v59 = 'ForgottenQuest'
+                                                                                                v58 = 2
+                                                                                                v60 = 'Water Fighter'
+                                                                                            end
+                                                                                        else
+                                                                                            v61 = CFrame.new(-3054.44458, 235.544281, -10142.8193, 0.990270376, -0, -0.13915664, -0, 1, -0, 0.13915664, -0, 0.990270376)
+                                                                                            v62 = CFrame.new(-3028.2236328125, 64.67451477050781, -9775.4267578125)
+                                                                                            v57 = 'Sea Soldier'
+                                                                                            v59 = 'ForgottenQuest'
+                                                                                            v58 = 1
+                                                                                            v60 = 'Sea Soldier'
+                                                                                        end
+                                                                                    else
+                                                                                        v61 = CFrame.new(5667.6582, 26.7997818, -6486.08984, -0.933587909, -0, -0.358349502, -0, 1, -0, 0.358349502, -0, -0.933587909)
+                                                                                        v62 = CFrame.new(5407.07373046875, 69.19437408447266, -6880.88037109375)
+                                                                                        v57 = 'Snow Lurker'
+                                                                                        v59 = 'FrostQuest'
+                                                                                        v58 = 2
+                                                                                        v60 = 'Snow Lurker'
+                                                                                    end
+                                                                                else
+                                                                                    v57 = 'Arctic Warrior'
+                                                                                    v58 = 1
+                                                                                    v59 = 'FrostQuest'
+                                                                                    v60 = 'Arctic Warrior'
+                                                                                    v61 = CFrame.new(5667.6582, 26.7997818, -6486.08984, -0.933587909, -0, -0.358349502, -0, 1, -0, 0.358349502, -0, -0.933587909)
+                                                                                    v62 = CFrame.new(5966.24609375, 62.97002029418945, -6179.3828125)
+
+                                                                                    if _G.AutoFarm and (v61.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+                                                                                        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(-6508.5581054688, 5000.034996032715, -132.83953857422))
+                                                                                    end
+                                                                                end
+                                                                            else
+                                                                                v57 = 'Ship Officer'
+                                                                                v58 = 2
+                                                                                v59 = 'ShipQuest2'
+                                                                                v60 = 'Ship Officer'
+                                                                                v61 = CFrame.new(968.80957, 125.092171, 33244.125)
+                                                                                v62 = CFrame.new(1036.0179443359375, 181.4390411376953, 33315.7265625)
+
+                                                                                if _G.AutoFarm and (v61.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+                                                                                    game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(923.21252441406, 126.9760055542, 32852.83203125))
+                                                                                end
+                                                                            end
+                                                                        else
+                                                                            v57 = 'Ship Steward'
+                                                                            v58 = 1
+                                                                            v59 = 'ShipQuest2'
+                                                                            v60 = 'Ship Steward'
+                                                                            v61 = CFrame.new(968.80957, 125.092171, 33244.125)
+                                                                            v62 = CFrame.new(919.4385375976563, 129.55599975585938, 33436.03515625)
+
+                                                                            if _G.AutoFarm and (v61.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+                                                                                game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(923.21252441406, 126.9760055542, 32852.83203125))
+                                                                            end
+                                                                        end
+                                                                    else
+                                                                        v57 = 'Ship Engineer'
+                                                                        v58 = 2
+                                                                        v59 = 'ShipQuest1'
+                                                                        v60 = 'Ship Engineer'
+                                                                        v61 = CFrame.new(1037.80127, 125.092171, 32911.6016)
+                                                                        v62 = CFrame.new(919.4786376953125, 43.54401397705078, 32779.96875)
+
+                                                                        if _G.AutoFarm and (v61.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+                                                                            game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(923.21252441406, 126.9760055542, 32852.83203125))
+                                                                        end
+                                                                    end
+                                                                else
+                                                                    v57 = 'Ship Deckhand'
+                                                                    v58 = 1
+                                                                    v59 = 'ShipQuest1'
+                                                                    v60 = 'Ship Deckhand'
+                                                                    v61 = CFrame.new(1037.80127, 125.092171, 32911.6016)
+                                                                    v62 = CFrame.new(1212.0111083984375, 150.79205322265625, 33059.24609375)
+
+                                                                    if _G.AutoFarm and (v61.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+                                                                        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(923.21252441406, 126.9760055542, 32852.83203125))
+                                                                    end
+                                                                end
+                                                            else
+                                                                v61 = CFrame.new(-5428.03174, 15.0622921, -5299.43457, -0.882952213, -0, 0.469463557, -0, 1, -0, -0.469463557, -0, -0.882952213)
+                                                                v62 = CFrame.new(-5213.33154296875, 49.73788070678711, -4701.451171875)
+                                                                v57 = 'Lava Pirate'
+                                                                v59 = 'FireSideQuest'
+                                                                v58 = 2
+                                                                v60 = 'Lava Pirate'
+                                                            end
+                                                        else
+                                                            v61 = CFrame.new(-5428.03174, 15.0622921, -5299.43457, -0.882952213, -0, 0.469463557, -0, 1, -0, -0.469463557, -0, -0.882952213)
+                                                            v62 = CFrame.new(-5449.6728515625, 76.65874481201172, -5808.20068359375)
+                                                            v57 = 'Magma Ninja'
+                                                            v59 = 'FireSideQuest'
+                                                            v58 = 1
+                                                            v60 = 'Magma Ninja'
+                                                        end
+                                                    else
+                                                        v61 = CFrame.new(-6064.06885, 15.2422857, -4902.97852, 0.453972578, -0, -0.891015649, -0, 1, -0, 0.891015649, -0, 0.453972578)
+                                                        v62 = CFrame.new(-6341.36669921875, 15.951770782470703, -5723.162109375)
+                                                        v57 = 'Horned Warrior'
+                                                        v59 = 'IceSideQuest'
+                                                        v58 = 2
+                                                        v60 = 'Horned Warrior'
+                                                    end
+                                                else
+                                                    v61 = CFrame.new(-6064.06885, 15.2422857, -4902.97852, 0.453972578, -0, -0.891015649, -0, 1, -0, 0.891015649, -0, 0.453972578)
+                                                    v62 = CFrame.new(-5707.4716796875, 15.951709747314453, -4513.39208984375)
+                                                    v57 = 'Lab Subordinate'
+                                                    v59 = 'IceSideQuest'
+                                                    v58 = 1
+                                                    v60 = 'Lab Subordinate'
+                                                end
+                                            else
+                                                v61 = CFrame.new(609.858826, 400.119904, -5372.25928, -0.374604106, -0, 0.92718488, -0, 1, -0, -0.92718488, -0, -0.374604106)
+                                                v62 = CFrame.new(1142.7451171875, 475.6398010253906, -5199.41650390625)
+                                                v57 = 'Winter Warrior'
+                                                v59 = 'SnowMountainQuest'
+                                                v58 = 2
+                                                v60 = 'Winter Warrior'
+                                            end
+                                        else
+                                            v61 = CFrame.new(609.858826, 400.119904, -5372.25928, -0.374604106, -0, 0.92718488, -0, 1, -0, -0.92718488, -0, -0.374604106)
+                                            v62 = CFrame.new(549.1473388671875, 427.3870544433594, -5563.69873046875)
+                                            v57 = 'Snow Trooper'
+                                            v59 = 'SnowMountainQuest'
+                                            v58 = 1
+                                            v60 = 'Snow Trooper'
+                                        end
+                                    else
+                                        v61 = CFrame.new(-5497.06152, 47.5923004, -795.237061, -0.29242146, -0, -0.95628953, -0, 1, -0, 0.95628953, -0, -0.29242146)
+                                        v62 = CFrame.new(-6037.66796875, 32.18463897705078, -1340.6597900390625)
+                                        v57 = 'Vampire'
+                                        v59 = 'ZombieQuest'
+                                        v58 = 2
+                                        v60 = 'Vampire'
+                                    end
+                                else
+                                    v61 = CFrame.new(-5497.06152, 47.5923004, -795.237061, -0.29242146, -0, -0.95628953, -0, 1, -0, 0.95628953, -0, -0.29242146)
+                                    v62 = CFrame.new(-5657.77685546875, 78.96973419189453, -928.68701171875)
+                                    v57 = 'Zombie'
+                                    v59 = 'ZombieQuest'
+                                    v58 = 1
+                                    v60 = 'Zombie'
+                                end
+                            else
+                                v61 = CFrame.new(-2440.79639, 71.7140732, -3216.06812, 0.866007268, -0, 0.500031412, -0, 1, -0, -0.500031412, -0, 0.866007268)
+                                v62 = CFrame.new(-1861.2310791015625, 80.17658233642578, -3254.697509765625)
+                                v57 = 'Marine Captain'
+                                v59 = 'MarineQuest3'
+                                v58 = 2
+                                v60 = 'Marine Captain'
+                            end
+                        else
+                            v61 = CFrame.new(-2440.79639, 71.7140732, -3216.06812, 0.866007268, -0, 0.500031412, -0, 1, -0, -0.500031412, -0, 0.866007268)
+                            v62 = CFrame.new(-2821.372314453125, 75.89727783203125, -3070.089111328125)
+                            v57 = 'Marine Lieutenant'
+                            v59 = 'MarineQuest3'
+                            v58 = 1
+                            v60 = 'Marine Lieutenant'
+                        end
+                    else
+                        v61 = CFrame.new(632.698608, 73.1055908, 918.666321, -0.0319722369, 8.96074881e-10, -0.999488771, 1.36326533e-10, 1, 8.92172336e-10, 0.999488771, -1.0773208699999999e-10, -0.0319722369)
+                        v62 = CFrame.new(73.07867431640625, 81.86344146728516, -27.470672607421875)
+                        v57 = 'Factory Staff'
+                        v59 = 'Area2Quest'
+                        v58 = 2
+                        v60 = 'Factory Staff'
+                    end
+                else
+                    v61 = CFrame.new(638.43811, 71.769989, 918.282898, 0.139203906, -0, 0.99026376, -0, 1, -0, -0.99026376, -0, 0.139203906)
+                    v62 = CFrame.new(1068.664306640625, 137.61428833007813, 1322.1060791015625)
+                    v57 = 'Swan Pirate'
+                    v59 = 'Area2Quest'
+                    v58 = 1
+                    v60 = 'Swan Pirate'
+                end
+            else
+                v61 = CFrame.new(-429.543518, 71.7699966, 1836.18188, -0.22495985, -0, -0.974368095, -0, 1, -0, 0.974368095, -0, -0.22495985)
+                v62 = CFrame.new(-1004.3244018554688, 80.15886688232422, 1424.619384765625)
+                v57 = 'Mercenary'
+                v59 = 'Area1Quest'
+                v58 = 2
+                v60 = 'Mercenary'
+            end
+        else
+            v61 = CFrame.new(-429.543518, 71.7699966, 1836.18188, -0.22495985, -0, -0.974368095, -0, 1, -0, 0.974368095, -0, -0.22495985)
+            v62 = CFrame.new(-728.3267211914063, 52.779319763183594, 2345.7705078125)
+            v57 = 'Raider'
+            v59 = 'Area1Quest'
+            v58 = 1
+            v60 = 'Raider'
+        end
+    elseif u5 then
+        if MyLevel ~= 1500 or MyLevel > 1524 then
+            if MyLevel ~= 1525 or MyLevel > 1574 then
+                if MyLevel ~= 1575 or MyLevel > 1599 then
+                    if MyLevel ~= 1600 or MyLevel > 1624 then
+                        if MyLevel ~= 1625 or MyLevel > 1649 then
+                            if MyLevel ~= 1650 or MyLevel > 1699 then
+                                if MyLevel ~= 1700 or MyLevel > 1724 then
+                                    if MyLevel ~= 1725 or MyLevel > 1774 then
+                                        if MyLevel ~= 1775 or MyLevel > 1799 then
+                                            if MyLevel ~= 1800 or MyLevel > 1824 then
+                                                if MyLevel ~= 1825 or MyLevel > 1849 then
+                                                    if MyLevel ~= 1850 or MyLevel > 1899 then
+                                                        if MyLevel ~= 1900 or MyLevel > 1924 then
+                                                            if MyLevel ~= 1925 or MyLevel > 1974 then
+                                                                if MyLevel ~= 1975 or MyLevel > 1999 then
+                                                                    if MyLevel ~= 2000 or MyLevel > 2024 then
+                                                                        if MyLevel ~= 2025 or MyLevel > 2049 then
+                                                                            if MyLevel ~= 2050 or MyLevel > 2074 then
+                                                                                if MyLevel ~= 2075 or MyLevel > 2099 then
+                                                                                    if MyLevel ~= 2100 or MyLevel > 2124 then
+                                                                                        if MyLevel ~= 2125 or MyLevel > 2149 then
+                                                                                            if MyLevel ~= 2150 or MyLevel > 2199 then
+                                                                                                if MyLevel ~= 2200 or MyLevel > 2224 then
+                                                                                                    if MyLevel ~= 2225 or MyLevel > 2249 then
+                                                                                                        if MyLevel ~= 2250 or MyLevel > 2274 then
+                                                                                                            if MyLevel ~= 2275 or MyLevel > 2299 then
+                                                                                                                if MyLevel ~= 2300 or MyLevel > 2324 then
+                                                                                                                    if MyLevel ~= 2325 or MyLevel > 2349 then
+                                                                                                                        if MyLevel ~= 2350 or MyLevel > 2374 then
+                                                                                                                            if MyLevel ~= 2375 or MyLevel > 2399 then
+                                                                                                                                if MyLevel ~= 2400 or MyLevel > 2424 then
+                                                                                                                                    if MyLevel ~= 2425 or MyLevel > 2449 then
+                                                                                                                                        if MyLevel ~= 2450 or MyLevel > 2474 then
+                                                                                                                                            if MyLevel ~= 2475 or MyLevel > 2499 then
+                                                                                                                                                if MyLevel ~= 2500 or MyLevel > 2524 then
+                                                                                                                                                    if MyLevel < 2525 or MyLevel >= 2550 then
+                                                                                                                                                        if MyLevel < 2550 or MyLevel > 2574 then
+                                                                                                                                                            if MyLevel >= 2575 then
+                                                                                                                                                                v61 = CFrame.new(-16665, 105, 1580)
+                                                                                                                                                                v62 = CFrame.new(-16849.9336, 147.005066, 1640.88354, 0.470148534, 0.491874039, -0.732816696, 1.7216500000000001e-8, 0.83030504, 0.55730921, 0.882587314, -0.262018114, 0.390366673)
+                                                                                                                                                                v57 = 'Skull Slayer'
+                                                                                                                                                                v59 = 'TikiQuest3'
+                                                                                                                                                                v58 = 2
+                                                                                                                                                                v60 = 'Skull Slayer'
+                                                                                                                                                            end
+                                                                                                                                                        else
+                                                                                                                                                            v61 = CFrame.new(-16665, 105, 1580)
+                                                                                                                                                            v62 = CFrame.new(-16542.4824, 146.675156, 1529.61401, -0.999948919, 1.0729811e-8, 0.0101067368, 1.0128324e-8, 1, -5.9564663e-8, -0.0101067368, -5.9459257e-8, -0.999948919)
+                                                                                                                                                            v57 = 'Serpent Hunter'
+                                                                                                                                                            v59 = 'TikiQuest3'
+                                                                                                                                                            v58 = 1
+                                                                                                                                                            v60 = 'Serpent Hunter'
+                                                                                                                                                        end
+                                                                                                                                                    else
+                                                                                                                                                        v61 = CFrame.new(-16539.078125, 55.68632888793945, 1051.5738525390625)
+                                                                                                                                                        v62 = CFrame.new(-16933.2129, 93.3503036, 999.450989)
+                                                                                                                                                        v57 = 'Isle Champion'
+                                                                                                                                                        v59 = 'TikiQuest2'
+                                                                                                                                                        v58 = 2
+                                                                                                                                                        v60 = 'Isle Champion'
+                                                                                                                                                    end
+                                                                                                                                                else
+                                                                                                                                                    v61 = CFrame.new(-16539.078125, 55.68632888793945, 1051.5738525390625)
+                                                                                                                                                    v62 = CFrame.new(-16294.6748, 32.7874393, 1062.4856)
+                                                                                                                                                    v57 = 'Sun-kissed Warrio'
+                                                                                                                                                    v59 = 'TikiQuest2'
+                                                                                                                                                    v58 = 1
+                                                                                                                                                    v60 = 'Sun-kissed Warrio'
+                                                                                                                                                end
+                                                                                                                                            else
+                                                                                                                                                v61 = CFrame.new(-16545.9355, 55.6863556, -173.230499)
+                                                                                                                                                v62 = CFrame.new(-16751.3125, 121.226219, -264.015015)
+                                                                                                                                                v57 = 'Island Boy'
+                                                                                                                                                v59 = 'TikiQuest1'
+                                                                                                                                                v58 = 2
+                                                                                                                                                v60 = 'Island Boy'
+                                                                                                                                            end
+                                                                                                                                        else
+                                                                                                                                            v61 = CFrame.new(-16545.9355, 55.6863556, -173.230499)
+                                                                                                                                            v62 = CFrame.new(-16120.6035, 116.520554, -103.038849)
+                                                                                                                                            v57 = 'Isle Outlaw'
+                                                                                                                                            v59 = 'TikiQuest1'
+                                                                                                                                            v58 = 1
+                                                                                                                                            v60 = 'Isle Outlaw'
+                                                                                                                                        end
+                                                                                                                                    else
+                                                                                                                                        v61 = CFrame.new(-1150.0400390625, 20.378934860229492, -14446.3349609375)
+                                                                                                                                        v62 = CFrame.new(-880.2006225585938, 71.24776458740234, -14538.609375)
+                                                                                                                                        v57 = 'Snow Demon'
+                                                                                                                                        v59 = 'CandyQuest1'
+                                                                                                                                        v58 = 2
+                                                                                                                                        v60 = 'Snow Demon'
+                                                                                                                                    end
+                                                                                                                                else
+                                                                                                                                    v61 = CFrame.new(-1150.0400390625, 20.378934860229492, -14446.3349609375)
+                                                                                                                                    v62 = CFrame.new(-1310.5003662109375, 26.016523361206055, -14562.404296875)
+                                                                                                                                    v57 = 'Candy Pirate'
+                                                                                                                                    v59 = 'CandyQuest1'
+                                                                                                                                    v58 = 1
+                                                                                                                                    v60 = 'Candy Pirate'
+                                                                                                                                end
+                                                                                                                            else
+                                                                                                                                v61 = CFrame.new(150.5066375732422, 30.693693161010742, -12774.5029296875)
+                                                                                                                                v62 = CFrame.new(134.86563110351563, 77.2476806640625, -12876.5478515625)
+                                                                                                                                v57 = 'Candy Rebel'
+                                                                                                                                v59 = 'ChocQuest2'
+                                                                                                                                v58 = 2
+                                                                                                                                v60 = 'Candy Rebel'
+                                                                                                                            end
+                                                                                                                        else
+                                                                                                                            v61 = CFrame.new(150.5066375732422, 30.693693161010742, -12774.5029296875)
+                                                                                                                            v62 = CFrame.new(165.1884765625, 76.05885314941406, -12600.8369140625)
+                                                                                                                            v57 = 'Sweet Thief'
+                                                                                                                            v59 = 'ChocQuest2'
+                                                                                                                            v58 = 1
+                                                                                                                            v60 = 'Sweet Thief'
+                                                                                                                        end
+                                                                                                                    else
+                                                                                                                        v61 = CFrame.new(233.22836303710938, 29.876001358032227, -12201.2333984375)
+                                                                                                                        v62 = CFrame.new(582.590576171875, 77.18809509277344, -12463.162109375)
+                                                                                                                        v57 = 'Chocolate Bar Battler'
+                                                                                                                        v59 = 'ChocQuest1'
+                                                                                                                        v58 = 2
+                                                                                                                        v60 = 'Chocolate Bar Battler'
+                                                                                                                    end
+                                                                                                                else
+                                                                                                                    v61 = CFrame.new(233.22836303710938, 29.876001358032227, -12201.2333984375)
+                                                                                                                    v62 = CFrame.new(-21.55328369140625, 80.57499694824219, -12352.3876953125)
+                                                                                                                    v57 = 'Cocoa Warrior'
+                                                                                                                    v59 = 'ChocQuest1'
+                                                                                                                    v58 = 1
+                                                                                                                    v60 = 'Cocoa Warrior'
+                                                                                                                end
+                                                                                                            else
+                                                                                                                v61 = CFrame.new(-1927.91602, 37.7981339, -12842.5391, -0.96804446, 4.2214214299999995e-8, 0.250778586, 4.74911062e-8, 1, 1.49904711e-8, -0.250778586, 2.64211941e-8, -0.96804446)
+                                                                                                                v62 = CFrame.new(-2216.188232421875, 82.884521484375, -12869.2939453125)
+                                                                                                                v57 = 'Head Baker'
+                                                                                                                v59 = 'CakeQuest2'
+                                                                                                                v58 = 2
+                                                                                                                v60 = 'Head Baker'
+                                                                                                            end
+                                                                                                        else
+                                                                                                            v61 = CFrame.new(-1927.91602, 37.7981339, -12842.5391, -0.96804446, 4.2214214299999995e-8, 0.250778586, 4.74911062e-8, 1, 1.49904711e-8, -0.250778586, 2.64211941e-8, -0.96804446)
+                                                                                                            v62 = CFrame.new(-1887.8099365234375, 77.6185073852539, -12998.3505859375)
+                                                                                                            v57 = 'Baking Staff'
+                                                                                                            v59 = 'CakeQuest2'
+                                                                                                            v58 = 1
+                                                                                                            v60 = 'Baking Staff'
+                                                                                                        end
+                                                                                                    else
+                                                                                                        v61 = CFrame.new(-2021.32007, 37.7982254, -12028.7295, 0.957576931, -8.80302053e-8, 0.288177818, 6.9301186999999995e-8, 1, 7.5193121099999995e-8, -0.288177818, -5.2032135e-8, 0.957576931)
+                                                                                                        v62 = CFrame.new(-1598.3070068359375, 43.773197174072266, -12244.5810546875)
+                                                                                                        v57 = 'Cake Guard'
+                                                                                                        v59 = 'CakeQuest1'
+                                                                                                        v58 = 2
+                                                                                                        v60 = 'Cake Guard'
+                                                                                                    end
+                                                                                                else
+                                                                                                    v61 = CFrame.new(-2021.32007, 37.7982254, -12028.7295, 0.957576931, -8.80302053e-8, 0.288177818, 6.9301186999999995e-8, 1, 7.5193121099999995e-8, -0.288177818, -5.2032135e-8, 0.957576931)
+                                                                                                    v62 = CFrame.new(-2374.13671875, 37.79826354980469, -12125.30859375)
+                                                                                                    v57 = 'Cookie Crafter'
+                                                                                                    v59 = 'CakeQuest1'
+                                                                                                    v58 = 1
+                                                                                                    v60 = 'Cookie Crafter'
+                                                                                                end
+                                                                                            else
+                                                                                                v61 = CFrame.new(-820.64825439453, 65.819526672363, -10965.795898438, -0, -0, -1, -0, 1, -0, 1, -0, -0)
+                                                                                                v62 = CFrame.new(-558.06103515625, 112.04895782470703, -11290.7744140625)
+                                                                                                v57 = 'Ice Cream Commander'
+                                                                                                v59 = 'IceCreamIslandQuest'
+                                                                                                v58 = 2
+                                                                                                v60 = 'Ice Cream Commander'
+                                                                                            end
+                                                                                        else
+                                                                                            v61 = CFrame.new(-820.64825439453, 65.819526672363, -10965.795898438, -0, -0, -1, -0, 1, -0, 1, -0, -0)
+                                                                                            v62 = CFrame.new(-872.24658203125, 65.81957244873047, -10919.95703125)
+                                                                                            v57 = 'Ice Cream Chef'
+                                                                                            v59 = 'IceCreamIslandQuest'
+                                                                                            v58 = 1
+                                                                                            v60 = 'Ice Cream Chef'
+                                                                                        end
+                                                                                    else
+                                                                                        v61 = CFrame.new(-2104.3908691406, 38.104167938232, -10194.21875, -0, -0, -1, -0, 1, -0, 1, -0, -0)
+                                                                                        v62 = CFrame.new(-1859.35400390625, 38.10316848754883, -10422.4296875)
+                                                                                        v57 = 'Peanut President'
+                                                                                        v59 = 'NutsIslandQuest'
+                                                                                        v58 = 2
+                                                                                        v60 = 'Peanut President'
+                                                                                    end
+                                                                                else
+                                                                                    v61 = CFrame.new(-2104.3908691406, 38.104167938232, -10194.21875, -0, -0, -1, -0, 1, -0, 1, -0, -0)
+                                                                                    v62 = CFrame.new(-2143.241943359375, 47.72198486328125, -10029.9951171875)
+                                                                                    v57 = 'Peanut Scout'
+                                                                                    v59 = 'NutsIslandQuest'
+                                                                                    v58 = 1
+                                                                                    v60 = 'Peanut Scout'
+                                                                                end
+                                                                            else
+                                                                                v61 = CFrame.new(-9516.99316, 172.017181, 6078.46533, -0, -0, -1, -0, 1, -0, 1, -0, -0)
+                                                                                v62 = CFrame.new(-9582.0224609375, 6.251527309417725, 6205.478515625)
+                                                                                v57 = 'Posessed Mummy'
+                                                                                v59 = 'HauntedQuest2'
+                                                                                v58 = 2
+                                                                                v60 = 'Posessed Mummy'
+                                                                            end
+                                                                        else
+                                                                            v61 = CFrame.new(-9516.99316, 172.017181, 6078.46533, -0, -0, -1, -0, 1, -0, 1, -0, -0)
+                                                                            v62 = CFrame.new(-9505.8720703125, 172.10482788085938, 6158.9931640625)
+                                                                            v57 = 'Demonic Soul'
+                                                                            v59 = 'HauntedQuest2'
+                                                                            v58 = 1
+                                                                            v60 = 'Demonic Soul'
+                                                                        end
+                                                                    else
+                                                                        v61 = CFrame.new(-9479.2168, 141.215088, 5566.09277, -0, -0, 1, -0, 1, -0, -1, -0, -0)
+                                                                        v62 = CFrame.new(-10144.1318359375, 138.62667846679688, 5838.0888671875)
+                                                                        v57 = 'Living Zombie'
+                                                                        v59 = 'HauntedQuest1'
+                                                                        v58 = 2
+                                                                        v60 = 'Living Zombie'
+                                                                    end
+                                                                else
+                                                                    v61 = CFrame.new(-9479.2168, 141.215088, 5566.09277, -0, -0, 1, -0, 1, -0, -1, -0, -0)
+                                                                    v62 = CFrame.new(-8763.7236328125, 165.72299194335938, 6159.86181640625)
+                                                                    v57 = 'Reborn Skeleton'
+                                                                    v59 = 'HauntedQuest1'
+                                                                    v58 = 1
+                                                                    v60 = 'Reborn Skeleton'
+                                                                end
+                                                            else
+                                                                v61 = CFrame.new(-12680.3818, 389.971039, -9902.01953, -0.0871315002, -0, 0.996196866, -0, 1, -0, -0.996196866, -0, -0.0871315002)
+                                                                v62 = CFrame.new(-13457.904296875, 391.545654296875, -9859.177734375)
+                                                                v57 = 'Musketeer Pirate'
+                                                                v59 = 'DeepForestIsland2'
+                                                                v58 = 2
+                                                                v60 = 'Musketeer Pirate'
+                                                            end
+                                                        else
+                                                            v61 = CFrame.new(-12680.3818, 389.971039, -9902.01953, -0.0871315002, -0, 0.996196866, -0, 1, -0, -0.996196866, -0, -0.0871315002)
+                                                            v62 = CFrame.new(-12256.16015625, 331.73828125, -10485.8369140625)
+                                                            v57 = 'Jungle Pirate'
+                                                            v59 = 'DeepForestIsland2'
+                                                            v58 = 1
+                                                            v60 = 'Jungle Pirate'
+                                                        end
+                                                    else
+                                                        v61 = CFrame.new(-13234.04, 331.488495, -7625.40137, 0.707134247, -0, -0.707079291, -0, 1, -0, 0.707079291, -0, 0.707134247)
+                                                        v62 = CFrame.new(-13680.607421875, 501.08154296875, -6991.189453125)
+                                                        v57 = 'Mythological Pirate'
+                                                        v59 = 'DeepForestIsland'
+                                                        v58 = 2
+                                                        v60 = 'Mythological Pirate'
+                                                    end
+                                                else
+                                                    v61 = CFrame.new(-13234.04, 331.488495, -7625.40137, 0.707134247, -0, -0.707079291, -0, 1, -0, 0.707079291, -0, 0.707134247)
+                                                    v62 = CFrame.new(-13274.478515625, 332.3781433105469, -7769.58056640625)
+                                                    v57 = 'Forest Pirate'
+                                                    v59 = 'DeepForestIsland'
+                                                    v58 = 1
+                                                    v60 = 'Forest Pirate'
+                                                end
+                                            else
+                                                v61 = CFrame.new(-10581.6563, 330.872955, -8761.18652, -0.882952213, -0, 0.469463557, -0, 1, -0, -0.469463557, -0, -0.882952213)
+                                                v62 = CFrame.new(-10994.701171875, 352.38140869140625, -9002.1103515625)
+                                                v57 = 'Fishman Captain'
+                                                v59 = 'DeepForestIsland3'
+                                                v58 = 2
+                                                v60 = 'Fishman Captain'
+                                            end
+                                        else
+                                            v61 = CFrame.new(-10581.6563, 330.872955, -8761.18652, -0.882952213, -0, 0.469463557, -0, 1, -0, -0.469463557, -0, -0.882952213)
+                                            v62 = CFrame.new(-10407.5263671875, 331.76263427734375, -8368.5166015625)
+                                            v57 = 'Fishman Raider'
+                                            v59 = 'DeepForestIsland3'
+                                            v58 = 1
+                                            v60 = 'Fishman Raider'
+                                        end
+                                    else
+                                        v61 = CFrame.new(2179.98828125, 28.731239318848, -6740.0551757813)
+                                        v62 = CFrame.new(3656.773681640625, 160.52406311035156, -7001.5986328125)
+                                        v57 = 'Marine Rear Admiral'
+                                        v59 = 'MarineTreeIsland'
+                                        v58 = 2
+                                        v60 = 'Marine Rear Admiral'
+                                    end
+                                else
+                                    v61 = CFrame.new(2180.54126, 27.8156815, -6741.5498, -0.965929747, -0, 0.258804798, -0, 1, -0, -0.258804798, -0, -0.965929747)
+                                    v62 = CFrame.new(2286.0078125, 73.13391876220703, -7159.80908203125)
+                                    v57 = 'Marine Commodore'
+                                    v59 = 'MarineTreeIsland'
+                                    v58 = 1
+                                    v60 = 'Marine Commodore'
+                                end
+                            else
+                                v61 = CFrame.new(5446.8793945313, 601.62945556641, 749.45672607422)
+                                v62 = CFrame.new(4729.09423828125, 590.436767578125, -36.97627639770508)
+                                v57 = 'Giant Islander'
+                                v59 = 'AmazonQuest2'
+                                v58 = 2
+                                v60 = 'Giant Islander'
+                            end
+                        else
+                            v61 = CFrame.new(5446.8793945313, 601.62945556641, 749.45672607422)
+                            v62 = CFrame.new(4685.25830078125, 735.8078002929688, 815.3425903320313)
+                            v57 = 'Female Islander'
+                            v59 = 'AmazonQuest2'
+                            v58 = 1
+                            v60 = 'Female Islander'
+                        end
+                    else
+                        v61 = CFrame.new(5833.1147460938, 51.60498046875, -1103.0693359375)
+                        v62 = CFrame.new(6616.41748046875, 441.7670593261719, 446.0469970703125)
+                        v57 = 'Dragon Crew Archer'
+                        v59 = 'AmazonQuest'
+                        v58 = 2
+                        v60 = 'Dragon Crew Archer'
+                    end
+                else
+                    v61 = CFrame.new(5832.83594, 51.6806107, -1101.51563, 0.898790359, -0, -0.438378751, -0, 1, -0, 0.438378751, -0, 0.898790359)
+                    v62 = CFrame.new(6141.140625, 51.35136413574219, -1340.738525390625)
+                    v57 = 'Dragon Crew Warrior'
+                    v59 = 'AmazonQuest'
+                    v58 = 1
+                    v60 = 'Dragon Crew Warrior'
+                end
+            else
+                v61 = CFrame.new(-290.074677, 42.9034653, 5581.58984, 0.965929627, -0, -0.258804798, -0, 1, -0, 0.258804798, -0, 0.965929627)
+                v62 = CFrame.new(-187.3301544189453, 86.23987579345703, 6013.513671875)
+                v57 = 'Pistol Billionaire'
+                v59 = 'PiratePortQuest'
+                v58 = 2
+                v60 = 'Pistol Billionaire'
+            end
+        else
+            v61 = CFrame.new(-290.074677, 42.9034653, 5581.58984, 0.965929627, -0, -0.258804798, -0, 1, -0, 0.258804798, -0, 0.965929627)
+            v62 = CFrame.new(-245.9963836669922, 47.30615234375, 5584.1005859375)
+            v57 = 'Pirate Millionaire'
+            v59 = 'PiratePortQuest'
+            v58 = 1
+            v60 = 'Pirate Millionaire'
+        end
+    end
+
+    return v57, v59, v58, v61, v62, v60
+end
+function givayong()
+    local v63, v64, v65 = pairs(workspace.Map.TikiOutpost.IslandModel:GetChildren())
+    local v66 = nil
+
+    while true do
+        local v67
+
+        v65, v67 = v63(v64, v65)
+
+        if v65 == nil then
+            break
+        end
+        if v67.Name == 'Model' and v67:FindFirstChild('EagleBossArena') then
+            v66 = v67:FindFirstChild('EagleBossArena')
+        end
+    end
+
+    if v66 then
+        local v68, v69, v70 = pairs(v66:GetChildren())
+
+        while true do
+            local v71
+
+            v70, v71 = v68(v69, v70)
+
+            if v70 == nil then
+                break
+            end
+            if v71.Name == 'Tree' then
+                local _Model = v71:FindFirstChildOfClass('Model')
+
+                if _Model then
+                    return _Model:GetChildren()[1]
+                end
+            end
+        end
+    end
+end
+
+getgenv().CheckMob = {
+    function(p73)
+        local v74, v75, v76 = pairs(game:GetService('Workspace').Enemies:GetChildren())
+
+        while true do
+            local v77
+
+            v76, v77 = v74(v75, v76)
+
+            if v76 == nil then
+                break
+            end
+            if v77:FindFirstChild('HumanoidRootPart') and (v77:FindFirstChild('Humanoid') and (v77.Humanoid.Health > 0 and v77.Name == p73)) then
+                return v77
+            end
+        end
+    end,
+    function(p78)
+        local v79, v80, v81 = pairs(game:GetService('ReplicatedStorage'):GetChildren())
+
+        while true do
+            local v82
+
+            v81, v82 = v79(v80, v81)
+
+            if v81 == nil then
+                break
+            end
+            if v82:FindFirstChild('HumanoidRootPart') and (v82:FindFirstChild('Humanoid') and (v82.Humanoid.Health > 0 and v82.Name == p78)) then
+                return v82
+            end
+        end
+    end,
+    function(...)
+        local v83 = {...}
+
+        if v83[1] then
+            local v84, v85, v86 = pairs(game:GetService('Workspace').Enemies:GetChildren())
+
+            while true do
+                local v87
+
+                v86, v87 = v84(v85, v86)
+
+                if v86 == nil then
+                    break
+                end
+                if v87:FindFirstChild('HumanoidRootPart') and (v87:FindFirstChild('Humanoid') and (v87.Humanoid.Health > 0 and GetDis(v87.HumanoidRootPart.CFrame, v83[3]) <= v83[4])) then
+                    return true
+                end
+            end
+        end
+        if v83[2] then
+            local v88, v89, v90 = pairs(game:GetService('ReplicatedStorage'):GetChildren())
+
+            while true do
+                local v91
+
+                v90, v91 = v88(v89, v90)
+
+                if v90 == nil then
+                    break
+                end
+                if v91:FindFirstChild('HumanoidRootPart') and (v91:FindFirstChild('Humanoid') and (v91.Humanoid.Health > 0 and GetDis(v91.HumanoidRootPart.CFrame, v83[3]) <= v83[4])) then
+                    return true
+                end
+            end
+        end
+    end,
+}
+
+local u92 = loadstring(http_request({
+    Url = 'https://raw.githubusercontent.com/Iamkhnah/projectluacanmayidollop8a/refs/heads/main/pkhanh.lua',
+    Method = 'GET',
+    Headers = {
+        ['user-agent'] = 'Coded by kuri',
+    },
+}).Body)()
+
+getgenv().Buso = function()
+    if not game:GetService('Players').LocalPlayer.Character:FindFirstChild('HasBuso') then
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('Buso')
+    end
+end
+getgenv().Click = function()
+    local _VirtualInputManager = game:GetService('VirtualInputManager')
+
+    _VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+    _VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+end
+
+spawn(function()
+    while wait() do
+        pcall(Buso)
+        u92.mmb()
+    end
+end)
+
+function checkgay()
+    local v94, v95, v96 = pairs(workspace.Map.TikiOutpost.IslandModel:GetChildren())
+
+    while true do
+        local v97
+
+        v96, v97 = v94(v95, v96)
+
+        if v96 == nil then
+            break
+        end
+        if v97.Name:find('Eye') and v97.Transparency == 1 then
+            return false
+        end
+    end
+
+    return true
+end
+
+getgenv().Pos_Y = 30
+getgenv().Pos = CFrame.new(0, Pos_Y, 0)
+getgenv().AroundPos = {}
+cos = math.cos
+sin = math.sin
+getgenv().Distancea = 20
+
+local u98 = u5
+
+for v99 = 1, 360, 45 do
+    local v100 = v99
+    local v101 = CFrame.new(cos(v100) * Distancea, Pos_Y, sin(v100) * Distancea)
+
+    table.insert(AroundPos, v101)
+end
+
+spawn(function()
+    while wait(0.5) do
+        if #AroundPos > 0 then
+            local v102 = math.random(1, #AroundPos)
+
+            Pos = AroundPos[v102]
+        end
+    end
+end)
+
+getgenv().QuestCac = {
+    function()
+        local v103 = {}
+        local _Value = game:GetService('Players').LocalPlayer.Data.Level.Value
+
+        if _Value >= 2200 then
+            table.insert(v103, {
+                CFrameQuest = CFrame.new(-2021.32007, 37.7982254, -12028.7295, 0.957576931, -8.80302053e-8, 0.288177818, 6.9301186999999995e-8, 1, 7.5193121099999995e-8, -0.288177818, -5.2032135e-8, 0.957576931),
+                NameQuest = 'CakeQuest1',
+                LevelQuest = 1,
+                NameMon = 'Cookie Crafter',
+            })
+        end
+        if _Value >= 2225 then
+            table.insert(v103, {
+                CFrameQuest = CFrame.new(-2021.32007, 37.7982254, -12028.7295, 0.957576931, -8.80302053e-8, 0.288177818, 6.9301186999999995e-8, 1, 7.5193121099999995e-8, -0.288177818, -5.2032135e-8, 0.957576931),
+                NameQuest = 'CakeQuest1',
+                LevelQuest = 2,
+                NameMon = 'Cake Guard',
+            })
+        end
+        if _Value >= 2250 then
+            table.insert(v103, {
+                CFrameQuest = CFrame.new(-1927.91602, 37.7981339, -12842.5391, -0.96804446, 4.2214214299999995e-8, 0.250778586, 4.74911062e-8, 1, 1.49904711e-8, -0.250778586, 2.64211941e-8, -0.96804446),
+                NameQuest = 'CakeQuest2',
+                LevelQuest = 1,
+                NameMon = 'Baking Staff',
+            })
+        end
+        if _Value >= 2275 then
+            table.insert(v103, {
+                CFrameQuest = CFrame.new(-1927.91602, 37.7981339, -12842.5391, -0.96804446, 4.2214214299999995e-8, 0.250778586, 4.74911062e-8, 1, 1.49904711e-8, -0.250778586, 2.64211941e-8, -0.96804446),
+                NameQuest = 'CakeQuest2',
+                LevelQuest = 2,
+                NameMon = 'Head Baker',
+            })
+        end
+        if #v103 > 0 then
+            local _huge2 = math.huge
+            local v106, v107, v108 = pairs(v103)
+            local v109 = {}
+
+            while true do
+                local v110
+
+                v108, v110 = v106(v107, v108)
+
+                if v108 == nil then
+                    break
+                end
+                if GetDis(v110.CFrameQuest) < _huge2 then
+                    _huge2 = GetDis(v110.CFrameQuest)
+                    v109[1] = v110.CFrameQuest
+                    v109[2] = v110.NameQuest
+                    v109[3] = v110.LevelQuest
+                    v109[4] = v110.NameMon
+                end
+            end
+
+            return v109[1], v109[2], v109[3], v109[4]
+        end
+    end,
+    function()
+        local v111 = {}
+        local _Value2 = game:GetService('Players').LocalPlayer.Data.Level.Value
+
+        if _Value2 >= 1975 then
+            table.insert(v111, {
+                CFrameQuest = CFrame.new(-9479.2168, 141.215088, 5566.09277, 0, 0, 1, 0, 1, 0, -1, 0, 0),
+                NameQuest = 'HauntedQuest1',
+                LevelQuest = 1,
+                NameMon = 'Reborn Skeleton',
+            })
+        end
+        if _Value2 >= 2000 then
+            table.insert(v111, {
+                CFrameQuest = CFrame.new(-9479.2168, 141.215088, 5566.09277, 0, 0, 1, 0, 1, 0, -1, 0, 0),
+                NameQuest = 'HauntedQuest1',
+                LevelQuest = 2,
+                NameMon = 'Living Zombie',
+            })
+        end
+        if _Value2 >= 2025 then
+            table.insert(v111, {
+                CFrameQuest = CFrame.new(-9516.99316, 172.017181, 6078.46533, 0, 0, -1, 0, 1, 0, 1, 0, 0),
+                NameQuest = 'HauntedQuest2',
+                LevelQuest = 1,
+                NameMon = 'Demonic Soul',
+            })
+        end
+        if _Value2 >= 2050 then
+            table.insert(v111, {
+                CFrameQuest = CFrame.new(-9516.99316, 172.017181, 6078.46533, 0, 0, -1, 0, 1, 0, 1, 0, 0),
+                NameQuest = 'HauntedQuest2',
+                LevelQuest = 2,
+                NameMon = 'Posessed Mummy',
+            })
+        end
+        if #v111 > 0 then
+            local _huge3 = math.huge
+            local v114, v115, v116 = pairs(v111)
+            local v117 = {}
+
+            while true do
+                local v118
+
+                v116, v118 = v114(v115, v116)
+
+                if v116 == nil then
+                    break
+                end
+                if GetDis(v118.CFrameQuest) < _huge3 then
+                    _huge3 = GetDis(v118.CFrameQuest)
+                    v117[1] = v118.CFrameQuest
+                    v117[2] = v118.NameQuest
+                    v117[3] = v118.LevelQuest
+                    v117[4] = v118.NameMon
+                end
+            end
+
+            return v117[1], v117[2], v117[3], v117[4]
+        end
+    end,
+}
+
+print(50)
+
+function EquipTool(p119)
+    if game.Players.LocalPlayer.Backpack:FindFirstChild(p119) then
+        local v120 = game.Players.LocalPlayer.Backpack:FindFirstChild(p119)
+
+        wait(0.4)
+        game.Players.LocalPlayer.Character.Humanoid:EquipTool(v120)
+    end
+end
+
+getgenv().CheckTool = function(p121)
+    return lpr.Backpack:FindFirstChild(p121) or lpr.Character:FindFirstChild(p121)
+end
+getgenv().Boss = {
+    Katakuri = function()
+        return game:GetService('Workspace').Map.CakeLoaf:FindFirstChild('BigMirror') and (game:GetService('Workspace').Map.CakeLoaf.BigMirror:FindFirstChild('Other') and game:GetService('Workspace').Map.CakeLoaf.BigMirror.Other.Transparency == 0) and true or (CheckMob[1]('Cake Prince') or CheckMob[2]('Cake Prince') or (CheckMob[1]('Dough King') or CheckMob[2]('Dough King')))
+    end,
+    ['Should Dodge'] = function()
+        return (game:GetService('Workspace')._WorldOrigin:FindFirstChild('Ring') or game:GetService('Workspace')._WorldOrigin:FindFirstChild('Fist')) and true or false
+    end,
+    Elite = function()
+        local v122, v123, v124 = pairs({
+            'Deandre',
+            'Urban',
+            'Diablo',
+        })
+
+        while true do
+            local v125
+
+            v124, v125 = v122(v123, v124)
+
+            if v124 == nil then
+                break
+            end
+            if CheckMob[1](v125) or CheckMob[2](v125) then
+                return true
+            end
+        end
+
+        return false
+    end,
+    ['Rip Indra'] = function()
+        local v126 = 'rip_indra True Form'
+
+        return (CheckMob[1](v126) or CheckMob[2](v126)) and true or false
+    end,
+    Factory = function()
+        return (CheckMob[1]('Core') or CheckMob[2]('Core')) and true or false
+    end,
+    Darkbeard = function()
+        return (CheckMob[1]('Darkbeard') or (CheckMob[2]('Darkbeard') or CheckTool('Fist of Darkness'))) and true or false
+    end,
+    ['Soul Reaper'] = function()
+        return (CheckMob[1]('Soul Reaper') or (CheckMob[2]('Soul Reaper') or CheckTool('Hallow Essence'))) and true or false
+    end,
+    Dummy = function()
+        return game.ReplicatedStorage.Remotes.CommF_:InvokeServer('ArenaTrainer'):lower():find('go defeat that dummy') and true or false
+    end,
+    ['Caslte Raid'] = function()
+        return CheckMob[3](true, true, CFrame.new(-5539.31, 313.8, -2972.37), 500) and true or false
+    end,
+}
+
+spawn(function()
+    pcall(function()
+        while wait() do
+            if getgenv().AutoNewBoss or (getgenv().AutoFarmLevel or (getgenv().AutoFarmKatakuri or (getgenv().AutoFarmBone or (getgenv().AutoFarmElite or getgenv().AutoFarmFactory and Boss.Factory())))) or (getgenv().AutoFarmDarkbeard and Boss.Darkbeard() or (getgenv().AutoFarmRipIndra and Boss['Rip Indra']() or (getgenv().AutoCaslteRaid and getgenv().IsPirateRaiding or (getgenv().AutoFarmSoulReaper and Boss['Soul Reaper']() or (getgenv().AutoFarmElite and Boss.Elite() or getgenv().AutoFarmDummy and Boss.Dummy()))))) then
+                if game:GetService('Players').LocalPlayer.Character:FindFirstChild('HumanoidRootPart') and not game:GetService('Players').LocalPlayer.Character.HumanoidRootPart:FindFirstChild('BodyClip') then
+                    local _BodyVelocity2 = Instance.new('BodyVelocity')
+
+                    _BodyVelocity2.Name = 'BodyClip'
+                    _BodyVelocity2.Parent = game:GetService('Players').LocalPlayer.Character.HumanoidRootPart
+                    _BodyVelocity2.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                    _BodyVelocity2.Velocity = Vector3.new(0, 0, 0)
+                end
+            elseif game:GetService('Players').LocalPlayer.Character.HumanoidRootPart:FindFirstChild('BodyClip') then
+                game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.BodyClip:Destroy()
+            end
+        end
+    end)
+end)
+spawn(function()
+    pcall(function()
+        game:GetService('RunService').Stepped:Connect(function()
+            if getgenv().AutoNewBoss or (getgenv().AutoFarmLevel or (getgenv().AutoFarmKatakuri or (getgenv().AutoFarmBone or (getgenv().AutoFarmElite or getgenv().AutoFarmFactory and Boss.Factory())))) or (getgenv().AutoFarmDarkbeard and Boss.Darkbeard() or (getgenv().AutoFarmRipIndra and Boss['Rip Indra']() or (getgenv().AutoCaslteRaid and getgenv().IsPirateRaiding or (getgenv().AutoFarmSoulReaper and Boss['Soul Reaper']() or (getgenv().AutoFarmElite and Boss.Elite() or getgenv().AutoFarmDummy and Boss.Dummy()))))) then
+                local v128, v129, v130 = pairs(game:GetService('Players').LocalPlayer.Character:GetDescendants())
+
+                while true do
+                    local v131
+
+                    v130, v131 = v128(v129, v130)
+
+                    if v130 == nil then
+                        break
+                    end
+                    if v131:IsA('BasePart') then
+                        v131.CanCollide = false
+                    end
+                end
+            end
+        end)
+    end)
+end)
+
+local v132 = getrawmetatable(game)
+local ___namecall = v132.__namecall
+
+setreadonly(v132, false)
+
+v132.__namecall = newcclosure(function(...)
+    local v134 = getnamecallmethod()
+    local v135 = {...}
+
+    if tostring(v134) ~= 'FireServer' or (tostring(v135[1]) ~= 'RemoteEvent' or (tostring(v135[2]) == 'true' or (tostring(v135[2]) == 'false' or (not getgenv().SpamSkill or getgenv().POSITION == nil)))) then
+        return ___namecall(...)
+    end
+
+    v135[2] = getgenv().POSITION
+
+    return ___namecall(unpack(v135))
+end)
+
+setreadonly(v132, true)
+
+function down(p136, p137)
+    game:GetService('VirtualInputManager'):SendKeyEvent(true, p136, false, game)
+    wait(p137 or 0.1)
+    game:GetService('VirtualInputManager'):SendKeyEvent(false, p136, false, game)
+    wait(0.2)
+end
+function abcdxyz(p138)
+    local _Humanoid2 = lpr.Character:WaitForChild('Humanoid')
+    local v140, v141, v142 = pairs(lpr.Backpack:GetChildren())
+
+    while true do
+        local v143
+
+        v142, v143 = v140(v141, v142)
+
+        if v142 == nil then
+            break
+        end
+        if not string.find(string.lower(v143.Name), 'portal') and (v143:IsA('Tool') and v143.ToolTip == p138) then
+            _Humanoid2:EquipTool(v143)
+        end
+    end
+end
+
+spawn(function()
+    while wait() do
+        if getgenv().SpamSkill then
+            wait(0.2)
+            abcdxyz('Melee')
+            down('Z', 0.5)
+            down('X', 0.5)
+            down('C', 0.5)
+            abcdxyz('Blox Fruit')
+            down('Z', 0.5)
+            down('X', 0.5)
+            down('C', 0.5)
+            abcdxyz('Gun')
+            down('Z', 0.5)
+            down('X', 0.5)
+            abcdxyz('Sword')
+            down('Z', 0.5)
+            down('X', 0.5)
+        end
+    end
+end)
+
+local u144 = CFrame.new(3621.26636, 12.738946, 184.499527, -0.0838687047, 3.5556229999999998e-8, -0.996476829, -5.58376954e-8, 1, 4.03815363e-8, 0.996476829, 5.9027716e-8, -0.0838687047)
+
+getgenv().sigmagay = function()
+    if workspace.Map.CakeLoaf:FindFirstChild('BigMirror') then
+        if workspace.Map.CakeLoaf.BigMirror:FindFirstChild('Main') then
+            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, workspace.Map.CakeLoaf.BigMirror.Main, 0)
+            wait(0.1)
+            firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, workspace.Map.CakeLoaf.BigMirror.Main, 1)
+        end
+    else
+        return
+    end
+end
+
+local u145 = {
+    Cake = {
+        CFrame.new(-2446.19507, 273.689514, -12072.6943, -0.91597873, 7.415162169999999e-8, -0.401226789, 1.05367924e-7, 1, -5.57369617e-8, 0.401226789, -9.3330307e-8, -0.91597873),
+        CFrame.new(-1579.4812, 329.711395, -12312.5977, -0.576983273, 4.5266022e-9, 0.81675595, 3.97933597e-8, 1, 2.25691661e-8, -0.81675595, 4.55234961e-8, -0.576983273),
+        CFrame.new(-1690.62451, 354.441711, -12951.8848, 0.493893147, -5.91391753e-8, -0.869522631, 1.9552321999999998e-9, 1, -6.690279970000001e-8, 0.869522631, 3.1342715099999996e-8, 0.493893147),
+        CFrame.new(-2240.49048, 288.917999, -12815.5264, -0.618226409, -8.22175128e-9, -0.786000073, -8.01770816e-10, 1, -9.82961179e-9, 0.786000073, -5.44673329e-9, -0.618226409),
+        CFrame.new(-2142.16577, 147.042236, -12361.3516, 0.998429775, 1.40399612e-8, -0.0560178645, -1.32477336e-8, 1, 1.4513765299999999e-8, 0.0560178645, -1.3748866e-8, 0.998429775),
+    },
+    Bone = {
+        CFrame.new(-2142.16577, 147.042236, -12361.3516, 0.998429775, 1.40399612e-8, -0.0560178645, -1.32477336e-8, 1, 1.4513765299999999e-8, 0.0560178645, -1.3748866e-8, 0.998429775),
+        CFrame.new(-10063.4277, 347.809143, 5698.61426, 0.991253138, 4.68346917e-9, -0.13197431, -4.91718222e-9, 1, -1.44500245e-9, 0.13197431, 2.08130491e-9, 0.991253138),
+        CFrame.new(-8849.44434, 283.969177, 6315.12988, 0.933174133, -1.34148044e-8, 0.359424531, 2.2394067e-8, 1, -2.08187227e-8, -0.359424531, 2.74764727e-8, 0.933174133),
+    },
+}
+
+getgenv().IsPirateRaiding = false
+
+spawn(function()
+    repeat
+        if not wait(0.1) then
+            return
+        end
+    until Boss['Caslte Raid']()
+
+    local v146 = tick()
+
+    wait()
+
+    if Boss['Caslte Raid']() then
+        v146 = tick()
+    end
+
+    getgenv().IsPirateRaiding = true
+
+    if math.abs(v146 - tick()) <= 15 then
+    end
+
+    getgenv().IsPirateRaiding = false
+end)
+print(70)
+spawn(function()
+    while true do
+        while true do
+            while true do
+                while true do
+                    while true do
+                        while true do
+                            while true do
+                                while true do
+                                    if not task.wait(0.1) then
+                                        return
+                                    end
+                                    if not (getgenv().AutoFarmFactory and (Boss.Factory() and u4)) then
+                                        break
+                                    end
+
+                                    repeat
+                                        wait()
+                                        topos(CFrame.new(448, 199, -441))
+
+                                        getgenv().FastAttack[2] = true
+                                    until not (Boss.Factory() and getgenv().AutoFarmFactory)
+
+                                    getgenv().FastAttack[2] = false
+                                end
+
+                                if not (getgenv().AutoFarmDarkbeard and (Boss.Darkbeard() and u4)) then
+                                    break
+                                end
+
+                                local _Darkbeard = CheckMob[1]('Darkbeard')
+                                local _Darkbeard2 = CheckMob[2]('Darkbeard')
+
+                                if _Darkbeard then
+                                    repeat
+                                        BigHitbox(_Darkbeard.HumanoidRootPart, _Darkbeard.Humanoid)
+                                        task.wait()
+                                        EQ()
+                                        topos(_Darkbeard.HumanoidRootPart.CFrame * Pos)
+
+                                        getgenv().FastAttack[2] = true
+                                    until not getgenv().AutoFarmDarkbeard or (not _Darkbeard:FindFirstChild('HumanoidRootPart') or (not _Darkbeard:FindFirstChild('Humanoid') or _Darkbeard:FindFirstChild('Humanoid') and _Darkbeard.Humanoid.Health <= 0))
+
+                                    getgenv().FastAttack[2] = false
+                                elseif _Darkbeard2 then
+                                    local _CFrame = _Darkbeard2.HumanoidRootPart.CFrame
+
+                                    wait()
+                                    topos(_CFrame)
+
+                                    if GetDis(_CFrame) >= 5 and (not CheckMob[1]('Darkbeard') and getgenv().AutoFarmDarkbeard) then
+                                    end
+                                else
+                                    if CheckTool('Fist of Darkness') then
+                                        repeat
+                                            wait()
+                                            EquipTool('Fist of Darkness')
+                                            topos(CFrame.new(-8932.322265625, 146.83154296875, 6062.55078125))
+                                        until GetDis(CFrame.new(-8932.322265625, 146.83154296875, 6062.55078125)) < 1 or (CheckMob[1]('Darkbeard') or (CheckMob[2]('Darkbeard') or not getgenv().AutoFarmDarkbeard))
+                                    end
+                                end
+                            end
+
+                            if not (getgenv().AutoFarmRipIndra and (Boss['Rip Indra']() and u98)) then
+                                break
+                            end
+
+                            local _rip_indraTrueForm = CheckMob[1]('rip_indra True Form')
+                            local _rip_indraTrueForm2 = CheckMob[2]('rip_indra True Form')
+
+                            if _rip_indraTrueForm then
+                                repeat
+                                    BigHitbox(_rip_indraTrueForm.HumanoidRootPart, _rip_indraTrueForm.Humanoid)
+                                    task.wait()
+                                    EQ()
+                                    topos(_rip_indraTrueForm.HumanoidRootPart.CFrame * Pos)
+
+                                    getgenv().FastAttack[2] = true
+                                until not getgenv().AutoFarmRipIndra or (not _rip_indraTrueForm:FindFirstChild('HumanoidRootPart') or (not _rip_indraTrueForm:FindFirstChild('Humanoid') or _rip_indraTrueForm:FindFirstChild('Humanoid') and _rip_indraTrueForm.Humanoid.Health <= 0))
+
+                                getgenv().FastAttack[2] = false
+                            else
+                                local _CFrame2 = _rip_indraTrueForm2.HumanoidRootPart.CFrame
+
+                                wait()
+                                topos(_CFrame2)
+
+                                if GetDis(_CFrame2) >= 5 and (not CheckMob[1]('rip_indra True For') and getgenv().AutoFarmRipIndra) then
+                                end
+                            end
+                        end
+
+                        if not (getgenv().AutoCaslteRaid and getgenv().IsPirateRaiding) then
+                            break
+                        end
+
+                        local v153 = CFrame.new(-5539.31, 313.8, -2972.37)
+
+                        if GetDis(v153) <= 500 then
+                            local v154, v155, v156 = pairs(game:GetService('Workspace').Enemies:GetChildren())
+
+                            while true do
+                                local v157
+
+                                v156, v157 = v154(v155, v156)
+
+                                if v156 == nil then
+                                    break
+                                end
+                                if v157:FindFirstChild('Humanoid') and (v157.Humanoid.Health > 0 and v157:FindFirstChild('HumanoidRootPart')) then
+                                    if GetDis(v157.HumanoidRootPart.CFrame, v153) > 500 then
+                                        topos(v153)
+                                    else
+                                        repeat
+                                            wait()
+                                            BigHitbox(v157.HumanoidRootPart, v157.Humanoid)
+                                            EQ()
+                                            topos(v157.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+
+                                            getgenv().FastAttack[2] = true
+                                        until not getgenv().AutoCaslteRaid or (not v157:FindFirstChild('Humanoid') or v157:FindFirstChild('Humanoid') and v157.Humanoid.Health <= 0) or not v157:FindFirstChild('HumanoidRootPart')
+
+                                        getgenv().FastAttack[2] = false
+                                    end
+                                end
+                            end
+                        else
+                            topos(v153)
+                        end
+                    end
+
+                    if not (getgenv().AutoFarmSoulReaper and (Boss['Soul Reaper']() and u98)) then
+                        break
+                    end
+
+                    local _SoulReaper = CheckMob[1]('Soul Reaper')
+                    local _SoulReaper2 = CheckMob[2]('Soul Reaper')
+
+                    if _SoulReaper then
+                        repeat
+                            BigHitbox(_SoulReaper.HumanoidRootPart, _SoulReaper.Humanoid)
+                            task.wait()
+                            EQ()
+                            topos(_SoulReaper.HumanoidRootPart.CFrame * Pos)
+
+                            getgenv().FastAttack[2] = true
+                        until not getgenv().AutoFarmSoulReaper or (not _SoulReaper:FindFirstChild('HumanoidRootPart') or (not _SoulReaper:FindFirstChild('Humanoid') or _SoulReaper:FindFirstChild('Humanoid') and _SoulReaper.Humanoid.Health <= 0))
+
+                        getgenv().FastAttack[2] = false
+                    elseif _SoulReaper2 then
+                        local _CFrame3 = _SoulReaper2.HumanoidRootPart.CFrame
+
+                        wait()
+                        topos(_CFrame3)
+
+                        if GetDis(_CFrame3) >= 5 and (not CheckMob[1]('Soul Reaper') and getgenv().AutoFarmSoulReaper) then
+                        end
+                    else
+                        if CheckTool('Hallow Essence') then
+                            wait()
+                            EquipTool('Hallow Essence')
+                            topos(CFrame.new(-8932.322265625, 146.83154296875, 6062.55078125))
+
+                            if GetDis(CFrame.new(-8932.322265625, 146.83154296875, 6062.55078125)) >= 1 and (not CheckMob[2]('Soul Reaper') and (not CheckMob[1]('Soul Reaper') and getgenv().AutoFarmSoulReaper)) then
+                            end
+                        end
+                    end
+                end
+
+                if not (getgenv().AutoFarmElite and (Boss.Elite() and u98)) then
+                    break
+                end
+
+                local _Text = game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
+                local v162 = CheckMob[1]('Deandre') or (CheckMob[1]('Urban') or CheckMob[1]('Diablo'))
+                local v163 = CheckMob[2]('Deandre') or (CheckMob[2]('Urban') or CheckMob[2]('Diablo'))
+
+                if v162 then
+                    if v162 and not _Text:find(v162.Name) then
+                        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('AbandonQuest')
+                    end
+                elseif v163 and not _Text:find(v163.Name) then
+                    game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('AbandonQuest')
+                end
+                if game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Visible ~= false then
+                    local v164 = CheckMob[1]('Deandre') or (CheckMob[1]('Urban') or CheckMob[1]('Diablo'))
+                    local v165 = CheckMob[2]('Deandre') or (CheckMob[2]('Urban') or CheckMob[2]('Diablo'))
+
+                    if v164 then
+                        repeat
+                            BigHitbox(v164.HumanoidRootPart, v164.Humanoid)
+                            task.wait()
+                            EQ()
+                            topos(v164.HumanoidRootPart.CFrame * Pos)
+
+                            getgenv().FastAttack[2] = true
+                        until not getgenv().AutoFarmElite or (not v164:FindFirstChild('HumanoidRootPart') or (not v164:FindFirstChild('Humanoid') or v164:FindFirstChild('Humanoid') and v164.Humanoid.Health <= 0))
+
+                        getgenv().FastAttack[2] = false
+                    elseif v165 then
+                        local _CFrame4 = v165.HumanoidRootPart.CFrame
+
+                        wait()
+                        topos(_CFrame4)
+
+                        if GetDis(_CFrame4) >= 5 and (not CheckMob[1]('Deandre') and (not CheckMob[1]('Urban') and (not CheckMob[1]('Diablo') and getgenv().AutoFarmElite))) then
+                        end
+                    end
+                else
+                    game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('EliteHunter')
+                end
+            end
+
+            if not (getgenv().AutoFarmDummy and (Boss.Dummy() and u98)) then
+                break
+            end
+            if not game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text:lower():find('dummy') then
+                game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('AbandonQuest')
+            end
+            if game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Visible ~= false then
+                local _TrainingDummy = CheckMob[1]('Training Dummy')
+
+                if _TrainingDummy then
+                    repeat
+                        BigHitbox(_TrainingDummy.HumanoidRootPart, _TrainingDummy.Humanoid)
+                        task.wait()
+                        EQ()
+                        topos(_TrainingDummy.HumanoidRootPart.CFrame * Pos)
+
+                        getgenv().FastAttack[2] = true
+                    until not getgenv().AutoFarmDummy or (not _TrainingDummy:FindFirstChild('HumanoidRootPart') or (not _TrainingDummy:FindFirstChild('Humanoid') or _TrainingDummy:FindFirstChild('Humanoid') and _TrainingDummy.Humanoid.Health <= 0))
+
+                    getgenv().FastAttack[2] = false
+                else
+                    repeat
+                        wait()
+                        topos(u144)
+                    until GetDis(u144) < 5 or (CheckMob[1]('Training Dummy') or not getgenv().AutoFarmDummy)
+                end
+            else
+                game.ReplicatedStorage.Remotes.CommF_:InvokeServer('ArenaTrainer')
+            end
+        end
+
+        if getgenv().AutoNewBoss and u98 then
+        end
+        if getgenv().AutoFarmKatakuri and u98 then
+            break
+        end
+        if getgenv().AutoFarmLevel then
+            local v168, v169, v170, v171, v172, v173 = GetQuest()
+            local _Text2 = game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
+
+            if not string.find(_Text2, v173) then
+                game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('AbandonQuest')
+            end
+            if game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Visible ~= false then
+                if CheckMob[1](v168) then
+                    local v175 = CheckMob[1](v168)
+
+                    repeat
+                        task.wait()
+                        EQ()
+                        GetCFrameBring(v168)
+                        topos(v175.HumanoidRootPart.CFrame * Pos)
+
+                        getgenv().FastAttack[2] = true
+                        getgenv().BringMob[2] = true
+                    until not getgenv().AutoFarmLevel or (not v175:FindFirstChild('Humanoid') or v175:FindFirstChild('Humanoid') and v175.Humanoid.Health <= 0) or not v175:FindFirstChild('HumanoidRootPart') or game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Visible == false
+
+                    getgenv().FastAttack[2] = false
+                    getgenv().BringMob[2] = false
+                else
+                    topos(v172)
+                end
+            elseif GetDis(v171) <= 5 then
+                game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('StartQuest', v169, v170)
+            else
+                topos(v171)
+            end
+        elseif getgenv().AutoFarmBone and u98 then
+            CFrame.new(-9506.234375, 172.130615234375, 6117.0771484375)
+
+            local _Text3 = game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
+            local v177, v178, v179, _ = QuestCac[2]()
+
+            if getgenv().AcceptQuest and (QuestCac[2]() and not (_Text3:find('Reborn Skeleton') or (_Text3:find('Living Zombie') or (_Text3:find('Demonic Soul') or _Text3:find('Posessed Mummy'))))) then
+                game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('AbandonQuest')
+            end
+            if getgenv().AcceptQuest and (game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Visible == false and QuestCac[2]()) then
+                if GetDis(v177) <= 5 then
+                    game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('StartQuest', v178, v179)
+                else
+                    topos(v177)
+                end
+            else
+                local v180 = CheckMob[1]('Reborn Skeleton') or CheckMob[1]('Living Zombie') or (CheckMob[1]('Demonic Soul') or CheckMob[1]('Posessed Mummy'))
+
+                if v180 then
+                    repeat
+                        task.wait()
+                        EQ()
+                        GetCFrameBring(v180.Name)
+                        topos(v180.HumanoidRootPart.CFrame * Pos)
+
+                        getgenv().FastAttack[2] = true
+                        getgenv().BringMob[2] = true
+                    until not v180:FindFirstChild('Humanoid') or v180:FindFirstChild('Humanoid') and v180.Humanoid.Health <= 0 or not (v180:FindFirstChild('HumanoidRootPart') and (getgenv().getgenv().AutoFarmBone and (CheckMob[1]('Reborn Skeleton') and (CheckMob[1]('Living Zombie') and (CheckMob[1]('Demonic Soul') and CheckMob[1]('Posessed Mummy'))))))
+
+                    getgenv().FastAttack[2] = false
+                    getgenv().BringMob[2] = false
+                else
+                    local v181 = math.random(1, #u145.Bone)
+                    local v182 = u145.Bone[v181]
+
+                    repeat
+                        wait()
+                        topos(v182)
+                    until GetDis(v182) < 10 or (v180 or not getgenv().AutoFarmBone)
+                end
+            end
+        end
+    end
+
+    local _Text4 = game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
+
+    if getgenv().AcceptQuest and QuestCac[1]() then
+        local _, _, _, _ = QuestCac[1]()
+
+        if not (_Text4:find('Cookie Crafter') or (_Text4:find('Cake Guard') or (_Text4:find('Baking Staff') or _Text4:find('Head Baker')))) then
+            game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('AbandonQuest')
+        end
+    end
+    if game:GetService('Workspace').Map.CakeLoaf:FindFirstChild('BigMirror') and (not game:GetService('Workspace').Map.CakeLoaf:FindFirstChild('BigMirror') or game:GetService('Workspace').Map.CakeLoaf.BigMirror:FindFirstChild('Other')) and (GetDis(CFrame.new(-2152.46533, 69.9830399, -12399.1357)) <= 500 or Boss.Katakuri()) then
+    end
+
+    topos(CFrame.new(-2152.46533, 69.9830399, -12399.1357))
+
+    if not getgenv().AcceptQuest or (game:GetService('Players').LocalPlayer.PlayerGui.Main.Quest.Visible ~= false or (not QuestCac[1]() or Boss.Katakuri())) then
+    end
+
+    local v184, v185, v186 = QuestCac[1]()
+
+    if GetDis(v184) <= 5 then
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('StartQuest', v185, v186)
+    else
+        topos(v184)
+    end
+    if not Boss.Katakuri() then
+    end
+    if not (CheckMob[1]('Cake Prince') or CheckMob[1]('Dough King')) then
+    end
+
+    local v187 = CheckMob[1]('Dough King') or CheckMob[1]('Cake Prince')
+
+    if true then
+        BigHitbox(v187.HumanoidRootPart, v187.Humanoid)
+        task.wait()
+        EQ()
+
+        if Boss['Should Dodge']() then
+            topos(v187.HumanoidRootPart.CFrame * CFrame.new(0, -30, 0))
+        else
+            topos(v187.HumanoidRootPart.CFrame * Pos)
+        end
+    end
+
+    getgenv().FastAttack[2] = true
+
+    if getgenv().AutoFarmKatakuri and (Boss.Katakuri() and (v187 and (v187:FindFirstChild('Humanoid') and (not v187:FindFirstChild('Humanoid') or v187.Humanoid.Health > 0)))) and v187:FindFirstChild('HumanoidRootPart') then
+    else
+    end
+
+    sigmagay()
+
+    local v188 = CheckMob[1]('Cookie Crafter') or CheckMob[1]('Cake Guard') or (CheckMob[1]('Baking Staff') or CheckMob[1]('Head Baker'))
+
+    if v188 then
+        repeat
+            task.wait()
+            EQ()
+            GetCFrameBring(v188.Name)
+            topos(v188.HumanoidRootPart.CFrame * Pos)
+
+            getgenv().FastAttack[2] = true
+            getgenv().BringMob[2] = true
+        until not getgenv().AutoFarmKatakuri or (not v188:FindFirstChild('Humanoid') or v188:FindFirstChild('Humanoid') and v188.Humanoid.Health <= 0) or (not v188:FindFirstChild('HumanoidRootPart') or Boss.Katakuri())
+
+        getgenv().FastAttack[2] = false
+        getgenv().BringMob[2] = false
+    else
+        local v189 = math.random(1, #u145.Cake)
+        local v190 = u145.Cake[v189]
+
+        repeat
+            wait()
+            topos(v190)
+        until GetDis(v190) < 10 or not getgenv().AutoFarmKatakuri
+    end
+    if getdis(CFrame.new(-16220.0195, 9.1023283, 471.024963, -0.475212067, 2.77733534e-8, -0.879871309, 9.64040225e-8, 1, -2.05018651e-8, 0.879871309, -9.45658698e-8, -0.475212067)) >= 1000 then
+    end
+
+    local v191 = CheckMob[1]('Tyrant of the Skies') or CheckMob[2]('Tyrant of the Skies')
+
+    if v191 then
+    end
+    if checkgay() then
+    end
+
+    local v192 = CheckMob[1]('Isle Champion') or CheckMob[1]('Isle Outlaw') or (CheckMob[1]('Serpent Hunter') or CheckMob[1]('Skull Slayer') or (CheckMob[1]('Sun-kissed Warrior') or CheckMob[1]('Isle Champion')))
+
+    if v192 then
+        repeat
+            BigHitbox(v192.HumanoidRootPart, v192.Humanoid)
+            task.wait()
+            EQ()
+            topos(v192.HumanoidRootPart.CFrame * Pos)
+
+            getgenv().FastAttack[2] = true
+            getgenv().BringMob[2] = true
+        until not v192 or (not v192:FindFirstChild('HumanoidRootPart') or (not v192:FindFirstChild('Humanoid') or v192:FindFirstChild('Humanoid') and v192.Humanoid.Health <= 0)) or (checkgay() or not getgenv().AutoNewBoss)
+
+        getgenv().BringMob[2] = false
+    else
+        local v193 = ({
+            CFrame.new(-16523.1094, 55.7330475, 1097.32617, -0.995399475, 1.42723178e-9, 0.0958118811, 1.91442862e-9, 1, 4.9930069e-9, -0.0958118811, 5.15346166e-9, -0.995399475),
+            CFrame.new(-16508.6289, 55.7330589, -231.490143, 0.124618106, 3.3513603e-9, -0.992204785, -1.8742238e-8, 1, 1.02371822e-9, 0.992204785, 1.84685636e-8, 0.124618106),
+        })[math.random(1, 2)]
+
+        topos(v193)
+
+        if getdis(v193) > 10 and not (CheckMob[1]('Isle Champion') or (CheckMob[1]('Isle Outlaw') or (CheckMob[1]('Serpent Hunter') or (CheckMob[1]('Skull Slayer') or (CheckMob[1]('Sun-kissed Warrior') or CheckMob[1]('Isle Champion')))))) then
+        end
+    end
+
+    topos(CFrame.new(-16220.0195, 9.1023283, 471.024963, -0.475212067, 2.77733534e-8, -0.879871309, 9.64040225e-8, 1, -2.05018651e-8, 0.879871309, -9.45658698e-8, -0.475212067))
+    wait()
+
+    local v194 = givayong()
+
+    if v194 then
+        topos(v194.CFrame)
+
+        getgenv().POSITION = v194.CFrame.Position
+    end
+
+    getgenv().SpamSkill = true
+
+    if v194 and (v194.Parent and (v194.Parent.Parent and (givayong() and (checkgay() and (not CheckMob[1]('Tyrant of the Skies') and (not CheckMob[2]('Tyrant of the Skies') and getgenv().AutoNewBoss)))))) then
+    else
+    end
+
+    getgenv().SpamSkill = false
+    getgenv().POSITION = nil
+
+    repeat
+        task.wait()
+        EQ()
+        topos(v191.HumanoidRootPart.CFrame * CFrame.new(0, 20, 0))
+
+        getgenv().FastAttack[2] = true
+    until not v191 or (not v191:FindFirstChild('HumanoidRootPart') or (not v191:FindFirstChild('Humanoid') or v191:FindFirstChild('Humanoid') and v191.Humanoid.Health <= 0)) or not getgenv().AutoNewBoss
+end)
+setmetatable({}, {
+    __index = function(_, p195)
+        if p195 == '2753915549' or (p195 == '4442272183' or p195 == '7449423635') then
+            return 'Blox Fruit'
+        end
+    end,
+})
+
+local u196 = loadstring(game:HttpGet('https://raw.githubusercontent.com/Iamkhnah/Khanhdzpro/refs/heads/main/winduilibrary.lua'))()
+
+print(100)
+wait(0.5)
+
+local v197 = u196
+local u198 = u196.CreateWindow(v197, {
+    Title = 'Script Main - Blox Fruit',
+    Author = 'Made by Retard',
+    Folder = 'Retard',
+    Size = UDim2.fromOffset(580, 300),
+    Transparent = true,
+    Theme = 'Dark',
+    UserEnabled = false,
+    SideBarWidth = 200,
+    HasOutline = true,
+})
+
+function alert(p199)
+    u196:Notify({
+        Title = p199.t,
+        Content = p199.c,
+        Duration = p199.d or 5,
+        Background = p199.b or 'square-code',
+    })
+end
+
+local v200 = u198:Tab({
+    Title = 'Info',
+    Icon = 'info',
+})
+
+v200:Button({
+    Title = 'My Facebook',
+    Desc = 'ditmemay',
+    Callback = function()
+        setclipboard('idk')
+    end,
+})
+v200:Button({
+    Title = 'User Discord',
+    Desc = '@itkuri',
+    Callback = function()
+        setclipboard('itkuri')
+    end,
+})
+u198:SelectTab(1)
+
+local v201 = u198:Tab({
+    Title = 'Main Farm',
+    Icon = 'house',
+})
+
+v201:Toggle({
+    Title = 'Auto Farm Level',
+    Desc = 'sea 1 - 2 - 3',
+    Value = false,
+    Callback = function(p202)
+        getgenv().AutoFarmLevel = p202
+    end,
+})
+v201:Toggle({
+    Title = 'Auto Farm Bone',
+    Desc = 'sea 3',
+    Value = false,
+    Callback = function(p203)
+        getgenv().AutoFarmBone = p203
+    end,
+})
+v201:Toggle({
+    Title = 'Auto Farm Kata',
+    Desc = 'sea 3',
+    Value = false,
+    Callback = function(p204)
+        getgenv().AutoFarmKatakuri = p204
+    end,
+})
+v201:Toggle({
+    Title = 'Auto Farm Tyrant of the Skies',
+    Desc = 'sea 3 - new boss update',
+    Value = false,
+    Callback = function(p205)
+        getgenv().AutoNewBoss = p205
+    end,
+})
+v201:Section({
+    Title = 'Other Quests',
+    TextXAlignment = 'Left',
+    TextSize = 17,
+})
+v201:Toggle({
+    Title = 'Auto Farm Elite',
+    Desc = 'sea 3',
+    Value = false,
+    Callback = function(p206)
+        getgenv().AutoFarmElite = p206
+    end,
+})
+v201:Toggle({
+    Title = 'Auto Farm Dummy Training',
+    Desc = 'sea 3',
+    Value = false,
+    Callback = function(p207)
+        getgenv().AutoFarmDummy = p207
+    end,
+})
+v201:Toggle({
+    Title = 'Auto Farm Factory',
+    Desc = 'sea 2',
+    Value = false,
+    Callback = function(p208)
+        getgenv().AutoFarmFactory = p208
+    end,
+})
+v201:Toggle({
+    Title = 'Auto Castle Raid',
+    Desc = 'sea 3',
+    Value = false,
+    Callback = function(p209)
+        getgenv().AutoCaslteRaid = p209
+    end,
+})
+
+local v210 = u198:Tab({
+    Title = 'Other Farm',
+    Icon = 'house-plus',
+})
+
+v210:Toggle({
+    Title = 'Auto Dark Beard',
+    Desc = 'sea 2',
+    Value = false,
+    Callback = function(p211)
+        getgenv().AutoFarmDarkbeard = p211
+    end,
+})
+v210:Toggle({
+    Title = 'Auto Rip Indra',
+    Desc = 'sea 3',
+    Value = false,
+    Callback = function(p212)
+        getgenv().AutoFarmRipIndra = p212
+    end,
+})
+v210:Toggle({
+    Title = 'Auto Soul Reaper',
+    Desc = 'sea 3',
+    Value = false,
+    Callback = function(p213)
+        getgenv().AutoFarmSoulReaper = p213
+    end,
+})
+
+local v214 = u198:Tab({
+    Title = 'Local Player',
+    Icon = 'user',
+})
+
+v214:Toggle({
+    Title = 'Auto Turn V4',
+    Desc = '',
+    Value = false,
+    Callback = function(p215)
+        getgenv().AutoActiveV4 = p215
+    end,
+})
+v214:Toggle({
+    Title = 'Auto Turn V3',
+    Desc = '',
+    Value = false,
+    Callback = function(p216)
+        getgenv().AutoActiveV3 = p216
+    end,
+})
+spawn(function()
+    while wait() do
+        if getgenv().AutoActiveV4 and (game.Players.LocalPlayer.Character:FindFirstChild('RaceEnergy') and game.Players.LocalPlayer.Character.RaceEnergy.Value >= 1 and (game.Players.LocalPlayer.Character:FindFirstChild('RaceTransformed') and not game.Players.LocalPlayer.Character.RaceTransformed.Value)) then
+            game:GetService('Players').LocalPlayer.Backpack.Awakening.RemoteFunction:InvokeServer(true)
+            game:GetService('VirtualInputManager'):SendKeyEvent(true, 'Y', false, game)
+            wait(0.1)
+            game:GetService('VirtualInputManager'):SendKeyEvent(false, 'Y', false, game)
+        end
+        if getgenv().AutoActiveV3 then
+            game:GetService('ReplicatedStorage').Remotes.CommE:FireServer('ActivateAbility')
+        end
+    end
+end)
+
+local v217 = u198:Tab({
+    Title = 'Race - Trial',
+    Icon = 'venetian-mask',
+})
+
+function gg(p218)
+    local v219, v220, v221 = pairs(p218:FindFirstChild('HumanoidRootPart'):GetChildren())
+    local v222 = {
+        'Last Resort',
+        'Agility',
+        'Water Body',
+        'Heavenly Blood',
+        'Heightened Senses',
+        'Energy Core',
+        'Primordial Reign',
+    }
+
+    while true do
+        local v223
+
+        v221, v223 = v219(v220, v221)
+
+        if v221 == nil then
+            break
+        end
+        if table.find(v222, v223.Name) then
+            return true
+        end
+    end
+
+    return false
+end
+function d(p224, p225, p226)
+    local _VirtualInputManager2 = game:GetService('VirtualInputManager')
+
+    _VirtualInputManager2:SendKeyEvent(true, p224, false, game)
+
+    if p225 then
+        wait(p226)
+    end
+
+    _VirtualInputManager2:SendKeyEvent(false, p224, false, game)
+end
+function troingunhucho()
+    local _LocalPlayer = game.Players.LocalPlayer
+    local v229, v230, v231 = pairs(game:GetService('Players'):GetPlayers())
+    local v232 = 0
+
+    while true do
+        local v233
+
+        v231, v233 = v229(v230, v231)
+
+        if v231 == nil then
+            break
+        end
+        if v233.Name ~= _LocalPlayer.Name and v233.Character and (v233.Character:FindFirstChild('HumanoidRootPart') and v233.Data.Race.Value ~= _LocalPlayer.Data.Race.Value and ((game:GetService('Workspace').Map['Temple of Time'][v233.Data.Race.Value .. 'Corridor'].Door.Entrance.Position - v233.Character:FindFirstChild('HumanoidRootPart').Position).Magnitude <= 10 and gg(v233.Character))) then
+            v232 = v232 + 1
+        end
+    end
+
+    return 2 <= v232
+end
+
+v217:Button({
+    Title = 'Teleport to Temple Of Time',
+    Desc = '',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(28282.5703125, 14896.8505859375, 105.1042709350586))
+    end,
+})
+v217:Button({
+    Title = 'Teleport to current door',
+    Desc = '',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('requestEntrance', Vector3.new(28282.5703125, 14896.8505859375, 105.1042709350586))
+        pcall(function()
+            if game:GetService('Workspace').Map['Temple of Time']:FindFirstChild(game.Players.LocalPlayer.Data.Race.Value .. 'Corridor') then
+                topos(game:GetService('Workspace').Map['Temple of Time'][game.Players.LocalPlayer.Data.Race.Value .. 'Corridor'].Door.Entrance.CFrame)
+            end
+        end)
+    end,
+})
+v217:Toggle({
+    Title = 'Auto Turn V3 To Trial - Beta',
+    Desc = 'if its not working, report bug in discord',
+    Value = false,
+    Callback = function(p234)
+        getgenv().AutoTurnV3ToTrial = p234
+    end,
+})
+spawn(function()
+    while task.wait() do
+        if getgenv().AutoTurnV3ToTrial and troingunhucho() then
+            game:GetService('ReplicatedStorage').Remotes.CommE:FireServer('ActivateAbility')
+            d('T', true, 0.5)
+        end
+    end
+end)
+
+local v239, _ = pcall(function()
+    spawn(function()
+        local v235 = getrawmetatable(game)
+        local ___namecall2 = v235.__namecall
+
+        setreadonly(v235, false)
+
+        v235.__namecall = newcclosure(function(...)
+            local v237 = getnamecallmethod()
+            local v238 = {...}
+
+            if tostring(v237) ~= 'FireServer' or (tostring(v238[1]) ~= 'RemoteEvent' or (tostring(v238[2]) == 'true' or (tostring(v238[2]) == 'false' or (not getgenv().kat or _G.PosTar == nil)))) then
+                return ___namecall2(...)
+            end
+
+            v238[2] = _G.PosTar
+
+            return ___namecall2(unpack(v238))
+        end)
+    end)
+end)
+
+if not v239 then
+    game:GetService('StarterGui'):SetCore('SendNotification', {
+        Title = 'ERORR :<',
+        Text = 'Your Executor doesnt support aimbot :(',
+        Icon = 'http://www.roblox.com/asset/?id=18423735714',
+        Duration = 5,
+    })
+end
+
+v217:Toggle({
+    Title = 'Auto Kill Player After Trial - Beta',
+    Desc = 'if its not working, report bug in discord',
+    Value = false,
+    Callback = function(p240)
+        getgenv().AutoKillPlayerAfterTrial = p240
+    end,
+})
+
+local u241 = {
+    CFrame.new(28865.9258, 14890.6768, 69.5653152, -0.995170593, 1.2824004399999998e-10, -0.0981604904, -5.06844477e-9, 1, 5.2691334e-8, 0.0981604904, 5.29343858e-8, -0.995170593),
+    CFrame.new(28606.1758, 14890.6748, -244.635941, 0.999757349, 1.7799660499999999e-15, 0.0220281035, -1.9661123799999998e-9, 1, 8.92329837e-8, -0.0220281035, -8.9254641e-8, 0.999757349),
+    CFrame.new(28865.9277, 14891.376, -244.873611, 0.996234059, 5.34993028e-8, -0.0867045075, -5.25535135e-8, 1, 1.3190804e-8, 0.0867045075, -8.584502e-9, 0.996234059),
+    CFrame.new(28607.9297, 14957.1758, 70.0314941, -0.978715241, -3.61393803e-13, 0.205222905, -4.32117142e-9, 1, -2.06060555e-8, -0.205222905, -2.10542659e-8, -0.978715241),
+    CFrame.new(28716.0801, 14890.6758, -244.455505, 0.851098955, 4.90097101e-8, 0.525005341, 1.68025895e-8, 1, -1.2058997400000002e-7, -0.525005341, 1.11455442e-7, 0.851098955),
+    CFrame.new(28815.123, 15049.0596, -127.680908, 0.843677163, 3.2911330499999996e-8, -0.53685087, -2.12294644e-8, 1, 2.79416863e-8, 0.53685087, -1.21767059e-8, 0.843677163),
+}
+local u242 = false
+
+spawn(function()
+    while true do
+        if not wait() then
+            return
+        end
+        if getgenv().AutoKillPlayerAfterTrial and (game:GetService('Players').LocalPlayer.PlayerGui.Main.Timer.Visible and game:GetService('Workspace').Map['Temple of Time'].FFABorder.Forcefield.Transparency < 1) then
+            local v243, v244, v245 = pairs(game.Workspace.Characters:GetChildren())
+
+            while true do
+                local v246
+
+                v245, v246 = v243(v244, v245)
+
+                if v245 == nil then
+                    break
+                end
+                if v246.Name == lpr.Name or (not v246:FindFirstChild('HumanoidRootPart') or (not v246:FindFirstChild('Humanoid') or v246.Humanoid.Health <= 0)) then
+                    local v247 = u241[math.random(1, #u241)]
+
+                    repeat
+                        wait()
+                        topos(v247)
+                    until getdis(v247) <= 2
+                elseif getdis(v246.HumanoidRootPart.CFrame, CFrame.new(28710.2285, 14887.5771, -80.5576859)) >= 500 then
+                    local v248 = u241[math.random(1, #u241)]
+
+                    wait()
+                    topos(v248)
+
+                    if getdis(v248) > 2 then
+                    end
+                else
+                    topos(v246.HumanoidRootPart.CFrame)
+
+                    _G.PosTar = v246.HumanoidRootPart.CFrame.Position
+                    getgenv().at = true
+
+                    spawn(function()
+                        if getgenv().spskill and not u242 then
+                            u242 = true
+
+                            wait(0.6)
+                            d('C', true, 0.5)
+                            wait(0.6)
+                            d('X', true, 0.5)
+                            wait(0.6)
+                            d('Z', true, 0.6)
+                            wait(0.6)
+
+                            u242 = false
+                        end
+                    end)
+                end
+            end
+        end
+    end
+end)
+
+local v249 = u198:Tab({
+    Title = 'Shop - Buy',
+    Icon = 'store',
+})
+
+v249:Button({
+    Title = 'Buy Geppo',
+    Desc = '[ 10,000 Beli ]',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyHaki', 'Geppo')
+    end,
+})
+v249:Button({
+    Title = 'Buy Buso',
+    Desc = '[ 25,000 Beli ]',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyHaki', 'Buso')
+    end,
+})
+v249:Button({
+    Title = 'Buy Soru',
+    Desc = '[ 25,000 Beli ]',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyHaki', 'Soru')
+    end,
+})
+v249:Button({
+    Title = 'Buy Ken',
+    Desc = '[ 750,000 Beli ]',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('KenTalk', 'Buy')
+    end,
+})
+
+local u250 = {
+    ['Black Leg'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyBlackLeg')
+    end,
+    Electro = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyElectro')
+    end,
+    ['Fishman Karate'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyFishmanKarate')
+    end,
+    ['Dragon Claw'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'DragonClaw', '1')
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'DragonClaw', '2')
+    end,
+    ['Super Human'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuySuperhuman')
+    end,
+    ['Death Step'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyDeathStep')
+    end,
+    ['Sharkman Karate'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuySharkmanKarate', true)
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuySharkmanKarate')
+    end,
+    ['Electric Claw'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyElectricClaw')
+    end,
+    ['Dragon Talon'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyDragonTalon')
+    end,
+    ['God Human'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuyGodhuman')
+    end,
+    ['Sanguine Art'] = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuySanguineArt', true)
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BuySanguineArt')
+    end,
+}
+local v251, v252, v253 = pairs(u250)
+local v254 = {}
+
+while true do
+    local v255
+
+    v253, v255 = v251(v252, v253)
+
+    if v253 == nil then
+        break
+    end
+
+    table.insert(v254, v253)
+end
+
+getgenv().ChooseMelee = 'Black Leg'
+
+v249:Dropdown({
+    Title = 'Choose Melees',
+    Desc = '[ all melee ]',
+    Value = getgenv().ChooseMelee,
+    Multi = false,
+    AllowNone = true,
+    Values = v254,
+    Callback = function(_)
+        getgenv().ChooseMelee = tab
+    end,
+})
+v249:Button({
+    Title = 'Buy Melee',
+    Desc = 'Buy melee choosed',
+    Callback = function()
+        if u250[getgenv().ChooseMelee] then
+            u250[getgenv().ChooseMelee]()
+        end
+    end,
+})
+v249:Button({
+    Title = 'Change Race',
+    Desc = '[ 2.5K F ]',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Reroll', '1')
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Reroll', '2')
+    end,
+})
+v249:Button({
+    Title = 'Refund Stats',
+    Desc = '[ 2.5K F ]',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Refund', '1')
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Refund', '2')
+    end,
+})
+v249:Button({
+    Title = 'Swordsman Hat',
+    Desc = '[ 150k Beli ]',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Refund', '1')
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Refund', '2')
+    end,
+})
+v249:Button({
+    Title = 'Swordsman Hat',
+    Desc = '[ 150k Beli ]',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Refund', '1')
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Refund', '2')
+    end,
+})
+v249:Button({
+    Title = 'Tomoe Ring',
+    Desc = '[ 500k Beli ]',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Refund', '1')
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('BlackbeardReward', 'Refund', '2')
+    end,
+})
+
+local v256 = u198:Tab({
+    Title = 'Misc',
+    Icon = 'ellipsis',
+})
+
+getgenv().JOBID = ''
+
+v256:Input({
+    Title = 'Job Id',
+    Desc = 'Enter job id here',
+    Value = '',
+    PlaceholderText = 'enter job id here . . .',
+    ClearTextOnFocus = false,
+    Callback = function(p257)
+        getgenv().JOBID = p257
+    end,
+})
+v256:Button({
+    Title = 'Join Server',
+    Desc = 'Click here to join job id',
+    Callback = function()
+        if getgenv().JOBID ~= nil or getgenv().JOBID ~= '' then
+            game:GetService('ReplicatedStorage').__ServerBrowser:InvokeServer('teleport', getgenv().JOBID)
+            game:GetService('TeleportService'):Teleport(game.PlaceId, getgenv().JOBID, game:GetService('Players').LocalPlayer)
+        end
+    end,
+})
+v256:Button({
+    Title = 'Rejoin Server Server',
+    Desc = 'Click here to rejoin',
+    Callback = function()
+        game:GetService('ReplicatedStorage').__ServerBrowser:InvokeServer('teleport', game.JobId)
+    end,
+})
+v256:Button({
+    Title = 'Copy Job Id',
+    Desc = '',
+    Callback = function()
+        setclipboard(game.JobId)
+    end,
+})
+v256:Button({
+    Title = 'Join Pirates',
+    Desc = '',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('SetTeam', 'Pirates')
+    end,
+})
+v256:Button({
+    Title = 'Join Marines',
+    Desc = '',
+    Callback = function()
+        game:GetService('ReplicatedStorage').Remotes.CommF_:InvokeServer('SetTeam', 'Marines')
+    end,
+})
+v256:Button({
+    Title = 'Anti AFK',
+    Desc = '',
+    Callback = function()
+        repeat
+            wait()
+        until game:IsLoaded()
+
+        game:GetService('Players').LocalPlayer.Idled:connect(function()
+            game:GetService('VirtualUser'):ClickButton2(Vector2.new())
+            game:GetService('VirtualUser'):Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+            wait(1)
+            game:GetService('VirtualUser'):Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+        end)
+    end,
+})
+
+local v258 = u198:Tab({
+    Title = 'Setting',
+    Icon = 'settings',
+})
+
+v258:Dropdown({
+    Title = 'Choose Bring Distance',
+    Desc = '',
+    Value = '500',
+    Multi = false,
+    AllowNone = true,
+    Values = {
+        '300',
+        '400',
+        '500',
+        '600',
+        '700',
+        '800',
+    },
+    Callback = function(p259)
+        getgenv().BringDis = tonumber(p259) or 700
+    end,
+})
+v258:Toggle({
+    Title = 'Bring mob',
+    Desc = '',
+    Value = true,
+    Callback = function(p260)
+        getgenv().BringMob[1] = p260
+    end,
+})
+v258:Toggle({
+    Title = 'Use Sword',
+    Desc = '',
+    Value = false,
+    Callback = function(p261)
+        if p261 == true then
+            getgenv().SelectWeapon = 'Sword'
+        else
+            getgenv().SelectWeapon = 'Melee'
+        end
+    end,
+})
+
+local u262 = true
+local v263 = {
+    ['1'] = Instance.new('ScreenGui', game:GetService('Players').LocalPlayer:WaitForChild('PlayerGui')),
+}
+
+v263['1'].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+v263['2'] = Instance.new('ImageButton', v263['1'])
+v263['2'].BorderSizePixel = 0
+v263['2'].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+v263['2'].Image = 'http://www.roblox.com/asset/?id=18423735714'
+v263['2'].Size = UDim2.new(0, 50, 0, 50)
+v263['2'].BorderColor3 = Color3.fromRGB(0, 0, 0)
+v263['2'].Position = UDim2.new(0.18953, 0, 0.28731, 0)
+v263['2'].Draggable = true
+v263['3'] = Instance.new('UICorner', v263['2'])
+v263['4'] = Instance.new('UIStroke', v263['2'])
+v263['4'].Color = Color3.fromRGB(255, 255, 255)
+v263['5'] = Instance.new('UIGradient', v263['4'])
+v263['5'].Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 162, 164)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(210, 118, 255)),
+})
+
+v263['2'].MouseButton1Down:Connect(function()
+    if u262 then
+        u198:Close()
+    else
+        u198:Open()
+    end
+
+    u262 = not u262
+end)
+game:GetService('StarterGui'):SetCore('SendNotification', {
+    Title = 'Script made by kuri',
+    Text = 'Loaded!',
+    Icon = 'http://www.roblox.com/asset/?id=18423735714',
+    Duration = 5,
+})
