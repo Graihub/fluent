@@ -1,4 +1,4 @@
--- Keep going, don't just change the name. 😼👍🔥
+-- Crack By BelBel
 
 local Settings = {
     WeaponType = "Melee"
@@ -881,10 +881,10 @@ end)
 
 LoadConfig()
 
-local ModernUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Rizeniii/diamond/refs/heads/main/zero/main"))()
+local ModernUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Graihub/Uigay/refs/heads/main/Catui.txt"))()
 
 local Window = ModernUI.new({
-    Title = "Cat Hub",
+    Title = "Bamia Hub",
     SubTitle = "Blox Fruits",
     Icon = {"rbxassetid://138770682187300", "rbxassetid://110961158970233"},
     IconFPS = 0.1,
