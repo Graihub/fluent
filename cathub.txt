@@ -886,12 +886,12 @@ local ModernUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Grai
 local Window = ModernUI.new({
     Title = "Bamia Hub",
     SubTitle = "Blox Fruits",
-    Icon = {"rbxassetid://138770682187300", "rbxassetid://110961158970233"},
+    Icon = {"rbxassetid://138770682187300", "rbxassetid://80909425320793"},
     IconFPS = 0.1,
     FloatingButton = {
-        Icon = {"rbxassetid://138770682187300", "rbxassetid://110961158970233"},
-        Size = 52,
-        Position = UDim2.new(1, -70, 0.5, -26)
+        Icon = {"rbxassetid://138770682187300", "rbxassetid://80909425320793"},
+        Size = 48,
+        Position = UDim2.new(0, 10, 0.5, -26)
     }
 })
 
@@ -6478,6 +6478,7 @@ Window:AddToggle(ShopTab, {
 Window:Notify({
     Title = "Script Loaded",
     Body = "Cat Hub loaded successfully!",
-    Icon = {"rbxassetid://92677765459164"},
+    Icon = {"rbxassetid://80909425320793"},
     Duration = 5
 })
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Graihub/fastattackgay/refs/heads/main/3071721359096691.txt"))()
