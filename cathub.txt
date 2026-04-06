@@ -886,10 +886,10 @@ local ModernUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Grai
 local Window = ModernUI.new({
     Title = "Bamia Hub",
     SubTitle = "Blox Fruits",
-    Icon = {"rbxassetid://138770682187300", "rbxassetid://80909425320793"},
+    Icon = "rbxassetid://80909425320793"
     IconFPS = 0.1,
     FloatingButton = {
-        Icon = {"rbxassetid://138770682187300", "rbxassetid://80909425320793"},
+        Icon = "rbxassetid://80909425320793"
         Size = 48,
         Position = UDim2.new(0, 10, 0.5, -26)
     }
